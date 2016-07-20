@@ -4,9 +4,9 @@ Node.js library for logging to LogDNA
 ### Benchmarks
 | **Total Lines** | **Throughput** *(lines/s)* | **RSS** *(Mb)* |
 |-----------------|----------------------------|----------------|
-|      10000      |          213215            |      15.1      |
-|      100000     |          465260            |      15.2      |
-|      1000000    |          709915            |      94.6      |
+|      10,000     |          213,215           |      15.1      |
+|      100,000    |          465,260           |      15.2      |
+|      1,000,000  |          709,915           |      94.6      |
 
    *Averaged over 5 tests on local machine w/ Node 5.0:*
    * MacBook Air (13-inch, Mid 2011)
