@@ -20,7 +20,7 @@
  */
 
 var memwatch = require('memwatch-next');
-var logger = require('../lib/logger');
+var Logger = require('../lib/logger');
 var assert = require('assert');
 var http = require('http');
 var logURL = 'http://localhost:1337';
@@ -45,7 +45,7 @@ var ordered = [];
 var sent = [];
 var body = '';
 var testServer;
-logger.initialize(config);
+var logger = new Logger(config);
 
 memwatch.on('stats', function(stats) {
     // console.log('Here\'s garbage collection: %j', stats);
