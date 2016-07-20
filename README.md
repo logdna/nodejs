@@ -1,6 +1,10 @@
 # nodejs
 Node.js library for logging to LogDNA
 
+**Must reach flushlimit to send logs**
+    * Add a timeout to eventually send logs if flushlimit is never reached
+    * Will slow down the code to set timeouts after the last log sent
+
 ### Benchmarks
 | **Total Lines** | **Throughput** *(lines/s)* | **RSS** *(Mb)* |
 |-----------------|----------------------------|----------------|
