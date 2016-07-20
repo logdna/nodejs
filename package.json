@@ -1,0 +1,38 @@
+{
+  "name": "logdna",
+  "version": "1.0.0",
+  "description": "Logdna nodejs logging module; Supports Winston transport.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logdna/nodejs.git"
+  },
+  "keywords": [
+    "logdna",
+    "logs",
+    "logging",
+    "winston",
+    "nodejs",
+    "node",
+    "logdna.com",
+    "logger"
+  ],
+  "author": {
+    "name" : "Muaz Siddiqui",
+    "email": "muaz@logdna.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logdna/nodejs/issues"
+  },
+  "homepage": "https://github.com/logdna/nodejs#readme",
+  "optionalPeerDependencies": {
+    "winston": "*"
+  }
+}
