@@ -30,15 +30,14 @@ var myHostname = 'AWESOMEHOSTER';
 var macAddress = 'C0:FF:EE:C0:FF:EE';
 var ipAddress = '10.0.1.101';
 var filename = 'testing.log';
-var config = {
-    apikey: apikey,
+var options = {
     hostname: myHostname,
     ip: ipAddress,
     mac: macAddress,
     logurl: logURL,
     app: filename
 };
-var logger = Logger.createLogger(config);
+var logger = Logger.createLogger(apikey, options);
 var testLength = 1000000;
 var linesReceived = 0;
 var testStr = 'ESOTERIC ';
