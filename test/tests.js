@@ -20,6 +20,7 @@
  */
 
 var memwatch = require('memwatch-next');
+var winston = require('winston');
 var Logger = require('../lib/logger');
 var assert = require('assert');
 var http = require('http');
@@ -31,6 +32,7 @@ var macAddress = 'C0:FF:EE:C0:FF:EE';
 var ipAddress = '10.0.1.101';
 var filename = 'testing.log';
 var options = {
+    key: apikey,
     hostname: myHostname,
     ip: ipAddress,
     mac: macAddress,
@@ -45,7 +47,6 @@ var ordered = [];
 var sent = [];
 var body = '';
 var testServer;
-
 
 memwatch.on('stats', function(stats) {
     // console.log('Here\'s garbage collection: %j', stats);
@@ -82,17 +83,25 @@ var arraysEqual = function(a, b) {
 
 var sendLogs = function() {
     var rssProfile = [];
-    var start;
-    var elapsed = 0;
     var base = process.memoryUsage().rss / 1000000.0;
     rssProfile.push(process.memoryUsage().rss / (1000000.0) -  base);
-    start = process.hrtime();
+    var start = process.hrtime();
     for (var i = 0; i < testLength; i++) {
         logger.log(testStr);
         // logger.warn(testStr);
         // rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
     }
-    elapsed += (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
+    var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
+    var milliSecs = elapsed.toFixed(3);
+    console.log('********************\n     Here\'s the throughput: %j lines/sec \n', testLength / (milliSecs / 1000)); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
+};
+
+var sendWinston = function() {
+    var start = process.hrtime();
+    for (var i = 0; i < testLength; i++) {
+        winston.log('warn', testStr);
+    }
+    var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
     var milliSecs = elapsed.toFixed(3);
     console.log('********************\n     Here\'s the throughput: %j lines/sec \n', testLength / (milliSecs / 1000)); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
 };
@@ -130,5 +139,35 @@ describe('Testing for Correctness', function() {
     it('Proper Order', function(done) {
         assert(arraysEqual(ordered, sent));
         done();
+    });
+});
+
+describe('winstonTransport', function() {
+    after(function() {
+        testServer.close();
+    });
+    it('builds winstonTransport and sends log messages through it', function(done) {
+        testServer = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                body += data;
+            });
+            req.on('end', function() {
+                body = JSON.parse(body);
+                for (var i = 0; i < body.ls.length; i++) {
+                    assert(body.ls[i].line == testStr);
+                }
+                linesReceived += body.ls.length;
+                body = '';
+                if (linesReceived == testLength) {
+                    linesReceived = 0;
+                    done();
+                }
+            });
+            res.end('Hello, world!\n');
+        });
+        testServer.listen(1337);
+        winston.add(winston.transports.Logdna, options);
+        winston.remove(winston.transports.Console);
+        memoryChecker(sendWinston);
     });
 });

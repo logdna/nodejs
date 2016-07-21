@@ -13,7 +13,6 @@
     "type": "git",
     "url": "git+https://github.com/logdna/nodejs.git"
   },
-  "main": "index.js",
   "keywords": [
     "logdna",
     "logs",
@@ -33,12 +32,10 @@
     "url": "https://github.com/logdna/nodejs/issues"
   },
   "homepage": "https://github.com/logdna/nodejs#readme",
-  "optionalPeerDependencies": {
-    "winston": "*"
-  },
   "dependencies": {
     "agentkeepalive": "^2.2.0",
     "lodash": "^4.13.1",
-    "request": "^2.73.0"
+    "request": "^2.73.0",
+    "winston": "^2.2.0"
   }
 }
