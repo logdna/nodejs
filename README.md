@@ -13,7 +13,7 @@ var options = {
 var logger = Logger.createLogger(apikey, options);
 ```
 #### Required
-* LogDNA API Key
+* [LogDNA API Key](https://app.logdna.com/manage/profile)
 * Hostname
 * MAC Address
 * IP Address
