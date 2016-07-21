@@ -18,13 +18,16 @@ var logger = Logger.createLogger(apikey, options);
 * MAC Address
 * IP Address
 
+### Usage
 
+*TODO*
 
 ### Winston Transport
 
 This module also provides a transport object, which can be added to winston using
 
 ```
+var winston = require('winston');
 var options = {
     key: apikey,
     hostname: myHostname,
