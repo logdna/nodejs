@@ -45,7 +45,8 @@ var ordered = [];
 var sent = [];
 var body = '';
 var testServer;
-var logger = new Logger(config);
+var logger = Logger.getInstance();
+logger.initialize(config);
 
 memwatch.on('stats', function(stats) {
     // console.log('Here\'s garbage collection: %j', stats);
