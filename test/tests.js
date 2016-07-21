@@ -132,7 +132,6 @@ describe('Testing for Correctness', function() {
             res.end('Hello, world!\n');
         });
         testServer.listen(1337);
-        // sendLogs();
         memoryChecker(sendLogs);
     });
 

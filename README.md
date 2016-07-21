@@ -1,4 +1,4 @@
-# nodejs
+# Nodejs
 Node.js library for logging to LogDNA
 
 ### Setup
@@ -12,7 +12,7 @@ var options = {
 };
 var logger = Logger.createLogger(apikey, options);
 ```
-#### Required
+_**Required**_
 * [LogDNA API Key](https://app.logdna.com/manage/profile)
 * Hostname
 * MAC Address
