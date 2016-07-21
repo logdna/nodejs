@@ -56,7 +56,7 @@ memwatch.on('leak', function(info) {
     assert(false);
 });
 for (var i = 0; i < testLength; i++) {
-    ordered.push(testStr + i);
+    ordered.push(testStr);
 }
 
 var memoryChecker = function(func) {
@@ -89,7 +89,7 @@ var sendLogs = function() {
     rssProfile.push(process.memoryUsage().rss / (1000000.0) -  base);
     start = process.hrtime();
     for (var i = 0; i < testLength; i++) {
-        logger.log(testStr + i);
+        logger.log(testStr);
         // logger.warn(testStr);
         // rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
     }
