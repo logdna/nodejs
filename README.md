@@ -2,11 +2,12 @@
 Node.js library for logging to LogDNA
 
 ### Setup
-#### Required
+###### Required
 * LogDNA API Key
 * Hostname
 * MAC Address
 * IP Address
+
     var Logger = require('logdna');
     var options = {
         hostname: myHostname,
