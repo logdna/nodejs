@@ -25,10 +25,10 @@ var assert = require('assert');
 var http = require('http');
 var logURL = 'http://localhost:1337';
 // var logURL = 'https://logs.logdna.com/logs/ingest';
-const apikey = 'd8e14421399a44a9a35dfc49c7f5f0aa';
-const myHostname = 'AWESOMEHOSTER';
-const macAddress = 'C0:FF:EE:C0:FF:EE';
-const ipAddress = '10.0.1.101';
+var apikey = 'd8e14421399a44a9a35dfc49c7f5f0aa';
+var myHostname = 'AWESOMEHOSTER';
+var macAddress = 'C0:FF:EE:C0:FF:EE';
+var ipAddress = '10.0.1.101';
 var filename = 'testing.log';
 var config = {
     apikey: apikey,
@@ -38,6 +38,7 @@ var config = {
     logurl: logURL,
     app: filename
 };
+var logger = Logger.createLogger(config);
 var testLength = 1000000;
 var linesReceived = 0;
 var testStr = 'ESOTERIC ';
@@ -45,8 +46,7 @@ var ordered = [];
 var sent = [];
 var body = '';
 var testServer;
-var logger = Logger.getInstance();
-logger.initialize(config);
+
 
 memwatch.on('stats', function(stats) {
     // console.log('Here\'s garbage collection: %j', stats);
@@ -56,7 +56,7 @@ memwatch.on('leak', function(info) {
     assert(false);
 });
 for (var i = 0; i < testLength; i++) {
-    ordered.push(testStr);
+    ordered.push(testStr + i);
 }
 
 var memoryChecker = function(func) {
@@ -89,7 +89,8 @@ var sendLogs = function() {
     rssProfile.push(process.memoryUsage().rss / (1000000.0) -  base);
     start = process.hrtime();
     for (var i = 0; i < testLength; i++) {
-        logger.log(testStr);
+        logger.log(testStr + i);
+        // logger.warn(testStr);
         // rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
     }
     elapsed += (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;

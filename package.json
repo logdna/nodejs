@@ -13,6 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/logdna/nodejs.git"
   },
+  "main": "index.js",
   "keywords": [
     "logdna",
     "logs",
@@ -24,8 +25,8 @@
     "logger"
   ],
   "author": {
-    "name" : "Muaz Siddiqui",
-    "email": "muaz@logdna.com"
+    "name": "Answerbook Inc.",
+    "email": "help@logdna.com"
   },
   "license": "MIT",
   "bugs": {
@@ -34,5 +35,10 @@
   "homepage": "https://github.com/logdna/nodejs#readme",
   "optionalPeerDependencies": {
     "winston": "*"
+  },
+  "dependencies": {
+    "agentkeepalive": "^2.2.0",
+    "lodash": "^4.13.1",
+    "request": "^2.73.0"
   }
 }
