@@ -8,7 +8,7 @@ var options = {
     hostname: myHostname,
     ip: ipAddress,
     mac: macAddress,
-    app: filename
+    app: appName
 };
 var logger = Logger.createLogger(apikey, options);
 ```
@@ -25,8 +25,17 @@ var logger = Logger.createLogger(apikey, options);
 This module also provides a transport object, which can be added to winston using
 
 ```
+var options = {
+    key: apikey,
+    hostname: myHostname,
+    ip: ipAddress,
+    mac: macAddress,
+    app: appName
+};
 winston.add(winston.transports.Logdna, options);
 ```
+
+
 
 ### Benchmarks
 | **Total Lines** | **Throughput** *(lines/s)* | **RSS** *(Mb)* |
