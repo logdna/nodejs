@@ -2,7 +2,7 @@
 Node.js library for logging to LogDNA
 
 ### Setup
-```
+```javascript
 var Logger = require('logdna');
 var options = {
     hostname: myHostname,
@@ -26,7 +26,7 @@ var logger = Logger.createLogger(apikey, options);
 
 This module also provides a transport object, which can be added to winston using
 
-```
+```javascript
 var winston = require('winston');
 var options = {
     key: apikey,
