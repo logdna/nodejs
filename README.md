@@ -8,19 +8,24 @@ Node.js library for logging to LogDNA
 * MAC Address
 * IP Address
 
-    var Logger = require('logdna');
-    var options = {
-        hostname: myHostname,
-        ip: ipAddress,
-        mac: macAddress,
-        app: filename
-    };
-    var logger = Logger.createLogger(apikey, options);
+'''
+var Logger = require('logdna');
+var options = {
+    hostname: myHostname,
+    ip: ipAddress,
+    mac: macAddress,
+    app: filename
+};
+var logger = Logger.createLogger(apikey, options);
+'''
 
 ### Winston Transport
 
 This module also provides a transport object, which can be added to winston using
-    winston.add(winston.transports.Logdna, options);
+
+'''
+winston.add(winston.transports.Logdna, options);
+'''
 
 ### Benchmarks
 | **Total Lines** | **Throughput** *(lines/s)* | **RSS** *(Mb)* |
