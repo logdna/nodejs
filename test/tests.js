@@ -147,7 +147,7 @@ describe('winstonTransport', function() {
     after(function() {
         testServer.close();
     });
-    it('builds winstonTransport and sends log messages through it', function(done) {
+    it('Builds winstonTransport and sends log messages through it', function(done) {
         testServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
                 body += data;
@@ -208,6 +208,7 @@ describe('Input validation', function() {
     it('Input Validation for logs', function(done) {
         assert.throws(function() { logger.log(1234); }, Error);
         assert.throws(function() { logger.log('asdasdadasd', 1234); }, Error);
+        assert.throws(function() { logger.log('asdasdadasd', {}); }, Error);
         done();
     });
 });

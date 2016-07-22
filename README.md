@@ -13,10 +13,10 @@ var options = {
 var logger = Logger.createLogger(apikey, options);
 ```
 _**Required**_
-* [LogDNA API Key](https://app.logdna.com/manage/profile)
-* Hostname
-* MAC Address
-* IP Address
+* [LogDNA API Key](https://app.logdna.com/manage/profile) - *(String)* - max length 32 chars
+* Hostname - *(String)* - max length 32 chars
+* MAC Address - *(String)* - max length 32 chars
+* IP Address - *(String)* - max length 32 chars
 
 ### Usage
 
