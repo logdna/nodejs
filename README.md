@@ -1,7 +1,6 @@
-# LogDNA Nodejs
+# LogDNA Nodejs ![alt text](https://avatars0.githubusercontent.com/u/17461937?v=3&s=200 "LogDNA")
 Node.js library for transporting logs to [LogDNA](https://app.logdna.com/logs/view)
-![alt text](https://avatars0.githubusercontent.com/u/17461937?v=3&s=200 "LogDNA") * List1
-                                                                                  * List2 
+
 
 ### Setup
 ```javascript
