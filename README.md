@@ -32,12 +32,13 @@ logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 
 For more options, this module also offers (extra options can be passed as a JSON object):
 ```javascript
-logger.debug('My Sample Log Line');
-logger.trace('My Sample Log Line', { app: 'myAppName'});
 logger.info('My Sample Log Line');
 logger.warn('My Sample Log Line');
+logger.debug('My Sample Log Line');
 logger.error('My Sample Log Line');
 logger.fatal('My Sample Log Line');
+// Functions above also accept additional options
+logger.trace('My Sample Log Line', { app: 'myAppName'});
 ```
 
 
