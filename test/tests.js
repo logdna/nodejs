@@ -65,7 +65,7 @@ var memoryChecker = function(func) {
     func();
     console.timeEnd('    sendLogz');
     var m2 = process.memoryUsage();
-    console.log('    Diff (Mb) = rss: %j, heapTotal: %j, heapUsed: %j \n', (m2.rss - m1.rss) / 1000000, (m2.heapTotal - m1.heapTotal) / 1000000, (m2.heapUsed - m1.heapUsed) / 1000000);
+    console.log('    Diff (MB) = rss: %j, heapTotal: %j, heapUsed: %j \n', (m2.rss - m1.rss) / 1000000, (m2.heapTotal - m1.heapTotal) / 1000000, (m2.heapUsed - m1.heapUsed) / 1000000);
 };
 
 var arraysEqual = function(a, b) {
@@ -177,6 +177,7 @@ describe('Input validation', function() {
     var bogusKeys;
     var options;
     var bogusOptions;
+    var invalidOptions;
     beforeEach(function() {
         bogusKeys = [
             'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG',
@@ -186,22 +187,28 @@ describe('Input validation', function() {
         ];
         options = {
             hostname: 'Valid Hostname',
-            mac: 'Valid MAC Address',
-            ip: 'Valid IP Address'
+            mac: 'C0:FF:EE:C0:FF:EE',
+            ip: '10.0.1.101'
         };
         bogusOptions = {
             hostname: 123,
             mac: 3123132123,
             ip: 238741248927349
         };
+        invalidOptions = {
+            hostname: 'This Works',
+            mac: 'This is invalid',
+            ip: '1234.1234.1234'
+        };
     });
     it('Sanity checks for API Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
-            assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error);
+            assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
         }
         done();
     });
     it('Sanity checks for options', function(done) {
+        assert.throws(function() { Logger.createLogger(apikey, invalidOptions); }, Error);
         assert.throws(function() { Logger.createLogger(apikey, bogusOptions); }, Error);
         done();
     });

@@ -20,7 +20,26 @@ _**Required**_ - *(String)* - max length 32 chars
 
 ### Usage
 
-*TODO*
+After initial setup, logging is as easy as:
+```javascript
+// Simplest use case
+logger.log('My Sample Log Line');
+// Add a custom level
+logger.log('My Sample Log Line', 'Warn');
+// Include an App name with this specific log
+logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
+```
+
+For more options, this module also offers (extra options can be passed as a JSON object):
+```javascript
+logger.debug('My Sample Log Line');
+logger.trace('My Sample Log Line', { app: 'myAppName'});
+logger.info('My Sample Log Line');
+logger.warn('My Sample Log Line');
+logger.error('My Sample Log Line');
+logger.fatal('My Sample Log Line');
+```
+
 
 ### Winston Transport
 
@@ -41,7 +60,7 @@ winston.add(winston.transports.Logdna, options);
 
 
 ### Benchmarks
-| **Total Lines** | **Throughput** *(lines/s)* | **RSS** *(Mb)* |
+| **Total Lines** | **Throughput** *(lines/s)* | **RSS** *(MB)* |
 |-----------------|----------------------------|----------------|
 |      10,000     |          213,215           |      15.1      |
 |      100,000    |          465,260           |      15.2      |
