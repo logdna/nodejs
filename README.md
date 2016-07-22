@@ -32,7 +32,7 @@ logger.log('My Sample Log Line', 'Warn');
 logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 ```
 
-For more options, this module also offers (extra options can be passed as a JSON object):
+For more options, this module also offers:
 ```javascript
 logger.info('My Sample Log Line');
 logger.warn('My Sample Log Line');
