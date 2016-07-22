@@ -1,5 +1,5 @@
 # Nodejs
-Node.js library for logging to LogDNA
+Node.js library for logging to [LogDNA](https://app.logdna.com/logs/view)
 
 ### Setup
 ```javascript
@@ -24,8 +24,10 @@ After initial setup, logging is as easy as:
 ```javascript
 // Simplest use case
 logger.log('My Sample Log Line');
+
 // Add a custom level
 logger.log('My Sample Log Line', 'Warn');
+
 // Include an App name with this specific log
 logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 ```
@@ -37,6 +39,7 @@ logger.warn('My Sample Log Line');
 logger.debug('My Sample Log Line');
 logger.error('My Sample Log Line');
 logger.fatal('My Sample Log Line');
+
 // Functions above also accept additional options
 logger.trace('My Sample Log Line', { app: 'myAppName'});
 ```
@@ -44,7 +47,7 @@ logger.trace('My Sample Log Line', { app: 'myAppName'});
 
 ### Winston Transport
 
-This module also provides a transport object, which can be added to winston using
+This module also provides a transport object, which can be added to winston using:
 
 ```javascript
 var winston = require('winston');
