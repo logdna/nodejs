@@ -172,3 +172,42 @@ describe('winstonTransport', function() {
         memoryChecker(sendWinston);
     });
 });
+
+describe('Input validation', function() {
+    var bogusKeys;
+    var options;
+    var bogusOptions;
+    beforeEach(function() {
+        bogusKeys = [
+            'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG',
+            1234,
+            { key: 'fail fail' },
+            12.123
+        ];
+        options = {
+            hostname: 'Valid Hostname',
+            mac: 'Valid MAC Address',
+            ip: 'Valid IP Address'
+        };
+        bogusOptions = {
+            hostname: 123,
+            mac: 3123132123,
+            ip: 238741248927349
+        };
+    });
+    it('Sanity checks for API Key', function(done) {
+        for (var i = 0; i < bogusKeys.length; i++) {
+            assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error);
+        }
+        done();
+    });
+    it('Sanity checks for options', function(done) {
+        assert.throws(function() { Logger.createLogger(apikey, bogusOptions); }, Error);
+        done();
+    });
+    it('Input Validation for logs', function(done) {
+        assert.throws(function() { logger.log(1234); }, Error);
+        assert.throws(function() { logger.log('asdasdadasd', 1234); }, Error);
+        done();
+    });
+});
