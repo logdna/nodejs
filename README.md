@@ -1,5 +1,5 @@
-# Nodejs
-Node.js library for transporting logs to [LogDNA](https://app.logdna.com/logs/view) ![alt text](https://avatars0.githubusercontent.com/u/17461937?v=3&s=200 "LogDNA")
+![alt text](https://avatars0.githubusercontent.com/u/17461937?v=3&s=200 "LogDNA") # LogDNA Nodejs
+Node.js library for transporting logs to [LogDNA](https://app.logdna.com/logs/view) 
 
 ### Setup
 ```javascript
