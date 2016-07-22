@@ -31,7 +31,7 @@ After initial setup, logging is as easy as:
 logger.log('My Sample Log Line');
 
 // Add a custom level
-logger.log('My Sample Log Line', 'Warn');
+logger.log('My Sample Log Line', 'MyCustomLevel');
 
 // Include an App name with this specific log
 logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
@@ -39,6 +39,7 @@ logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 
 For more options, this module also offers:
 ```javascript
+// We support the following six levels
 logger.info('My Sample Log Line');
 logger.warn('My Sample Log Line');
 logger.debug('My Sample Log Line');
