@@ -1,5 +1,5 @@
 # Nodejs
-Node.js library for logging to [LogDNA](https://app.logdna.com/logs/view)
+Node.js library for transporting logs to [LogDNA](https://app.logdna.com/logs/view)
 
 ### Setup
 ```javascript
@@ -29,7 +29,7 @@ logger.log('My Sample Log Line');
 logger.log('My Sample Log Line', 'Warn');
 
 // Include an App name with this specific log
-logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
+logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName', hostname: 'myHostname'});
 ```
 
 For more options, this module also offers:
@@ -42,6 +42,7 @@ logger.fatal('My Sample Log Line');
 
 // Functions above also accept additional options
 logger.trace('My Sample Log Line', { app: 'myAppName'});
+logger.debug('My Sample Log Line', { app: 'myAppName', hostname: 'myHostname'});
 ```
 
 
