@@ -61,11 +61,11 @@ for (var i = 0; i < testLength; i++) {
 
 var memoryChecker = function(func) {
     var m1 = process.memoryUsage();
-    console.time('sendLogz');
+    console.time('    sendLogz');
     func();
-    console.timeEnd('sendLogz');
+    console.timeEnd('    sendLogz');
     var m2 = process.memoryUsage();
-    console.log('Diff = rss: %j, heapTotal: %j, heapUsed: %j', m2.rss - m1.rss, m2.heapTotal - m1.heapTotal, m2.heapUsed - m1.heapUsed);
+    console.log('    Diff (Mb) = rss: %j, heapTotal: %j, heapUsed: %j \n', (m2.rss - m1.rss) / 1000000, (m2.heapTotal - m1.heapTotal) / 1000000, (m2.heapUsed - m1.heapUsed) / 1000000);
 };
 
 var arraysEqual = function(a, b) {
@@ -92,8 +92,9 @@ var sendLogs = function() {
         // rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
     }
     var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
-    var milliSecs = elapsed.toFixed(3);
-    console.log('********************\n     Here\'s the throughput: %j lines/sec \n', testLength / (milliSecs / 1000)); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
+    var throughput = testLength / (elapsed / 1000);
+    throughput = Math.round(throughput * 100) / 100;
+    console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
 };
 
 var sendWinston = function() {
@@ -102,8 +103,9 @@ var sendWinston = function() {
         winston.log('warn', testStr);
     }
     var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
-    var milliSecs = elapsed.toFixed(3);
-    console.log('********************\n     Here\'s the throughput: %j lines/sec \n', testLength / (milliSecs / 1000)); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
+    var throughput = testLength / (elapsed / 1000);
+    throughput = Math.round(throughput * 100) / 100;
+    console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
 };
 
 describe('Testing for Correctness', function() {
