@@ -1,5 +1,11 @@
-# LogDNA Nodejs ![alt text](https://avatars0.githubusercontent.com/u/17461937?v=3&s=200 "LogDNA")
-Node.js library for transporting logs to [LogDNA](https://app.logdna.com/logs/view)
+<p align="center">
+  <a href="https://app.logdna.com">
+    <img height="95" width="201" src="https://raw.githubusercontent.com/logdna/artwork/master/logo%2Bnode.png">
+  </a>
+  <p align="center">node.js library for logging to <a href="https://app.logdna.com">LogDNA</a></p>
+</p>
+
+===
 
 * **[Setup](#setup)**
 * **[Usage](#usage)**
