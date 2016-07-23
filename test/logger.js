@@ -1,14 +1,15 @@
 var Logger = require('../lib/logger');
 var testHelper = require('./testHelper');
+var configs = require('../lib/configs');
 var assert = require('assert');
 var http = require('http');
 
 var logger = Logger.createLogger(testHelper.apikey, testHelper.options);
 var testLength = testHelper.testLength;
-var linesReceived = 0;
 var testStr = 'ESOTERIC ';
 var ordered = [];
-var sent = [];
+var sentLines = [];
+var sentLevels = [];
 var body = '';
 var testServer;
 
@@ -32,12 +33,8 @@ var sendLogs = function() {
     console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
 };
 
-describe('Testing for Correctness', function() {
-    after(function() {
-        testServer.close();
-    });
-    it('Exact Matches', function(done) {
-        // Setup Test Server
+describe('Test all Levels', function() {
+    beforeEach(function() {
         testServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
                 body += data;
@@ -45,25 +42,101 @@ describe('Testing for Correctness', function() {
             req.on('end', function() {
                 body = JSON.parse(body);
                 for (var i = 0; i < body.ls.length; i++) {
-                    sent.push(body.ls[i].line);
-                    assert(body.ls[i].line.substring(0, 10) === ordered[linesReceived + i].substring(0, 10));
+                    sentLines.push(body.ls[i].line);
+                    sentLevels.push(body.ls[i].level);
                 }
-                linesReceived += body.ls.length;
                 body = '';
-                if (linesReceived == testLength) {
-                    linesReceived = 0;
-                    done();
-                }
             });
             res.end('Hello, world!\n');
         });
         testServer.listen(1337);
-        testHelper.memoryChecker(sendLogs);
     });
+    afterEach(function() {
+        testServer.close();
+        testServer = null;
+        sentLines = [];
+        sentLevels = [];
+        body = '';
+    });
+    it('Debug Function', function(done) {
+        logger.debug('Sent a log');
+        setTimeout(function() {
+            assert(sentLines[0] === 'Sent a log');
+            assert(sentLevels[0] === 'DEBUG');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Trace Function', function(done) {
+        logger.trace('Sent a log1');
+        setTimeout(function() {
+            assert(sentLines[0] === 'Sent a log1');
+            assert(sentLevels[0] === 'TRACE');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Info Function', function(done) {
+        logger.info('Sent a log2');
+        setTimeout(function() {
+            assert(sentLines[0] === 'Sent a log2');
+            assert(sentLevels[0] === 'INFO');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Warn Function', function(done) {
+        logger.warn('Sent a log3');
+        setTimeout(function() {
+            assert(sentLines[0] === 'Sent a log3');
+            assert(sentLevels[0] === 'WARN');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Error Function', function(done) {
+        logger.error('Sent a log4');
+        setTimeout(function() {
+            assert(sentLines[0] === 'Sent a log4');
+            assert(sentLevels[0] === 'ERROR');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Fatal Function', function(done) {
+        logger.fatal('Sent a log5');
+        setTimeout(function() {
+            assert(sentLines[0] === 'Sent a log5');
+            assert(sentLevels[0] === 'FATAL');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+});
 
-    it('Proper Order', function(done) {
-        assert(testHelper.arraysEqual(ordered, sent));
-        done();
+describe('Testing for Correctness', function() {
+    beforeEach(function() {
+        testServer = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                body += data;
+            });
+            req.on('end', function() {
+                body = JSON.parse(body);
+                for (var i = 0; i < body.ls.length; i++) {
+                    sentLines.push(body.ls[i].line);
+                }
+                body = '';
+            });
+            res.end('Hello, world!\n');
+        });
+        testServer.listen(1337);
+    });
+    afterEach(function() {
+        testServer.close();
+        testServer = null;
+        sentLines = [];
+        body = '';
+    });
+    it('Exact Matches and Proper Order', function(done) {
+        testHelper.memoryChecker(sendLogs);
+        setTimeout(function() {
+            assert(testHelper.arraysEqual(ordered, sentLines));
+            done();
+        }, 6000);
     });
 });
 
