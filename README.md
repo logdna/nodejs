@@ -6,13 +6,24 @@
 </p>
 
 ===
+# LogDNA Node.js
 
+* **[Install](#install)**
 * **[Setup](#setup)**
 * **[Usage](#usage)**
+* **[API](#api)**
 * **[Winston Transport](#winston-transport)**
 * **[Benchmarks](#benchmarks)**
+* **[License](#license)**
 
-### Setup
+
+## Install
+
+```javascript
+$ npm install --save-dev logdna
+```
+
+## Setup
 ```javascript
 var Logger = require('logdna');
 var options = {
@@ -29,7 +40,7 @@ _**Required**_ - *(String)* - max length 32 chars
 * MAC Address
 * IP Address
 
-### Usage
+## Usage
 
 After initial setup, logging is as easy as:
 ```javascript
@@ -56,8 +67,104 @@ logger.fatal('My Sample Log Line');
 logger.trace('My Sample Log Line', { app: 'myAppName'});
 ```
 
+## API
 
-### Winston Transport
+### createLogger(key, [options])
+
+#### key
+
+Type: `String`  
+Default: `''`
+Values: [`YourAPIKey`](https://app.logdna.com/manage/profile)  
+Max Length: `32`
+
+The [LogDNA API Key](https://app.logdna.com/manage/profile) associated with your account.
+
+#### options
+
+##### hostname
+
+Type: `String`  
+Default: `''`  
+Values: `YourCustomHostname`
+Max Length: `32`
+
+The default hostname passed along with every log sent through this instance.
+
+##### mac
+
+Type: `String`  
+Default: `''`  
+Values: `C0:FF:EE:C0:FF:EE`
+
+The default MAC Address passed along with every log sent through this instance.
+
+##### ip
+
+Type: `String`  
+Default: `''`  
+Values: `10.0.0.1`
+
+The default IP Address passed along with every log sent through this instance.
+
+##### timeout
+
+Type: `Integer`  
+Default: `30000`  
+Max Value: `100000`
+
+The length of the timeout on the POST request that is sent to LogDNA.
+
+##### level
+
+Type: `String`  
+Default: `''`  
+Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
+Max Length: `32`
+
+The level to be passed with the log line.
+
+##### app
+
+Type: `String`  
+Default: `''`  
+Values: `YourCustomApp`
+Max Length: `32`
+
+The app which is sending this log line.
+
+### log(line, [options])
+
+#### line
+
+Type: `String`  
+Default: `''`  
+Max Length: `32000`
+
+The line which will be sent to the LogDNA system.
+
+#### options
+
+##### level
+
+Type: `String`  
+Default: `''`  
+Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
+Max Length: `32`
+
+The level to be passed with the log line.
+
+##### app
+
+Type: `String`  
+Default: `''`  
+Values: `YourCustomApp`
+Max Length: `32`
+
+The app which is sending this log line.
+
+
+## Winston Transport
 
 This module also provides a transport object, which can be added to winston using:
 
@@ -75,7 +182,7 @@ winston.add(winston.transports.Logdna, options);
 
 
 
-### Benchmarks
+## Benchmarks
 | **Total Lines** | **Throughput** *(lines/s)* | **RSS** *(MB)* |
 |-----------------|----------------------------|----------------|
 |      10,000     |          213,215           |      15.1      |
@@ -86,3 +193,7 @@ winston.add(winston.transports.Logdna, options);
    * MacBook Air (13-inch, Mid 2011)
    * 1.7GHz Intel Core i5
    * 4 Gb 1333 MHz DDR3
+
+## License
+
+MIT © [LogDNA](https://logdna.com/)
