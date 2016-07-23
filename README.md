@@ -5,6 +5,8 @@
   <p align="center">node.js library for logging to <a href="https://app.logdna.com">LogDNA</a></p>
 </p>
 
+===
+
 * **[Setup](#setup)**
 * **[Usage](#usage)**
 * **[Winston Transport](#winston-transport)**
