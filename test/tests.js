@@ -22,6 +22,7 @@
 var memwatch = require('memwatch-next');
 var winston = require('winston');
 var Logger = require('../lib/logger');
+var winstonLogdna = require('../lib/winston');
 var assert = require('assert');
 var http = require('http');
 var logURL = 'http://localhost:1337';
@@ -108,53 +109,6 @@ var sendWinston = function() {
     console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
 };
 
-describe('Input validation', function() {
-    var bogusKeys;
-    var options;
-    var bogusOptions;
-    var invalidOptions;
-    beforeEach(function() {
-        bogusKeys = [
-            'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG',
-            1234,
-            { key: 'fail fail' },
-            12.123
-        ];
-        options = {
-            hostname: 'Valid Hostname',
-            mac: 'C0:FF:EE:C0:FF:EE',
-            ip: '10.0.1.101'
-        };
-        bogusOptions = {
-            hostname: 123,
-            mac: 3123132123,
-            ip: 238741248927349
-        };
-        invalidOptions = {
-            hostname: 'This Works',
-            mac: 'This is invalid',
-            ip: '1234.1234.1234'
-        };
-    });
-    it('Sanity checks for API Key', function(done) {
-        for (var i = 0; i < bogusKeys.length; i++) {
-            assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
-        }
-        done();
-    });
-    it('Sanity checks for options', function(done) {
-        assert.throws(function() { Logger.createLogger(apikey, invalidOptions); }, Error);
-        assert.throws(function() { Logger.createLogger(apikey, bogusOptions); }, Error);
-        done();
-    });
-    it('Input Validation for logs', function(done) {
-        assert.throws(function() { logger.log(1234); }, Error);
-        assert.throws(function() { logger.log('asdasdadasd', 1234); }, Error);
-        assert.throws(function() { logger.log('asdasdadasd', {}); }, Error);
-        done();
-    });
-});
-
 describe('Testing for Correctness', function() {
     after(function() {
         testServer.close();
@@ -217,5 +171,51 @@ describe('winstonTransport', function() {
         winston.add(winston.transports.Logdna, options);
         winston.remove(winston.transports.Console);
         memoryChecker(sendWinston);
+    });
+});
+
+describe('Input validation', function() {
+    var bogusKeys;
+    var options;
+    var bogusOptions;
+    var invalidOptions;
+    beforeEach(function() {
+        bogusKeys = [
+            'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG',
+            1234,
+            { key: 'fail fail' },
+            12.123
+        ];
+        options = {
+            hostname: 'Valid Hostname',
+            mac: 'C0:FF:EE:C0:FF:EE',
+            ip: '10.0.1.101'
+        };
+        bogusOptions = {
+            hostname: 123,
+            mac: 3123132123,
+            ip: 238741248927349
+        };
+        invalidOptions = {
+            hostname: 'This Works',
+            mac: 'This is invalid',
+            ip: '1234.1234.1234'
+        };
+    });
+    it('Sanity checks for API Key', function(done) {
+        for (var i = 0; i < bogusKeys.length; i++) {
+            assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
+        }
+        done();
+    });
+    it('Sanity checks for options', function(done) {
+        assert.throws(function() { Logger.createLogger(apikey, invalidOptions); }, Error);
+        assert.throws(function() { Logger.createLogger(apikey, bogusOptions); }, Error);
+        done();
+    });
+    it('Input Validation for logs', function(done) {
+        assert(logger.log('asdasdadasd', 1234));
+        assert(!logger.log('asdasdadasd', {}));
+        done();
     });
 });
