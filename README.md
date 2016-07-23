@@ -1,3 +1,5 @@
+# LogDNA Node.js
+
 <p align="center">
   <a href="https://app.logdna.com">
     <img height="95" width="201" src="https://raw.githubusercontent.com/logdna/artwork/master/logo%2Bnode.png">
@@ -5,7 +7,7 @@
   <p align="center">Node.js library for logging to <a href="https://app.logdna.com">LogDNA</a></p>
 </p>
 
-# LogDNA Node.js
+===
 
 * **[Install](#install)**
 * **[Setup](#setup)**
