@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://app.logdna.com">
-    <img height="201" width="95" src="https://raw.githubusercontent.com/logdna/artwork/master/logo%2Bnode.png">
+    <img height="95" width="201" src="https://raw.githubusercontent.com/logdna/artwork/master/logo%2Bnode.png">
   </a>
   <p align="center">node.js library for logging to <a href="https://app.logdna.com">LogDNA</a></p>
 </p>
