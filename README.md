@@ -84,8 +84,8 @@ The [LogDNA API Key](https://app.logdna.com/manage/profile) associated with your
 
 Type: `String`  
 Default: `''`  
-Values: `YourCustomHostname`
-Max Length: `32`
+Values: `YourCustomHostname`  
+Max Length: `32`  
 
 The default hostname passed along with every log sent through this instance.
 
@@ -93,7 +93,7 @@ The default hostname passed along with every log sent through this instance.
 
 Type: `String`  
 Default: `''`  
-Values: `C0:FF:EE:C0:FF:EE`
+Values: `C0:FF:EE:C0:FF:EE`  
 
 The default MAC Address passed along with every log sent through this instance.
 
@@ -117,7 +117,7 @@ The length of the timeout on the POST request that is sent to LogDNA.
 
 Type: `String`  
 Default: `''`  
-Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
+Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`  
 Max Length: `32`
 
 The level to be passed with the log line.
@@ -126,7 +126,7 @@ The level to be passed with the log line.
 
 Type: `String`  
 Default: `''`  
-Values: `YourCustomApp`
+Values: `YourCustomApp`  
 Max Length: `32`
 
 The app which is sending this log line.
@@ -147,7 +147,7 @@ The line which will be sent to the LogDNA system.
 
 Type: `String`  
 Default: `''`  
-Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
+Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`  
 Max Length: `32`
 
 The level to be passed with the log line.
@@ -156,7 +156,7 @@ The level to be passed with the log line.
 
 Type: `String`  
 Default: `''`  
-Values: `YourCustomApp`
+Values: `YourCustomApp`  
 Max Length: `32`
 
 The app which is sending this log line.
