@@ -72,8 +72,7 @@ logger.trace('My Sample Log Line', { app: 'myAppName'});
 
 #### key
 
-Type: `String`  
-Default: `''`
+Type: `String`
 Values: [`YourAPIKey`](https://app.logdna.com/manage/profile)  
 Max Length: `32`
 
