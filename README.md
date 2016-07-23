@@ -120,7 +120,7 @@ Default: `''`
 Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`  
 Max Length: `32`
 
-The level to be passed with the log line.
+The default level passed along with every log sent through this instance.
 
 ##### app
 
@@ -129,7 +129,7 @@ Default: `''`
 Values: `YourCustomApp`  
 Max Length: `32`
 
-The app which is sending this log line.
+The default app passed along with every log sent through this instance.
 
 ### log(line, [options])
 
@@ -150,7 +150,7 @@ Default: `''`
 Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`  
 Max Length: `32`
 
-The level to be passed with the log line.
+The level passed along with this log line.
 
 ##### app
 
@@ -159,7 +159,7 @@ Default: `''`
 Values: `YourCustomApp`  
 Max Length: `32`
 
-The app which is sending this log line.
+The app passed along with this log line.
 
 
 ## Winston Transport
