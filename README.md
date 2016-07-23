@@ -5,7 +5,6 @@
   <p align="center">Node.js library for logging to <a href="https://app.logdna.com">LogDNA</a></p>
 </p>
 
-===
 # LogDNA Node.js
 
 * **[Install](#install)**
