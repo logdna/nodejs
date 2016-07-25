@@ -19,7 +19,7 @@
 ## Install
 
 ```javascript
-$ npm install --save-dev logdna
+$ npm install logdna
 ```
 
 ## Setup
