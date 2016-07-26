@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - '5.9'
+branches:
+  only:
+  - master
+cache:
+  directories:
+    - node_modules
+before_script:
+  - npm install -g gulp
+script: gulp
+
