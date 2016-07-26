@@ -1,0 +1,49 @@
+{
+  "name": "logdna",
+  "version": "1.0.0",
+  "description": "Logdna nodejs logging module with support for Winston.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logdna/nodejs.git"
+  },
+  "keywords": [
+    "logdna",
+    "logs",
+    "logging",
+    "winston",
+    "nodejs",
+    "node",
+    "logdna.com",
+    "logger"
+  ],
+  "author": {
+    "name": "Answerbook Inc.",
+    "email": "help@logdna.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logdna/nodejs/issues"
+  },
+  "homepage": "https://github.com/logdna/nodejs#readme",
+  "dependencies": {
+    "agentkeepalive": "^2.2.0",
+    "lodash": "^4.13.1",
+    "object-sizeof": "^1.0.10",
+    "request": "^2.73.0",
+    "winston": "^2.2.0"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "gulp": "^3.9.1",
+    "gulp-exit": "0.0.2",
+    "gulp-mocha": "^2.2.0",
+    "mocha": "^2.5.3"
+  }
+}
