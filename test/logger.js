@@ -1,3 +1,4 @@
+process.env['test'] = 'test';
 var Logger = require('../lib/logger');
 var testHelper = require('./testHelper');
 var configs = require('../lib/configs');
@@ -16,6 +17,7 @@ var testServer;
 for (var i = 0; i < testLength; i++) {
     ordered.push(testStr);
 }
+
 
 var sendLogs = function() {
     var rssProfile = [];
