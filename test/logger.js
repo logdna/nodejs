@@ -147,6 +147,7 @@ describe('Input validation', function() {
     var options;
     var bogusOptions;
     var invalidOptions;
+    var noOptions;
     beforeEach(function() {
         bogusKeys = [
             'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG',
@@ -169,6 +170,9 @@ describe('Input validation', function() {
             mac: 'This is invalid',
             ip: '1234.1234.1234'
         };
+        noOptions = {
+            status: 'ok'
+        };
     });
     it('Sanity checks for API Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
@@ -179,6 +183,7 @@ describe('Input validation', function() {
     it('Sanity checks for options', function(done) {
         assert.throws(function() { Logger.createLogger(testHelper.apikey, invalidOptions); }, Error);
         assert.throws(function() { Logger.createLogger(testHelper.apikey, bogusOptions); }, Error);
+        assert(Logger.createLogger(testHelper.apikey, noOptions));
         done();
     });
     it('Input Validation for logs', function(done) {
