@@ -125,7 +125,7 @@ The length of the timeout on the POST request that is sent to LogDNA.
 
 _**Optional**_  
 Type: `String`  
-Default: `'Info'`  
+Default: `Info`  
 Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`  
 Max Length: `32`
 
@@ -158,7 +158,7 @@ The line which will be sent to the LogDNA system.
 
 _**Optional**_  
 Type: `String`  
-Default: `'Info'`  
+Default: `Info`  
 Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`  
 Max Length: `32`
 
