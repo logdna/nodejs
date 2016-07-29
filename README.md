@@ -36,6 +36,7 @@ var logger = Logger.createLogger(apikey, options);
 ```
 _**Required**_ - *(String)* - max length 32 chars
 * [LogDNA API Key](https://app.logdna.com/manage/profile)  
+
 _**Optional**_ 
 * Hostname
 * MAC Address
@@ -85,7 +86,7 @@ The [LogDNA API Key](https://app.logdna.com/manage/profile) associated with your
 
 ##### hostname
 
-_**Optional**_  
+_**Optional**_   
 Type: `String`  
 Default: `''`  
 Values: `YourCustomHostname`  
@@ -95,7 +96,7 @@ The default hostname passed along with every log sent through this instance.
 
 ##### mac
 
-_**Optional**_ 
+_**Optional**_   
 Type: `String`  
 Default: `''`  
 Values: `C0:FF:EE:C0:FF:EE`  
@@ -104,7 +105,7 @@ The default MAC Address passed along with every log sent through this instance.
 
 ##### ip
 
-_**Optional**_ 
+_**Optional**_   
 Type: `String`  
 Default: `''`  
 Values: `10.0.0.1`
@@ -113,7 +114,7 @@ The default IP Address passed along with every log sent through this instance.
 
 ##### timeout
 
-_**Optional**_  
+_**Optional**_    
 Type: `Integer`  
 Default: `30000`  
 Max Value: `100000`
