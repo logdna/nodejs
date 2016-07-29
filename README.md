@@ -116,8 +116,8 @@ The default IP Address passed along with every log sent through this instance.
 
 _**Optional**_    
 Type: `Integer`  
-Default: `30000`  
-Max Value: `100000`
+Default: `180000`  
+Max Value: `300000`
 
 The length of the timeout on the POST request that is sent to LogDNA.
 
