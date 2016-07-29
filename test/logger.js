@@ -1,4 +1,4 @@
-process.env['test'] = 'test';
+process.env.test = 'test';
 var Logger = require('../lib/logger');
 var testHelper = require('./testHelper');
 var configs = require('../lib/configs');
@@ -26,13 +26,11 @@ var sendLogs = function() {
     var start = process.hrtime();
     for (var i = 0; i < testLength; i++) {
         logger.log(testStr);
-        // logger.warn(testStr);
-        // rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
     }
     var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
     var throughput = testLength / (elapsed / 1000);
     throughput = Math.round(throughput * 100) / 100;
-    console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput); // , rssProfile[rssProfile.length-1] - rssProfile[0]);
+    console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput);
 };
 
 describe('Test all Levels', function() {
