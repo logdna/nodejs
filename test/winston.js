@@ -1,4 +1,4 @@
-process.env['test'] = 'test';
+process.env.test = 'test';
 var winston = require('winston');
 var winstonLogdna = require('../lib/winston');
 var testHelper = require('./testHelper');
