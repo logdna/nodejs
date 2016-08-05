@@ -39,7 +39,7 @@ _**Required**_
 
 _**Optional**_   
 * Hostname - *(String)* - max length 32 chars
-* MAC Address - *(String)* 
+* MAC Address - *(String)*  
 * IP Address - *(String)* 
 
 ## Usage
@@ -77,8 +77,7 @@ logger.trace('My Sample Log Line', { app: 'myAppName'});
 
 _**Required**_  
 Type: `String`  
-Values: `YourAPIKey`   
-Max Length: `32`  
+Values: `YourAPIKey`     
 
 The [LogDNA API Key](https://app.logdna.com/manage/profile) associated with your account.
 
