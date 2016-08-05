@@ -193,3 +193,5 @@ winston.add(winston.transports.Logdna, options);
 ## License
 
 MIT © [LogDNA](https://logdna.com/)
+
+*Happy Logging!*
