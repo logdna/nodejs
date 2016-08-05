@@ -5,7 +5,8 @@
   <p align="center">Node.js library for logging to <a href="https://app.logdna.com">LogDNA</a></p>
 </p>
 
-[![Build Status](https://travis-ci.org/logdna/nodejs.svg?branch=master)](https://travis-ci.org/logdna/nodejs)
+[![Build Status](https://travis-ci.org/logdna/nodejs.svg?branch=master)](https://travis-ci.org/logdna/nodejs)  
+[![Known Vulnerabilities](https://snyk.io/test/npm/logdna/badge.svg)](https://snyk.io/test/npm/logdna)  
 
 ===
 
