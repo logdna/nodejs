@@ -190,6 +190,33 @@ var options = {
 winston.add(winston.transports.Logdna, options);
 ```
 
+## Bunyan Stream
+
+This module also provides a transport object, which can be added to winston using:
+
+```javascript
+let LogDNAStream = require('logdna').BunyanStream;
+
+let logDNA = new LogDNAStream({
+  key: apikey
+});
+
+var logger = bunyan.createLogger({
+  name: "My Application",
+  streams: [
+  	{ stream: process.stdout },
+    { stream: logDNA,
+      type: 'raw'    	
+    }
+  ]
+});
+
+
+logger.info('Starting application on port %d', app.get('port'));
+```
+
+*NOTE*: You _must_ use the `raw` stream type
+
 ## License
 
 MIT © [LogDNA](https://logdna.com/)
