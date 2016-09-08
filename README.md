@@ -130,6 +130,14 @@ Max Length: `32`
 
 The default level passed along with every log sent through this instance.
 
+##### max_length
+
+_**Optional**_  
+Type: `Boolean`  
+Default: `true`   
+
+By default the line has a maximum length of 32000 chars, this can be turned off with the value false.
+
 ##### app
 
 _**Optional**_  
