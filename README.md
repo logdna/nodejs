@@ -54,6 +54,9 @@ logger.log('My Sample Log Line', 'MyCustomLevel');
 
 // Include an App name with this specific log
 logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
+
+// Pass any associated objects along for context
+logger.log('My Sample Log Line', { foo: 'bar', nested: { nest1: 'nested text' }});
 ```
 
 For more options, this module also offers:
@@ -67,6 +70,9 @@ logger.fatal('My Sample Log Line');
 
 // Functions above also accept additional options
 logger.trace('My Sample Log Line', { app: 'myAppName'});
+
+// Functions above also pass any associated objects along for context
+logger.trace('My Sample Log Line', { foo: 'bar', nested: { nest1: 'nested text' }});
 ```
 
 ## API

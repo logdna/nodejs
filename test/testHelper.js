@@ -24,7 +24,7 @@ module.exports = {
     macAddress: 'C0:FF:EE:C0:FF:EE',
     ipAddress: '10.0.1.101',
     filename: 'testing.log',
-    testLength: 1000000,
+    testLength: 10000,
     options: {
         key: '<Your API Key Here!>',
         hostname: 'AWESOMEHOSTER',
