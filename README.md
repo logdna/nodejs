@@ -32,6 +32,11 @@ var options = {
     mac: macAddress,
     app: appName
 };
+
+// Define a singleton instance
+var logger = Logger.setupDefaultLogger(apikey, options);
+
+// Create multiple loggers with different options
 var logger = Logger.createLogger(apikey, options);
 ```
 _**Required**_ 
