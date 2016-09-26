@@ -56,7 +56,19 @@ logger.log('My Sample Log Line', 'MyCustomLevel');
 logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 
 // Pass any associated objects along for context
-logger.log('My Sample Log Line', { foo: 'bar', nested: { nest1: 'nested text' }});
+var context = {
+    foo: 'bar',
+    nested: { 
+      nest1: 'nested text'
+    }
+}
+
+var opts = {
+  level: 'warn',
+  context: context
+}
+
+logger.log('My Sample Log Line', opts);
 ```
 
 For more options, this module also offers:
@@ -71,8 +83,18 @@ logger.fatal('My Sample Log Line');
 // Functions above also accept additional options
 logger.trace('My Sample Log Line', { app: 'myAppName'});
 
+var opts = {
+  level: trace,
+  context: {
+    foo: 'bar',
+    nested: { 
+      nest1: 'nested text'
+    }
+  }
+}
+
 // Functions above also pass any associated objects along for context
-logger.trace('My Sample Log Line', { foo: 'bar', nested: { nest1: 'nested text' }});
+logger.trace('My Sample Log Line', opts);
 ```
 
 ## API
@@ -187,6 +209,13 @@ Max Length: `32`
 
 The app passed along with this log line.
 
+##### context
+
+_**Optional**_  
+Type: `JSON`  
+Default: `null`  
+
+A meta object for additional context about the log line that is passed.
 
 ## Winston Transport
 
