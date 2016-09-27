@@ -235,6 +235,10 @@ var options = {
     mac: macAddress,
     app: appName
 };
+
+// Only add this line in order to track exceptions
+options.handleExceptions = true;
+
 winston.add(winston.transports.Logdna, options);
 ```
 
