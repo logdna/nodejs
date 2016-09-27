@@ -11,6 +11,6 @@ var setupDefaultLogger = function(key, opts) {
 
 module.exports = {
     createLogger: logger.createLogger,
-    WinstonTransport: logger.WinstonTransport,
+    WinstonTransport: require('./lib/winston').WinstonTransport,
     setupDefaultLogger: setupDefaultLogger
 };
