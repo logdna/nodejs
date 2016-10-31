@@ -222,6 +222,13 @@ Default: `null`
 
 A meta object for additional context about the log line that is passed.
 
+##### timestamp
+
+_**Optional**_    
+Default: `Date.now()` 
+
+A timestamp in ms, must be within one day otherwise it will be dropped and Date.now() will be used in its place. 
+
 ## Winston Transport
 
 This module also provides a transport object, which can be added to winston using:
