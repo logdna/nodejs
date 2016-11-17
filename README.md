@@ -45,7 +45,9 @@ _**Required**_
 _**Optional**_   
 * Hostname - *(String)* - max length 32 chars
 * MAC Address - *(String)*  
-* IP Address - *(String)* 
+* IP Address - *(String)*
+* Max Length - *(Boolean)* - formatted as options.max_length
+* Stingify Meta - *(Boolean)* - formatted as options.stringify_meta 
 
 ## Usage
 
