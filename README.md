@@ -116,6 +116,16 @@ The [LogDNA API Key](https://app.logdna.com/manage/profile) associated with your
 
 #### options
 
+##### app
+
+_**Optional**_  
+Type: `String`  
+Default: `''`  
+Values: `YourCustomApp`  
+Max Length: `32`
+
+The default app passed along with every log sent through this instance.
+
 ##### hostname
 
 _**Optional**_   
@@ -126,15 +136,6 @@ Max Length: `32`
 
 The default hostname passed along with every log sent through this instance.
 
-##### mac
-
-_**Optional**_   
-Type: `String`  
-Default: `''`  
-Values: `C0:FF:EE:C0:FF:EE`  
-
-The default MAC Address passed along with every log sent through this instance.
-
 ##### ip
 
 _**Optional**_   
@@ -143,15 +144,6 @@ Default: `''`
 Values: `10.0.0.1`
 
 The default IP Address passed along with every log sent through this instance.
-
-##### timeout
-
-_**Optional**_    
-Type: `Integer`  
-Default: `180000`  
-Max Value: `300000`
-
-The length of the timeout on the POST request that is sent to LogDNA.
 
 ##### level
 
@@ -163,6 +155,15 @@ Max Length: `32`
 
 The default level passed along with every log sent through this instance.
 
+##### mac
+
+_**Optional**_   
+Type: `String`  
+Default: `''`  
+Values: `C0:FF:EE:C0:FF:EE`  
+
+The default MAC Address passed along with every log sent through this instance.
+
 ##### max_length
 
 _**Optional**_  
@@ -171,15 +172,25 @@ Default: `true`
 
 By default the line has a maximum length of 32000 chars, this can be turned off with the value false.
 
-##### app
+##### stringify_meta
 
 _**Optional**_  
-Type: `String`  
-Default: `''`  
-Values: `YourCustomApp`  
-Max Length: `32`
+Type: `Boolean`  
+Default: `false`   
 
-The default app passed along with every log sent through this instance.
+We allow meta objects to be passed with each line. If your meta objects have fields with inconsistent types it may be better to stringify the meta object.
+
+NOTE* Your metadata objects across all types of log messages must have consistent types or log entries will be silently dropped!
+
+##### timeout
+
+_**Optional**_    
+Type: `Integer`  
+Default: `180000`  
+Max Value: `300000`
+
+The length of the timeout on the POST request that is sent to LogDNA.
+
 
 ### log(line, [options])
 
@@ -221,6 +232,16 @@ Type: `JSON`
 Default: `null`  
 
 A meta object for additional context about the log line that is passed.
+
+##### stringify_meta
+
+_**Optional**_  
+Type: `Boolean`  
+Default: `false`   
+
+We allow meta objects to be passed with each line. If your meta objects have fields with inconsistent types it may be better to stringify the meta object.
+
+NOTE* Your metadata objects across all types of log messages must have consistent types or log entries will be silently dropped!
 
 ##### timestamp
 
