@@ -33,6 +33,9 @@ var options = {
     app: appName
 };
 
+// Defaults to false, when true ensures meta object will be searchable
+options.index_meta = true;
+
 // Define a singleton instance
 var logger = Logger.setupDefaultLogger(apikey, options);
 
@@ -47,7 +50,7 @@ _**Optional**_
 * MAC Address - *(String)*  
 * IP Address - *(String)*
 * Max Length - *(Boolean)* - formatted as options.max_length
-* Stingify Meta - *(Boolean)* - formatted as options.stringify_meta 
+* Index Meta - *(Boolean)* - formatted as options.index_meta 
 
 ## Usage
 
@@ -138,6 +141,19 @@ Max Length: `32`
 
 The default hostname passed along with every log sent through this instance.
 
+##### index_meta
+
+_**Optional**_  
+Type: `Boolean`  
+Default: `false`   
+
+We allow meta objects to be passed with each line. By default these meta objects will be stringified and will not be searchable,
+but will be displayed for informational purposes.
+
+If this option is turned to true then meta objects will be parsed and will be searchable up to three levels deep. Any fields deeper than three levels will be stringified and cannot be searched.
+
+*WARNING* When this option is true, your metadata objects across all types of log messages MUST have consistent types or log entries will be silently dropped!
+
 ##### ip
 
 _**Optional**_   
@@ -173,16 +189,6 @@ Type: `Boolean`
 Default: `true`   
 
 By default the line has a maximum length of 32000 chars, this can be turned off with the value false.
-
-##### stringify_meta
-
-_**Optional**_  
-Type: `Boolean`  
-Default: `false`   
-
-We allow meta objects to be passed with each line. If your meta objects have fields with inconsistent types it may be better to stringify the meta object.
-
-NOTE* Your metadata objects across all types of log messages must have consistent types or log entries will be silently dropped!
 
 ##### timeout
 
@@ -235,15 +241,18 @@ Default: `null`
 
 A meta object for additional context about the log line that is passed.
 
-##### stringify_meta
+##### index_meta
 
 _**Optional**_  
 Type: `Boolean`  
 Default: `false`   
 
-We allow meta objects to be passed with each line. If your meta objects have fields with inconsistent types it may be better to stringify the meta object.
+We allow meta objects to be passed with each line. By default these meta objects will be stringified and will not be searchable,
+but will be displayed for informational purposes.
 
-NOTE* Your metadata objects across all types of log messages must have consistent types or log entries will be silently dropped!
+If this option is turned to true then meta objects will be parsed and will be searchable up to three levels deep. Any fields deeper than three levels will be stringified and cannot be searched.
+
+*WARNING* When this option is true, your metadata objects across all types of log messages MUST have consistent types or log entries will be silently dropped!
 
 ##### timestamp
 
@@ -265,6 +274,9 @@ var options = {
     mac: macAddress,
     app: appName
 };
+
+// Defaults to false, when true ensures meta object will be searchable
+options.index_meta = true;
 
 // Only add this line in order to track exceptions
 options.handleExceptions = true;
