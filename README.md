@@ -5,7 +5,7 @@
   <p align="center">Node.js library for logging to <a href="https://app.logdna.com">LogDNA</a></p>
 </p>
 
-[![Build Status](https://travis-ci.org/logdna/nodejs.svg?branch=master)](https://travis-ci.org/logdna/nodejs)  [![Known Vulnerabilities](https://snyk.io/test/npm/logdna/badge.svg)](https://snyk.io/test/npm/logdna)  
+[![Build Status](https://travis-ci.org/logdna/nodejs.svg?branch=master)](https://travis-ci.org/logdna/nodejs)  [![Known Vulnerabilities](https://snyk.io/test/npm/logdna/badge.svg)](https://snyk.io/test/npm/logdna)
 
 ===
 
@@ -42,15 +42,15 @@ var logger = Logger.setupDefaultLogger(apikey, options);
 // Create multiple loggers with different options
 var logger = Logger.createLogger(apikey, options);
 ```
-_**Required**_ 
-* [LogDNA API Key](https://app.logdna.com/manage/profile)  
+_**Required**_
+* [LogDNA API Key](https://app.logdna.com/manage/profile)
 
-_**Optional**_   
+_**Optional**_
 * Hostname - *(String)* - max length 32 chars
-* MAC Address - *(String)*  
+* MAC Address - *(String)*
 * IP Address - *(String)*
 * Max Length - *(Boolean)* - formatted as options.max_length
-* Index Meta - *(Boolean)* - formatted as options.index_meta 
+* Index Meta - *(Boolean)* - formatted as options.index_meta
 
 ## Usage
 
@@ -68,7 +68,7 @@ logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 // Pass any associated objects along for context
 var context = {
     foo: 'bar',
-    nested: { 
+    nested: {
       nest1: 'nested text'
     }
 }
@@ -97,7 +97,7 @@ var opts = {
   level: trace,
   context: {
     foo: 'bar',
-    nested: { 
+    nested: {
       nest1: 'nested text'
     }
   }
@@ -113,9 +113,9 @@ logger.trace('My Sample Log Line', opts);
 
 #### key
 
-_**Required**_  
-Type: `String`  
-Values: `YourAPIKey`     
+_**Required**_
+Type: `String`
+Values: `YourAPIKey`
 
 The [LogDNA API Key](https://app.logdna.com/manage/profile) associated with your account.
 
@@ -123,29 +123,29 @@ The [LogDNA API Key](https://app.logdna.com/manage/profile) associated with your
 
 ##### app
 
-_**Optional**_  
-Type: `String`  
-Default: `''`  
-Values: `YourCustomApp`  
+_**Optional**_
+Type: `String`
+Default: `''`
+Values: `YourCustomApp`
 Max Length: `32`
 
 The default app passed along with every log sent through this instance.
 
 ##### hostname
 
-_**Optional**_   
-Type: `String`  
-Default: `''`  
-Values: `YourCustomHostname`  
-Max Length: `32`  
+_**Optional**_
+Type: `String`
+Default: `''`
+Values: `YourCustomHostname`
+Max Length: `32`
 
 The default hostname passed along with every log sent through this instance.
 
 ##### index_meta
 
-_**Optional**_  
-Type: `Boolean`  
-Default: `false`   
+_**Optional**_
+Type: `Boolean`
+Default: `false`
 
 We allow meta objects to be passed with each line. By default these meta objects will be stringified and will not be searchable,
 but will be displayed for informational purposes.
@@ -156,45 +156,45 @@ If this option is turned to true then meta objects will be parsed and will be se
 
 ##### ip
 
-_**Optional**_   
-Type: `String`  
-Default: `''`  
+_**Optional**_
+Type: `String`
+Default: `''`
 Values: `10.0.0.1`
 
 The default IP Address passed along with every log sent through this instance.
 
 ##### level
 
-_**Optional**_  
-Type: `String`  
-Default: `Info`  
-Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`  
+_**Optional**_
+Type: `String`
+Default: `Info`
+Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
 Max Length: `32`
 
 The default level passed along with every log sent through this instance.
 
 ##### mac
 
-_**Optional**_   
-Type: `String`  
-Default: `''`  
-Values: `C0:FF:EE:C0:FF:EE`  
+_**Optional**_
+Type: `String`
+Default: `''`
+Values: `C0:FF:EE:C0:FF:EE`
 
 The default MAC Address passed along with every log sent through this instance.
 
 ##### max_length
 
-_**Optional**_  
-Type: `Boolean`  
-Default: `true`   
+_**Optional**_
+Type: `Boolean`
+Default: `true`
 
 By default the line has a maximum length of 32000 chars, this can be turned off with the value false.
 
 ##### timeout
 
-_**Optional**_    
-Type: `Integer`  
-Default: `180000`  
+_**Optional**_
+Type: `Integer`
+Default: `180000`
 Max Value: `300000`
 
 The length of the timeout on the POST request that is sent to LogDNA.
@@ -204,9 +204,9 @@ The length of the timeout on the POST request that is sent to LogDNA.
 
 #### line
 
-_**Required**_  
-Type: `String`  
-Default: `''`  
+_**Required**_
+Type: `String`
+Default: `''`
 Max Length: `32000`
 
 The line which will be sent to the LogDNA system.
@@ -215,37 +215,37 @@ The line which will be sent to the LogDNA system.
 
 ##### level
 
-_**Optional**_  
-Type: `String`  
-Default: `Info`  
-Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`  
+_**Optional**_
+Type: `String`
+Default: `Info`
+Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
 Max Length: `32`
 
 The level passed along with this log line.
 
 ##### app
 
-_**Optional**_  
-Type: `String`  
-Default: `''`  
-Values: `YourCustomApp`  
+_**Optional**_
+Type: `String`
+Default: `''`
+Values: `YourCustomApp`
 Max Length: `32`
 
 The app passed along with this log line.
 
 ##### context
 
-_**Optional**_  
-Type: `JSON`  
-Default: `null`  
+_**Optional**_
+Type: `JSON`
+Default: `null`
 
 A meta object for additional context about the log line that is passed.
 
 ##### index_meta
 
-_**Optional**_  
-Type: `Boolean`  
-Default: `false`   
+_**Optional**_
+Type: `Boolean`
+Default: `false`
 
 We allow meta objects to be passed with each line. By default these meta objects will be stringified and will not be searchable,
 but will be displayed for informational purposes.
@@ -256,10 +256,10 @@ If this option is turned to true then meta objects will be parsed and will be se
 
 ##### timestamp
 
-_**Optional**_    
-Default: `Date.now()` 
+_**Optional**_
+Default: `Date.now()`
 
-A timestamp in ms, must be within one day otherwise it will be dropped and Date.now() will be used in its place. 
+A timestamp in ms, must be within one day otherwise it will be dropped and Date.now() will be used in its place.
 
 ## Winston Transport
 
@@ -283,6 +283,33 @@ options.handleExceptions = true;
 
 winston.add(winston.transports.Logdna, options);
 ```
+
+## Bunyan Stream
+
+This module also provides a transport object, which can be added to winston using:
+
+```javascript
+let LogDNAStream = require('logdna').BunyanStream;
+
+let logDNA = new LogDNAStream({
+  key: apikey
+});
+
+var logger = bunyan.createLogger({
+  name: "My Application",
+  streams: [
+  	{ stream: process.stdout },
+    { stream: logDNA,
+      type: 'raw'
+    }
+  ]
+});
+
+
+logger.info('Starting application on port %d', app.get('port'));
+```
+
+*NOTE*: You _must_ use the `raw` stream type
 
 ## License
 
