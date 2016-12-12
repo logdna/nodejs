@@ -18,6 +18,7 @@
     "logs",
     "logging",
     "winston",
+    "bunyan",
     "nodejs",
     "node",
     "logdna.com",
