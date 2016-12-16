@@ -286,7 +286,7 @@ winston.add(winston.transports.Logdna, options);
 
 ## Bunyan Stream
 
-This module also provides a transport object, which can be added to winston using:
+This module also provides a transport object, which can be added to bunyan using:
 
 ```javascript
 let LogDNAStream = require('logdna').BunyanStream;
