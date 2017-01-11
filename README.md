@@ -266,6 +266,7 @@ A timestamp in ms, must be within one day otherwise it will be dropped and Date.
 This module also provides a transport object, which can be added to winston using:
 
 ```javascript
+var logdna = require('logdna');
 var winston = require('winston');
 var options = {
     key: apikey,
