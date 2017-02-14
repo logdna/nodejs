@@ -152,7 +152,7 @@ but will be displayed for informational purposes.
 
 If this option is turned to true then meta objects will be parsed and will be searchable up to three levels deep. Any fields deeper than three levels will be stringified and cannot be searched.
 
-*WARNING* When this option is true, your metadata objects across all types of log messages MUST have consistent types or log entries will be silently dropped!
+*WARNING* When this option is true, your metadata objects across all types of log messages MUST have consistent types or the metadata object may not be parsed properly!
 
 ##### ip
 
@@ -252,7 +252,7 @@ but will be displayed for informational purposes.
 
 If this option is turned to true then meta objects will be parsed and will be searchable up to three levels deep. Any fields deeper than three levels will be stringified and cannot be searched.
 
-*WARNING* When this option is true, your metadata objects across all types of log messages MUST have consistent types or log entries will be silently dropped!
+*WARNING* When this option is true, your metadata objects across all types of log messages MUST have consistent types or the metadata object may not be parsed properly!
 
 ##### timestamp
 
