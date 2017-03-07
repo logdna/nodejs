@@ -65,8 +65,8 @@ logger.log('My Sample Log Line', 'MyCustomLevel');
 // Include an App name with this specific log
 logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 
-// Pass any associated objects along for context
-var context = {
+// Pass any associated objects along as metadata
+var meta = {
     foo: 'bar',
     nested: {
       nest1: 'nested text'
@@ -75,7 +75,7 @@ var context = {
 
 var opts = {
   level: 'warn',
-  context: context
+  meta: meta
 }
 
 logger.log('My Sample Log Line', opts);
@@ -95,7 +95,7 @@ logger.trace('My Sample Log Line', { app: 'myAppName'});
 
 var opts = {
   level: trace,
-  context: {
+  meta: {
     foo: 'bar',
     nested: {
       nest1: 'nested text'
@@ -103,7 +103,7 @@ var opts = {
   }
 }
 
-// Functions above also pass any associated objects along for context
+// Functions above also pass any associated objects along as metadata
 logger.trace('My Sample Log Line', opts);
 ```
 
@@ -233,13 +233,13 @@ Max Length: `32`
 
 The app passed along with this log line.
 
-##### context
+##### meta
 
 _**Optional**_
 Type: `JSON`
 Default: `null`
 
-A meta object for additional context about the log line that is passed.
+A meta object that provides additional context about the log line that is passed.
 
 ##### index_meta
 
