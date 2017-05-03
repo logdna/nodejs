@@ -43,7 +43,7 @@ var logger = Logger.setupDefaultLogger(apikey, options);
 var logger = Logger.createLogger(apikey, options);
 ```
 _**Required**_
-* [LogDNA API Key](https://app.logdna.com/manage/profile)
+* [LogDNA Ingestion Key](https://app.logdna.com/manage/profile)
 
 _**Optional**_
 * Hostname - *(String)* - max length 32 chars
