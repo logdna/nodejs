@@ -19,14 +19,14 @@
  *              - 4 Gb 1333 MHz DDR3
  */
 module.exports = {
-    apikey: '< YOUR APIKEY HERE >',
+    apikey: '< YOUR INGESTION KEY HERE >',
     myHostname: 'AWESOMEHOSTER',
     macAddress: 'C0:FF:EE:C0:FF:EE',
     ipAddress: '10.0.1.101',
     filename: 'testing.log',
     testLength: 10000,
     options: {
-        key: '< YOUR APIKEY HERE >',
+        key: '< YOUR INGESTION KEY HERE >',
         hostname: 'AWESOMEHOSTER',
         ip: '10.0.1.101',
         mac: 'C0:FF:EE:C0:FF:EE',

@@ -172,7 +172,7 @@ describe('Input validation', function() {
             status: 'ok'
         };
     });
-    it('Sanity checks for API Key', function(done) {
+    it('Sanity checks for Ingestion Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
             assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
         }

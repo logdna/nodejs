@@ -115,9 +115,9 @@ logger.trace('My Sample Log Line', opts);
 
 _**Required**_
 Type: `String`
-Values: `YourAPIKey`
+Values: `YourIngestionKey`
 
-The [LogDNA API Key](https://app.logdna.com/manage/profile) associated with your account.
+The [LogDNA Ingestion Key](https://app.logdna.com/manage/profile) associated with your account.
 
 #### options
 
