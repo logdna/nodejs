@@ -1,6 +1,6 @@
 {
   "name": "logdna",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Logdna nodejs logging module with support for Winston and Bunyan.",
   "main": "index.js",
   "directories": {
