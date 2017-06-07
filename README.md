@@ -261,6 +261,10 @@ Default: `Date.now()`
 
 A timestamp in ms, must be within one day otherwise it will be dropped and Date.now() will be used in its place.
 
+### flushAll()
+
+A function that flushes all existing loggers that are instantiated by createLogger.
+
 ## Winston Transport
 
 This module also provides a transport object, which can be added to winston using:
