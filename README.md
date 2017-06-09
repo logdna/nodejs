@@ -154,6 +154,22 @@ If this option is turned to true then meta objects will be parsed and will be se
 
 *WARNING* When this option is true, your metadata objects across all types of log messages MUST have consistent types or the metadata object may not be parsed properly!
 
+##### cleanUpSIGTERM
+
+_**Optional**_
+Type: `Boolean`
+Default: `false`
+
+Upon SIGTERM the logger flushes all messages in its buffer to LogDNA and all references are removed.
+
+##### cleanUpSIGINT
+
+_**Optional**_
+Type: `Boolean`
+Default: `false`
+
+Upon SIGINT the logger flushes all messages in its buffer to LogDNA and all references are removed.
+
 ##### ip
 
 _**Optional**_
@@ -264,6 +280,10 @@ A timestamp in ms, must be within one day otherwise it will be dropped and Date.
 ### flushAll()
 
 A function that flushes all existing loggers that are instantiated by createLogger.
+
+### cleanUpAll()
+
+A function that flushes all existing loggers that are instantiated by createLogger, and then removes references to them. Should only be called when you are finished logging.
 
 ## Winston Transport
 
