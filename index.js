@@ -11,6 +11,8 @@ var setupDefaultLogger = function(key, opts) {
 
 module.exports = {
     createLogger: logger.createLogger,
+    flushAll: logger.flushAll,
+    cleanUpAll: logger.cleanUpAll,
     WinstonTransport: require('./lib/winston').WinstonTransport,
     BunyanStream: require('./lib/bunyan').BunyanStream,
     setupDefaultLogger: setupDefaultLogger
