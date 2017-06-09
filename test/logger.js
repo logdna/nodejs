@@ -148,7 +148,7 @@ describe('Input validation', function() {
     var noOptions;
     beforeEach(function() {
         bogusKeys = [
-            'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG',
+            'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG',
             1234,
             { key: 'fail fail' },
             12.123
