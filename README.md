@@ -162,6 +162,8 @@ Default: `false`
 
 Upon SIGTERM the logger flushes all messages in its buffer to LogDNA and all references are removed.
 
+*WARNING* If you add a listener for SIGTERM and call process.exit() there is no guarantee that this handler will run
+
 ##### cleanUpSIGINT
 
 _**Optional**_
@@ -169,6 +171,8 @@ Type: `Boolean`
 Default: `false`
 
 Upon SIGINT the logger flushes all messages in its buffer to LogDNA and all references are removed.
+
+*WARNING* If you add a listener for SIGINT and call process.exit() there is no guarantee that this handler will run
 
 ##### ip
 
