@@ -30,7 +30,8 @@ var options = {
     hostname: myHostname,
     ip: ipAddress,
     mac: macAddress,
-    app: appName
+    app: appName,
+    env: envName
 };
 
 // Defaults to false, when true ensures meta object will be searchable
@@ -140,6 +141,16 @@ Values: `YourCustomHostname`
 Max Length: `32`
 
 The default hostname passed along with every log sent through this instance.
+
+##### env
+
+_**Optional**_
+Type: `String`
+Default: `''`
+Values: `YourCustomEnvironment`
+Max Length: `32`
+
+The default environment passed along with every log sent through this instance.
 
 ##### index_meta
 
@@ -253,6 +264,16 @@ Max Length: `32`
 
 The app passed along with this log line.
 
+##### env
+
+_**Optional**_
+Type: `String`
+Default: `''`
+Values: `YourCustomEnvironment`
+Max Length: `32`
+
+The environment passed along with this log line.
+
 ##### meta
 
 _**Optional**_
@@ -301,7 +322,8 @@ var options = {
     hostname: myHostname,
     ip: ipAddress,
     mac: macAddress,
-    app: appName
+    app: appName,
+    env: envName
 };
 
 // Defaults to false, when true ensures meta object will be searchable
