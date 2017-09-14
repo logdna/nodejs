@@ -167,23 +167,12 @@ If this option is turned to true then meta objects will be parsed and will be se
 
 ##### cleanUpSIGTERM
 
-_**Optional**_
-Type: `Boolean`
-Default: `false`
 
-Upon SIGTERM the logger flushes all messages in its buffer to LogDNA and all references are removed.
-
-*WARNING* If you add a listener for SIGTERM and call process.exit() there is no guarantee that this handler will run
+*WARNING* Deprecated, you will have to opt-in and call cleanUpAll, where appropriate. AWS Lambda users have issues with listening on SIGTERM/SIGINT
 
 ##### cleanUpSIGINT
 
-_**Optional**_
-Type: `Boolean`
-Default: `false`
-
-Upon SIGINT the logger flushes all messages in its buffer to LogDNA and all references are removed.
-
-*WARNING* If you add a listener for SIGINT and call process.exit() there is no guarantee that this handler will run
+*WARNING* Deprecated, you will have to opt-in and call cleanUpAll, where appropriate. AWS Lambda users have issues with listening on SIGTERM/SIGINT
 
 ##### ip
 
