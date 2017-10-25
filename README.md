@@ -14,6 +14,8 @@
 * **[Usage](#usage)**
 * **[API](#api)**
 * **[Winston Transport](#winston-transport)**
+* **[Bunyan Stream](#bunyan-stream)**
+* **[AWS Lambda Suuport](#aws-lambda-support)**
 * **[License](#license)**
 
 
@@ -350,6 +352,62 @@ logger.info('Starting application on port %d', app.get('port'));
 ```
 
 *NOTE*: You _must_ use the `raw` stream type
+
+## AWS Lambda Support
+
+AWS Lambda allows users to add logging statements to their Lambda Functions. You can choose to setup the logger
+as shown above, or you can override the console.log, console.error statements. AWS Lambda overrides the console.log, console.error, console.warn, and console.info functions as indicated [here](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-logging.html) within the scope of the handler (main) function. You can setup an override as follows:
+
+```javascript
+'use strict';
+
+const https = require('https');
+const Logger = require('logdna');
+
+const options = {
+    env: 'env'
+    , app: 'lambda-app'
+    , hostname: 'lambda-test'
+    , index_meta: true
+};
+
+var _log = console.log;
+var _error = console.error;
+
+var logger = Logger.setupDefaultLogger('YOUR API KEY', options);
+
+
+var log = function() {
+    logger.log([...arguments].join(' '));
+    _log.apply(console, arguments);
+};
+
+var error = function() {
+    logger.error([...arguments].join(' '));
+    _error.apply(console, arguments);
+};
+
+
+
+
+/**
+ * Pass the data to send as `event.data`, and the request options as
+ * `event.options`. For more information see the HTTPS module documentation
+ * at https://nodejs.org/api/https.html.
+ *
+ * Will succeed with the response body.
+ */
+exports.handler = (event, context, callback) => {
+    console.log = log;
+    console.error = error;
+
+    // Your code here
+    console.log('How bout normal log');
+    console.error('Try an error');
+
+    callback();
+};
+```
 
 ## License
 
