@@ -15,7 +15,7 @@
 * **[API](#api)**
 * **[Winston Transport](#winston-transport)**
 * **[Bunyan Stream](#bunyan-stream)**
-* **[AWS Lambda Suuport](#aws-lambda-support)**
+* **[AWS Lambda Support](#aws-lambda-support)**
 * **[License](#license)**
 
 
