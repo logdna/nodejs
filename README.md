@@ -356,7 +356,7 @@ logger.info('Starting application on port %d', app.get('port'));
 ## AWS Lambda Support
 
 AWS Lambda allows users to add logging statements to their Lambda Functions. You can choose to setup the logger
-as shown above, or you can override the console.log, console.error statements. AWS Lambda overrides the console.log, console.error, console.warn, and console.info functions as indicated [here](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-logging.html) within the scope of the handler (main) function. You can setup an override as follows:
+as shown above, or you can override the console.log, console.error statements. AWS Lambda overrides the console.log, console.error, console.warn, and console.info functions as indicated [here](http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-logging.html), within the scope of the handler (main) function. You can setup an override as follows:
 
 ```javascript
 'use strict';
