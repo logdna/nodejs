@@ -387,9 +387,6 @@ var error = function() {
     _error.apply(console, arguments);
 };
 
-
-
-
 /**
  * Pass the data to send as `event.data`, and the request options as
  * `event.options`. For more information see the HTTPS module documentation
