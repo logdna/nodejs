@@ -113,12 +113,12 @@ logger.trace('My Sample Log Line', opts);
 ## API
 
 ### createLogger(key, [options])
-
+---
 #### key
 
-_**Required**_
-Type: `String`
-Values: `YourIngestionKey`
+* _**Required**_
+* Type: `String`
+* Values: `YourIngestionKey`
 
 The [LogDNA Ingestion Key](https://app.logdna.com/manage/profile) associated with your account.
 
@@ -126,39 +126,39 @@ The [LogDNA Ingestion Key](https://app.logdna.com/manage/profile) associated wit
 
 ##### app
 
-_**Optional**_
-Type: `String`
-Default: `''`
-Values: `YourCustomApp`
-Max Length: `32`
+* _**Optional**_
+* Type: `String`
+* Default: `''`
+* Values: `YourCustomApp`
+* Max Length: `32`
 
 The default app passed along with every log sent through this instance.
 
 ##### hostname
 
-_**Optional**_
-Type: `String`
-Default: `''`
-Values: `YourCustomHostname`
-Max Length: `32`
+* _**Optional**_
+* Type: `String`
+* Default: `''`
+* Values: `YourCustomHostname`
+* Max Length: `32`
 
 The default hostname passed along with every log sent through this instance.
 
 ##### env
 
-_**Optional**_
-Type: `String`
-Default: `''`
-Values: `YourCustomEnvironment`
-Max Length: `32`
+* _**Optional**_
+* Type: `String`
+* Default: `''`
+* Values: `YourCustomEnvironment`
+* Max Length: `32`
 
 The default environment passed along with every log sent through this instance.
 
 ##### index_meta
 
-_**Optional**_
-Type: `Boolean`
-Default: `false`
+* _**Optional**_
+* Type: `Boolean`
+* Default: `false`
 
 We allow meta objects to be passed with each line. By default these meta objects will be stringified and will not be searchable,
 but will be displayed for informational purposes.
@@ -178,58 +178,58 @@ If this option is turned to true then meta objects will be parsed and will be se
 
 ##### ip
 
-_**Optional**_
-Type: `String`
-Default: `''`
-Values: `10.0.0.1`
+* _**Optional**_
+* Type: `String`
+* Default: `''`
+* Values: `10.0.0.1`
 
 The default IP Address passed along with every log sent through this instance.
 
 ##### level
 
-_**Optional**_
-Type: `String`
-Default: `Info`
-Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
-Max Length: `32`
+* _**Optional**_
+* Type: `String`
+* Default: `Info`
+* Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
+* Max Length: `32`
 
 The default level passed along with every log sent through this instance.
 
 ##### mac
 
-_**Optional**_
-Type: `String`
-Default: `''`
-Values: `C0:FF:EE:C0:FF:EE`
+* _**Optional**_
+* Type: `String`
+* Default: `''`
+* Values: `C0:FF:EE:C0:FF:EE`
 
 The default MAC Address passed along with every log sent through this instance.
 
 ##### max_length
 
-_**Optional**_
-Type: `Boolean`
-Default: `true`
+* _**Optional**_
+* Type: `Boolean`
+* Default: `true`
 
 By default the line has a maximum length of 32000 chars, this can be turned off with the value false.
 
 ##### timeout
 
-_**Optional**_
-Type: `Integer`
-Default: `180000`
-Max Value: `300000`
+* _**Optional**_
+* Type: `Integer`
+* Default: `180000`
+* Max Value: `300000`
 
 The length of the timeout on the POST request that is sent to LogDNA.
 
 
 ### log(line, [options])
-
+---
 #### line
 
-_**Required**_
-Type: `String`
-Default: `''`
-Max Length: `32000`
+* _**Required**_
+* Type: `String`
+* Default: `''`
+* Max Length: `32000`
 
 The line which will be sent to the LogDNA system.
 
@@ -237,47 +237,47 @@ The line which will be sent to the LogDNA system.
 
 ##### level
 
-_**Optional**_
-Type: `String`
-Default: `Info`
-Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
-Max Length: `32`
+* _**Optional**_
+* Type: `String`
+* Default: `Info`
+* Values: `Debug`, `Trace`, `Info`, `Warn`, `Error`, `Fatal`, `YourCustomLevel`
+* Max Length: `32`
 
 The level passed along with this log line.
 
 ##### app
 
-_**Optional**_
-Type: `String`
-Default: `''`
-Values: `YourCustomApp`
-Max Length: `32`
+* _**Optional**_
+* Type: `String`
+* Default: `''`
+* Values: `YourCustomApp`
+* Max Length: `32`
 
 The app passed along with this log line.
 
 ##### env
 
-_**Optional**_
-Type: `String`
-Default: `''`
-Values: `YourCustomEnvironment`
-Max Length: `32`
+* _**Optional**_
+* Type: `String`
+* Default: `''`
+* Values: `YourCustomEnvironment`
+* Max Length: `32`
 
 The environment passed along with this log line.
 
 ##### meta
 
-_**Optional**_
-Type: `JSON`
-Default: `null`
+* _**Optional**_
+* Type: `JSON`
+* Default: `null`
 
 A meta object that provides additional context about the log line that is passed.
 
 ##### index_meta
 
-_**Optional**_
-Type: `Boolean`
-Default: `false`
+* _**Optional**_
+* Type: `Boolean`
+* Default: `false`
 
 We allow meta objects to be passed with each line. By default these meta objects will be stringified and will not be searchable,
 but will be displayed for informational purposes.
@@ -288,17 +288,17 @@ If this option is turned to true then meta objects will be parsed and will be se
 
 ##### timestamp
 
-_**Optional**_
-Default: `Date.now()`
+* _**Optional**_
+* Default: `Date.now()`
 
 A timestamp in ms, must be within one day otherwise it will be dropped and Date.now() will be used in its place.
 
 ### flushAll()
-
+---
 A function that flushes all existing loggers that are instantiated by createLogger.
 
 ### cleanUpAll()
-
+---
 A function that flushes all existing loggers that are instantiated by createLogger, and then removes references to them. Should only be called when you are finished logging.
 
 ## Winston Transport
