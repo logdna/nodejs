@@ -10,10 +10,10 @@
 ---
 
 # Deprecation Warning! (Winston/Bunyan users)
-## The next version change will be a major version bump
-## Winston and Bunyan users will have their log setup affected
-## We will release separate logdna-winston and logdna-bunyan modules
-## The original logdna module will not have any dependencies on winston in the next version
+### The next version change will be a major version bump
+### Winston and Bunyan users will have their log setup affected
+### We will release separate logdna-winston and logdna-bunyan modules
+### The original logdna module will not have any dependencies on winston in the next version
 
 
 * **[Install](#install)**
