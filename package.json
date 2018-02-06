@@ -1,7 +1,7 @@
 {
   "name": "logdna",
-  "version": "1.4.2",
-  "description": "Logdna nodejs logging module with support for Winston and Bunyan.",
+  "version": "2.0.0",
+  "description": "LogDNA's Node.js Logging Module.",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -36,10 +36,11 @@
   "dependencies": {
     "agentkeepalive": "^2.2.0",
     "json-stringify-safe": "^5.0.1",
-    "lodash": "^4.13.1",
+    "lodash.bind": "^4.2.1",
+    "lodash.foreach": "^4.5.0",
+    "lodash.isequal": "^4.5.0",
     "object-sizeof": "^1.0.10",
-    "request": "^2.73.0",
-    "winston": "^2.2.0"
+    "request": "^2.73.0"
   },
   "devDependencies": {
     "assert": "^1.4.1",

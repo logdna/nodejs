@@ -10,18 +10,16 @@
 ---
 
 # Deprecation Warning! (Winston/Bunyan users)
-### The next version change will be a major version bump
-### Winston and Bunyan users will have their log setup affected
-### We will release separate logdna-winston and logdna-bunyan modules
-### The original logdna module will not have any dependencies on winston in the next version
-
+### Version 2.0.0 of this module does not have Winston or Bunyan support
+### Please see version 1.0.0 of logdna-bunyan
+### Please see version 1.0.0 of logdna-winston
 
 * **[Install](#install)**
 * **[Setup](#setup)**
 * **[Usage](#usage)**
 * **[API](#api)**
-* **[Winston Transport](#winston-transport)**
 * **[Bunyan Stream](#bunyan-stream)**
+* **[Winston Transport](#winston-transport)**
 * **[AWS Lambda Support](#aws-lambda-support)**
 * **[License](#license)**
 
@@ -308,57 +306,13 @@ A function that flushes all existing loggers that are instantiated by createLogg
 ---
 A function that flushes all existing loggers that are instantiated by createLogger, and then removes references to them. Should only be called when you are finished logging.
 
-## Winston Transport
-
-This module also provides a transport object, which can be added to winston using:
-
-```javascript
-var logdna = require('logdna');
-var winston = require('winston');
-var options = {
-    key: apikey,
-    hostname: myHostname,
-    ip: ipAddress,
-    mac: macAddress,
-    app: appName,
-    env: envName
-};
-
-// Defaults to false, when true ensures meta object will be searchable
-options.index_meta = true;
-
-// Only add this line in order to track exceptions
-options.handleExceptions = true;
-
-winston.add(winston.transports.Logdna, options);
-```
-
 ## Bunyan Stream
 
-This module also provides a transport object, which can be added to bunyan using:
+For Bunyan Stream support please reference our [logdna-bunyan](https://github.com/logdna/logdna-bunyan/) module
 
-```javascript
-let LogDNAStream = require('logdna').BunyanStream;
+## Winston Transport
 
-let logDNA = new LogDNAStream({
-  key: apikey
-});
-
-var logger = bunyan.createLogger({
-  name: "My Application",
-  streams: [
-  	{ stream: process.stdout },
-    { stream: logDNA,
-      type: 'raw'
-    }
-  ]
-});
-
-
-logger.info('Starting application on port %d', app.get('port'));
-```
-
-*NOTE*: You _must_ use the `raw` stream type
+For Winston support please reference our [logdna-winston](https://github.com/logdna/logdna-winston/) module
 
 ## AWS Lambda Support
 
