@@ -367,6 +367,21 @@ exports.handler = (event, context, callback) => {
 };
 ```
 
+## Troubleshooting
+
+This library takes advantage of [`util.debuglog()`](https://nodejs.org/api/util.html#util_util_debuglog_section) to
+output details about message handling such as:
+  - When the logger receives a message (useful for indirect usages such as bunyan, winston, or custom wrappers)
+  - An indication of when messages are actually sent to the API (they may be buffered for a time)
+  - An indication of whether the API responds with a success or failure.
+
+For cases where you do not see your log messages appear in LogDNA, these debug messages can make it easier to tell if
+the problem is on the sending or receiving end.  They can also provide valuable information which can speed up diagnosis
+if you need to work with the LogDNA support staff.
+
+You can enable debug messages with the `NODE_DEBUG=logdna` environment variable. See the `util.debuglog()`
+documentation for more information.
+
 ## License
 
 MIT © [LogDNA](https://logdna.com/)
