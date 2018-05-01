@@ -19,19 +19,19 @@
  *              - 4 Gb 1333 MHz DDR3
  */
 module.exports = {
-    apikey: '< YOUR INGESTION KEY HERE >',
-    myHostname: 'AWESOMEHOSTER',
-    macAddress: 'C0:FF:EE:C0:FF:EE',
-    ipAddress: '10.0.1.101',
-    filename: 'testing.log',
-    testLength: 10000,
-    options: {
-        key: '< YOUR INGESTION KEY HERE >',
-        hostname: 'AWESOMEHOSTER',
-        ip: '10.0.1.101',
-        mac: 'C0:FF:EE:C0:FF:EE',
-        app: 'testing.log',
-        test: true
+    apikey: '< YOUR INGESTION KEY HERE >'
+    , myHostname: 'AWESOMEHOSTER'
+    , macAddress: 'C0:FF:EE:C0:FF:EE'
+    , ipAddress: '10.0.1.101'
+    , filename: 'testing.log'
+    , testLength: 10000
+    , options: {
+        key: '< YOUR INGESTION KEY HERE >'
+        , hostname: 'AWESOMEHOSTER'
+        , ip: '10.0.1.101'
+        , mac: 'C0:FF:EE:C0:FF:EE'
+        , app: 'testing.log'
+        , test: true
     }
 };
 
@@ -47,9 +47,9 @@ module.exports.memoryChecker = function(func) {
 module.exports.arraysEqual = function(a, b) {
     if (a === b) return true;
     if (a == null || b == null) return false;
-    if (a.length != b.length) return false;
+    if (a.length !== b.length) return false;
     for (var i = 0; i < a.length; ++i) {
-        if (a[i] !== b[i])  {
+        if (a[i] !== b[i]) {
             console.log('FAIL a: %j, b: %j', a[i], b[i]);
             return false;
         }
