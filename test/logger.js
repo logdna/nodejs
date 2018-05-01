@@ -22,7 +22,7 @@ for (var i = 0; i < testLength; i++) {
 var sendLogs = function() {
     var rssProfile = [];
     var base = process.memoryUsage().rss / 1000000.0;
-    rssProfile.push(process.memoryUsage().rss / (1000000.0) -  base);
+    rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
     var start = process.hrtime();
     for (var i = 0; i < testLength; i++) {
         logger.log(testStr);
@@ -148,25 +148,25 @@ describe('Input validation', function() {
     var noOptions;
     beforeEach(function() {
         bogusKeys = [
-            'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG',
-            1234,
-            { key: 'fail fail' },
-            12.123
+            'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG'
+            , 1234
+            , { key: 'fail fail' }
+            , 12.123
         ];
         options = {
-            hostname: 'Valid Hostname',
-            mac: 'C0:FF:EE:C0:FF:EE',
-            ip: '10.0.1.101'
+            hostname: 'Valid Hostname'
+            , mac: 'C0:FF:EE:C0:FF:EE'
+            , ip: '10.0.1.101'
         };
         bogusOptions = {
-            hostname: 123,
-            mac: 3123132123,
-            ip: 238741248927349
+            hostname: 123
+            , mac: 3123132123
+            , ip: 238741248927349
         };
         invalidOptions = {
-            hostname: 'This Works',
-            mac: 'This is invalid',
-            ip: '1234.1234.1234'
+            hostname: 'This Works'
+            , mac: 'This is invalid'
+            , ip: '1234.1234.1234'
         };
         noOptions = {
             status: 'ok'
@@ -174,7 +174,7 @@ describe('Input validation', function() {
     });
     it('Sanity checks for Ingestion Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
-            assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
+            assert.throws(function() {Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
         }
         done();
     });
