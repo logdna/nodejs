@@ -44,6 +44,11 @@ var options = {
 // Defaults to false, when true ensures meta object will be searchable
 options.index_meta = true;
 
+// Add tags in array or comma-separated string format:
+options.tags = ['logging', 'nodejs', 'logdna'];
+// or:
+options.tags = 'logging,nodejs,logdna';
+
 // Define a singleton instance
 var logger = Logger.setupDefaultLogger(apikey, options);
 
