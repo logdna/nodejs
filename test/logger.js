@@ -137,7 +137,7 @@ describe('Testing for Correctness', function() {
             assert(testHelper.arraysEqual(ordered, sentLines));
             done();
         }, 6000);
-    });
+    }).timeout(7000);
 });
 
 describe('Input validation', function() {
