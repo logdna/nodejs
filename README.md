@@ -8,12 +8,6 @@
 [![Build Status](https://travis-ci.org/logdna/nodejs.svg?branch=master)](https://travis-ci.org/logdna/nodejs)  [![Known Vulnerabilities](https://snyk.io/test/npm/logdna/badge.svg)](https://snyk.io/test/npm/logdna)
 
 ---
-
-# Deprecation Warning! (Winston/Bunyan users)
-### Version 2.0.0 of this module does not have Winston or Bunyan support
-### Please see version 1.0.0 of logdna-bunyan
-### Please see version 1.0.0 of logdna-winston
-
 * **[Install](#install)**
 * **[Setup](#setup)**
 * **[Usage](#usage)**
@@ -231,6 +225,13 @@ By default the line has a maximum length of 32000 chars, this can be turned off 
 
 The length of the timeout on the POST request that is sent to LogDNA.
 
+##### with_credentials
+
+* _**Optional**_
+* Type: `Boolean`
+* Default: `false`
+
+The withCredentials option passed to the request library. In order to make CORS requests this value is set to false by default.
 
 ### log(line, [options])
 ---
