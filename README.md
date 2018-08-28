@@ -48,6 +48,7 @@ var logger = Logger.setupDefaultLogger(apikey, options);
 
 // Create multiple loggers with different options
 var logger = Logger.createLogger(apikey, options);
+
 ```
 _**Required**_
 * [LogDNA Ingestion Key](https://app.logdna.com/manage/profile)
@@ -245,6 +246,8 @@ The withCredentials option passed to the request library. In order to make CORS 
 The line which will be sent to the LogDNA system.
 
 #### options
+
+Please note that if you are using variables for any of the below options, their values may change in between the line being logged and the batch of lines being flushed to our servers. If your variables change frequently, we highly recommend copying the value instead of referencing the variable directly.
 
 ##### level
 
