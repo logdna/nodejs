@@ -102,7 +102,7 @@ logger.fatal('My Sample Log Line');
 logger.trace('My Sample Log Line', { app: 'myAppName'});
 
 var opts = {
-  level: trace,
+  level: 'trace',
   meta: {
     foo: 'bar',
     nested: {
