@@ -59,6 +59,7 @@ _**Optional**_
 * IP Address - *(String)*
 * Max Length - *(Boolean)* - formatted as options.max_length
 * Index Meta - *(Boolean)* - formatted as options.index_meta
+* logdna_url - *(String)*  - alternate ingest URL
 
 ## Usage
 
