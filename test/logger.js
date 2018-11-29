@@ -1,3 +1,7 @@
+/* eslint-env mocha */
+/* eslint-disable no-console */
+var delay = require('delay');
+
 process.env.test = 'test';
 var Logger = require('../lib/logger');
 var testHelper = require('./testHelper');
@@ -31,6 +35,7 @@ var sendLogs = function() {
     var throughput = testLength / (elapsed / 1000);
     throughput = Math.round(throughput * 100) / 100;
     console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput);
+    return delay(configs.FLUSH_INTERVAL + 200);
 };
 
 describe('Test all Levels', function() {
@@ -132,11 +137,11 @@ describe('Testing for Correctness', function() {
         body = '';
     });
     it('Exact Matches and Proper Order', function(done) {
-        testHelper.memoryChecker(sendLogs);
-        setTimeout(function() {
+        var p = testHelper.memoryChecker(sendLogs);
+        p.then(() => {
             assert(testHelper.arraysEqual(ordered, sentLines));
             done();
-        }, 6000);
+        }).catch(done);
     });
 });
 
