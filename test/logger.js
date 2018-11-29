@@ -143,8 +143,6 @@ describe('Testing for Correctness', function() {
 describe('Input validation', function() {
     var bogusKeys;
     var options;
-    var bogusOptions;
-    var invalidOptions;
     var noOptions;
     beforeEach(function() {
         bogusKeys = [
@@ -158,16 +156,6 @@ describe('Input validation', function() {
             , mac: 'C0:FF:EE:C0:FF:EE'
             , ip: '10.0.1.101'
         };
-        bogusOptions = {
-            hostname: 123
-            , mac: 3123132123
-            , ip: 238741248927349
-        };
-        invalidOptions = {
-            hostname: 'This Works'
-            , mac: 'This is invalid'
-            , ip: '1234.1234.1234'
-        };
         noOptions = {
             status: 'ok'
         };
@@ -178,9 +166,27 @@ describe('Input validation', function() {
         }
         done();
     });
-    it('Sanity checks for options', function(done) {
-        assert.throws(function() { Logger.createLogger(testHelper.apikey, invalidOptions); }, Error);
-        assert.throws(function() { Logger.createLogger(testHelper.apikey, bogusOptions); }, Error);
+    it('Sanity checks for option hostname', function(done) {
+        assert.throws(function() { Logger.createLogger(testHelper.apikey, {hostname: 'This is invalid'}); }, Error);
+        assert.throws(function() { Logger.createLogger(testHelper.apikey, {hostname: 123}); }, Error);
+        done();
+    });
+    it('Sanity checks for option mac address', function(done) {
+        assert.throws(function() { Logger.createLogger(testHelper.apikey, {mac: 'This is invalid'}); }, Error);
+        assert.throws(function() { Logger.createLogger(testHelper.apikey, {mac: 3123132123}); }, Error);
+        done();
+    });
+    it('Sanity checks for option ip address', function(done) {
+        assert.throws(function() { Logger.createLogger(testHelper.apikey, {ip: '1234.1234.1234'}); }, Error);
+        assert.throws(function() { Logger.createLogger(testHelper.apikey, {ip: 238741248927349}); }, Error);
+        done();
+    });
+    it('Sanity checks for option logDNA URL', function(done) {
+        assert.throws(function() { Logger.createLogger(testHelper.apikey, {logdna_url: 'invalid url'}); }, Error);
+        assert.throws(function() { Logger.createLogger(testHelper.apikey, {ip: 238741248927349}); }, Error);
+        done();
+    });
+    it('Sanity checks for no options', function(done) {
         assert(Logger.createLogger(testHelper.apikey, noOptions));
         done();
     });
