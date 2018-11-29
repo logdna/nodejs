@@ -162,11 +162,13 @@ describe('Input validation', function() {
             hostname: 123
             , mac: 3123132123
             , ip: 238741248927349
+            , logdna_url: 5551212
         };
         invalidOptions = {
             hostname: 'This Works'
             , mac: 'This is invalid'
             , ip: '1234.1234.1234'
+            , logdna_url: 'invalid url'
         };
         noOptions = {
             status: 'ok'
