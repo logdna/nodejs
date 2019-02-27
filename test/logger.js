@@ -15,6 +15,7 @@ var testStr = 'ESOTERIC ';
 var ordered = [];
 var sentLines = [];
 var sentLevels = [];
+var sentMeta = [];
 var body = '';
 var testServer;
 
@@ -39,7 +40,7 @@ var sendLogs = function() {
 };
 
 describe('Test all Levels', function() {
-    beforeEach(function() {
+    beforeEach(function(done) {
         testServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
                 body += data;
@@ -54,11 +55,15 @@ describe('Test all Levels', function() {
             });
             res.end('Hello, world!\n');
         });
+        testServer.on('listening', done);
         testServer.listen(1337);
     });
-    afterEach(function() {
+    afterEach(function(done) {
         testServer.close();
-        testServer = null;
+        testServer.on('close', function() {
+            testServer = null;
+            done();
+        });
         sentLines = [];
         sentLevels = [];
         body = '';
@@ -114,7 +119,7 @@ describe('Test all Levels', function() {
 });
 
 describe('Testing for Correctness', function() {
-    beforeEach(function() {
+    beforeEach(function(done) {
         testServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
                 body += data;
@@ -128,11 +133,15 @@ describe('Testing for Correctness', function() {
             });
             res.end('Hello, world!\n');
         });
+        testServer.on('listening', done);
         testServer.listen(1337);
     });
-    afterEach(function() {
+    afterEach(function(done) {
         testServer.close();
-        testServer = null;
+        testServer.on('close', function() {
+            testServer = null;
+            done();
+        });
         sentLines = [];
         body = '';
     });
@@ -144,6 +153,75 @@ describe('Testing for Correctness', function() {
         }).catch(done);
     });
 });
+
+describe('Index meta', function() {
+    beforeEach(function(done) {
+        testServer = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                body += data;
+            });
+            req.on('end', function() {
+                body = JSON.parse(body);
+                for (var i = 0; i < body.ls.length; i++) {
+                    sentMeta.push(body.ls[i].meta);
+                }
+                body = '';
+            });
+            res.end('Hello, world!\n');
+        });
+        testServer.on('listening', done);
+        testServer.listen(1337);
+    });
+    afterEach(function(done) {
+        testServer.close();
+        testServer.on('close', function() {
+            testServer = null;
+            done();
+        });
+        sentMeta = [];
+        body = '';
+    });
+    it("Doesn't index meta by default", function(done) {
+        logger.debug('Sent a log', { meta: { extra_info: 'extra info' }});
+        setTimeout(function() {
+            assert(typeof sentMeta[0] === 'string')
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Index meta if specified in logger options', function(done) {
+        var opts = Object.assign({}, testHelper.options, { index_meta: true })
+        var indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
+
+        indexMetaLogger.debug('Sent a log', { meta: { extra_info: 'extra info' }});
+        setTimeout(function() {
+            assert(typeof sentMeta[0] === 'object')
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Index meta if specified in message', function(done) {
+        logger.debug('Sent a log', {
+            index_meta: true,
+            meta: { extra_info: 'extra info' }
+        });
+        setTimeout(function() {
+            assert(typeof sentMeta[0] === 'object')
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it("Doesn't index meta if specified in message even if logger option is true", function(done) {
+        var opts = Object.assign({}, testHelper.options, { index_meta: true })
+        var indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
+
+        indexMetaLogger.debug('Sent a log', {
+            index_meta: false,
+            meta: { extra_info: 'extra info' }
+        });
+        setTimeout(function() {
+            assert(typeof sentMeta[0] === 'string')
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+})
 
 describe('Input validation', function() {
     var bogusKeys;
