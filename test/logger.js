@@ -116,6 +116,7 @@ describe('Test all Levels', function() {
 describe('Testing for Correctness', function() {
     beforeEach(function() {
         testServer = http.createServer(function(req, res) {
+            body = '';
             req.on('data', function(data) {
                 body += data;
             });
@@ -124,9 +125,11 @@ describe('Testing for Correctness', function() {
                 for (var i = 0; i < body.ls.length; i++) {
                     sentLines.push(body.ls[i].line);
                 }
-                body = '';
+                res.end('Hello, world!\n');
             });
-            res.end('Hello, world!\n');
+            req.on('error', (err) => {
+                console.log('Got an error: ' + err);
+            });
         });
         testServer.listen(1337);
     });
