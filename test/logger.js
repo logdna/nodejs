@@ -181,47 +181,47 @@ describe('Index meta', function() {
         sentMeta = [];
         body = '';
     });
-    it("Doesn't index meta by default", function(done) {
+    it('Doesn\'t index meta by default', function(done) {
         logger.debug('Sent a log', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
-            assert(typeof sentMeta[0] === 'string')
+            assert(typeof sentMeta[0] === 'string');
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Index meta if specified in logger options', function(done) {
-        var opts = Object.assign({}, testHelper.options, { index_meta: true })
+        var opts = { index_meta: true, ...testHelper.options};
         var indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
 
         indexMetaLogger.debug('Sent a log', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
-            assert(typeof sentMeta[0] === 'object')
+            assert(typeof sentMeta[0] === 'object');
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Index meta if specified in message', function(done) {
         logger.debug('Sent a log', {
-            index_meta: true,
-            meta: { extra_info: 'extra info' }
+            index_meta: true
+            , meta: { extra_info: 'extra info' }
         });
         setTimeout(function() {
-            assert(typeof sentMeta[0] === 'object')
+            assert(typeof sentMeta[0] === 'object');
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it("Doesn't index meta if specified in message even if logger option is true", function(done) {
-        var opts = Object.assign({}, testHelper.options, { index_meta: true })
+    it('Doesn\'t index meta if specified in message even if logger option is true', function(done) {
+        var opts = { index_meta: true, ...testHelper.options};
         var indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
 
         indexMetaLogger.debug('Sent a log', {
-            index_meta: false,
-            meta: { extra_info: 'extra info' }
+            index_meta: false
+            , meta: { extra_info: 'extra info' }
         });
         setTimeout(function() {
-            assert(typeof sentMeta[0] === 'string')
+            assert(typeof sentMeta[0] === 'string');
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-})
+});
 
 describe('Input validation', function() {
     var bogusKeys;
