@@ -1,6 +1,6 @@
 {
   "name": "logdna",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "description": "LogDNA's Node.js Logging Module.",
   "main": "index.js",
   "directories": {
@@ -23,7 +23,8 @@
     "nodejs",
     "node",
     "logdna.com",
-    "logger"
+    "logger",
+    "javascript"
   ],
   "author": {
     "name": "Answerbook Inc.",
@@ -36,12 +37,13 @@
   "homepage": "https://github.com/logdna/nodejs#readme",
   "dependencies": {
     "agentkeepalive": "^2.2.0",
+    "es6-promise": "^4.2.6",
+    "isomorphic-fetch": "^2.2.1",
     "json-stringify-safe": "^5.0.1",
     "lodash.bind": "^4.2.1",
     "lodash.foreach": "^4.5.0",
     "lodash.isequal": "^4.5.0",
     "object-sizeof": "^1.0.10",
-    "request": "^2.73.0",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
