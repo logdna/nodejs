@@ -12,6 +12,7 @@
 * **[Setup](#setup)**
 * **[Usage](#usage)**
 * **[API](#api)**
+* **[Client Side Support](#client-side)**
 * **[Bunyan Stream](#bunyan-stream)**
 * **[Winston Transport](#winston-transport)**
 * **[AWS Lambda Support](#aws-lambda-support)**
@@ -315,6 +316,36 @@ A function that flushes all existing loggers that are instantiated by createLogg
 ### cleanUpAll()
 ---
 A function that flushes all existing loggers that are instantiated by createLogger, and then removes references to them. Should only be called when you are finished logging.
+
+## Client Side
+Browserify Support in version ^3.0.1
+```javascript
+const Logger = require('logdna');
+const logger = Logger.createLogger('API KEY HERE', {
+    hostname:'ClientSideTest'
+    , app: 'sequence'
+    , index_meta: true
+});
+
+const date = new Date().toISOString();
+const logme = (callback) => {
+    for (var i = 0; i < 10; i++) {
+        logger.log('Hello LogDNA Test ' + date, { meta: { sequence: i }});
+    }
+    return callback && callback();
+};
+
+
+setInterval(logme, 5000);
+```
+If the above snippet is saved as a file main.js. Then with browserify you can convert this to a bundle.js file.
+```
+browserify main.js -o bundle.js
+```
+The bundle.js file can be included like any other script.
+```
+<script src="bundle.js"></script>
+```
 
 ## Bunyan Stream
 
