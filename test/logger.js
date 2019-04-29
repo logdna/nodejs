@@ -248,7 +248,7 @@ describe('Input validation', function() {
     });
     it('Sanity checks for Ingestion Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
-            assert.throws(function() {Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
+            assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
         }
         done();
     });

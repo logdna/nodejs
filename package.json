@@ -50,7 +50,7 @@
     "assert": "^1.4.1",
     "delay": "^4.1.0",
     "eslint": "^5.9.0",
-    "eslint-plugin-mocha": "^5.2.0",
+    "eslint-plugin-mocha": "^5.3.0",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0"
   }
