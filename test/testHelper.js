@@ -21,6 +21,7 @@
  */
 module.exports = {
     apikey: '< YOUR INGESTION KEY HERE >'
+    , apikey2: '< YOUR 2ND INGESTION KEY HERE >'
     , myHostname: 'AWESOMEHOSTER'
     , macAddress: 'C0:FF:EE:C0:FF:EE'
     , ipAddress: '10.0.1.101'
@@ -34,6 +35,15 @@ module.exports = {
         , app: 'testing.log'
         , test: true
         , logdna_url: 'http://localhost:1337'
+    }
+    , options2: {
+        key: '< YOUR 2ND INGESTION KEY HERE >'
+        , hostname: 'AWESOMEHOSTER2'
+        , ip: '10.0.1.101'
+        , mac: 'C0:FF:EE:C0:FF:EE'
+        , app: 'testing2.log'
+        , test: true
+        , logdna_url: 'http://localhost:1338'
     }
 };
 
