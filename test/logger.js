@@ -18,6 +18,7 @@ var sentLevels = [];
 var sentMeta = [];
 var body = '';
 var testServer;
+var testServer2;
 
 for (var i = 0; i < testLength; i++) {
     ordered.push(testStr);
@@ -247,7 +248,7 @@ describe('Input validation', function() {
         };
     });
     afterEach(function(done) {
-      Logger.flushAll(done);
+        Logger.flushAll(done);
     });
     it('Sanity checks for Ingestion Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
@@ -286,7 +287,7 @@ describe('Input validation', function() {
     });
 });
 
-describe('Multiple loggers', function(done) {
+describe('Multiple loggers', function() {
     var logger1 = Logger.createLogger(testHelper.apikey, testHelper.options);
     var logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
     var sentLines1 = [];
@@ -321,7 +322,7 @@ describe('Multiple loggers', function(done) {
         });
 
         testServer.on('listening', function() {
-          testServer2.on('listening', done)
+            testServer2.on('listening', done);
         });
 
         testServer.listen(1337);
@@ -343,8 +344,8 @@ describe('Multiple loggers', function(done) {
     });
     it('retain individual apikeys', function(done) {
         logger1.info('Sent a log');
-        logger2.info('Sent a log2')
-        assert.notDeepEqual(logger1._req.headers, logger2._req.headers, 'Multiple loggers should use their individual apikeys')
+        logger2.info('Sent a log2');
+        assert.notDeepEqual(logger1._req.headers, logger2._req.headers, 'Multiple loggers should use their individual apikeys');
         setTimeout(function() {
             assert(sentLines1[0] === 'Sent a log');
             assert(sentLines2[0] === 'Sent a log2');
@@ -353,8 +354,8 @@ describe('Multiple loggers', function(done) {
     });
     it('retain individual urls', function(done) {
         logger1.info('Sent a log');
-        logger2.info('Sent a log2')
-        assert.notEqual(logger1._url, logger2._url, 'Multiple loggers should use their individual urls')
+        logger2.info('Sent a log2');
+        assert.notEqual(logger1._url, logger2._url, 'Multiple loggers should use their individual urls');
         setTimeout(function() {
             assert(sentLines1[0] === 'Sent a log');
             assert(sentLines2[0] === 'Sent a log2');
@@ -363,8 +364,8 @@ describe('Multiple loggers', function(done) {
     });
     it('retain individual source data', function(done) {
         logger1.info('Sent a log');
-        logger2.info('Sent a log2')
-        assert.notDeepEqual(logger1._req.qs, logger2._req.qs, 'Multiple loggers should use their individual source data')
+        logger2.info('Sent a log2');
+        assert.notDeepEqual(logger1._req.qs, logger2._req.qs, 'Multiple loggers should use their individual source data');
         setTimeout(function() {
             assert(sentLines1[0] === 'Sent a log');
             assert(sentLines2[0] === 'Sent a log2');
