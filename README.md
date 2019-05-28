@@ -116,6 +116,7 @@ var opts = {
 // Functions above also pass any associated objects along as metadata
 logger.trace('My Sample Log Line', opts);
 ```
+You will see the outputs in your LogDNA dashboard.
 
 ## API
 
