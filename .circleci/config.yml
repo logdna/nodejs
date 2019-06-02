@@ -10,10 +10,10 @@ jobs:
           command: |
             TAG_VERSION=$(git tag -l --sort=-v:refname | head -n 1 | cut -d'-' -f2)
             PKG_VERSION=$(cat package.json | grep version | cut -d':' -f2 | cut -d '"' -f2)
-            if [[ "${TAG_VERSION}" != "${CLOG_VERSION}" ]]; then
+            if [[ "${TAG_VERSION}" != "${PKG_VERSION}" ]]; then
               echo "There is mismatch:"
               echo "  TAG_VERSION: ${TAG_VERSION}"
-              echo "  CLOG_VERSION: ${CLOG_VERSION}"
+              echo "  PKG_VERSION: ${PKG_VERSION}"
               exit 1
             fi
       - run:
