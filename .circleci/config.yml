@@ -1,10 +1,26 @@
 version: 2
 jobs:
   publish:
-    machine:
-      docker_layer_caching: false
+    docker:
+      - image: circleci/node:10
     steps:
       - checkout
+      - run:
+          name: Check Tagged Push
+          command: |
+            TAG_VERSION=$(git tag -l --sort=-v:refname | head -n 1 | cut -d'-' -f2)
+            PKG_VERSION=$(cat package.json | grep version | cut -d':' -f2 | cut -d '"' -f2)
+            if [[ "${TAG_VERSION}" != "${CLOG_VERSION}" ]]; then
+              echo "There is mismatch:"
+              echo "  TAG_VERSION: ${TAG_VERSION}"
+              echo "  CLOG_VERSION: ${CLOG_VERSION}"
+              exit 1
+            fi
+      - run:
+          name: Publish
+          command: |
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+            npm publish
 workflows:
   version: 2
   update_package:
