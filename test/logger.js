@@ -18,6 +18,7 @@ var sentLevels = [];
 var sentMeta = [];
 var body = '';
 var testServer;
+var testServer2;
 
 for (var i = 0; i < testLength; i++) {
     ordered.push(testStr);
@@ -246,6 +247,9 @@ describe('Input validation', function() {
             status: 'ok'
         };
     });
+    afterEach(function(done) {
+        Logger.flushAll(done);
+    });
     it('Sanity checks for Ingestion Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
             assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
@@ -280,5 +284,92 @@ describe('Input validation', function() {
         assert(logger.log('asdasdadasd', 1234));
         assert(!logger.log('asdasdadasd', {}));
         done();
+    });
+});
+
+describe('Multiple loggers', function() {
+    var logger1 = Logger.createLogger(testHelper.apikey, testHelper.options);
+    var logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
+    var sentLines1 = [];
+    var sentLines2 = [];
+    beforeEach(function(done) {
+        testServer = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                body += data;
+            });
+            req.on('end', function() {
+                body = JSON.parse(body);
+                for (var i = 0; i < body.ls.length; i++) {
+                    sentLines1.push(body.ls[i].line);
+                }
+                body = '';
+            });
+            res.end('Hello, world!\n');
+        });
+
+        testServer2 = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                body += data;
+            });
+            req.on('end', function() {
+                body = JSON.parse(body);
+                for (var i = 0; i < body.ls.length; i++) {
+                    sentLines2.push(body.ls[i].line);
+                }
+                body = '';
+            });
+            res.end('Hello, world!\n');
+        });
+
+        testServer.on('listening', function() {
+            testServer2.on('listening', done);
+        });
+
+        testServer.listen(1337);
+        testServer2.listen(1338);
+    });
+    afterEach(function(done) {
+        testServer.close();
+        testServer.on('close', function() {
+            testServer = null;
+            testServer2.close();
+            testServer2.on('close', function() {
+                testServer2 = null;
+                done();
+            });
+        });
+        sentLines1 = [];
+        sentLines2 = [];
+        body = '';
+    });
+    it('retain individual apikeys', function(done) {
+        logger1.info('Sent a log');
+        logger2.info('Sent a log2');
+        assert.notDeepEqual(logger1._req.headers, logger2._req.headers, 'Multiple loggers should use their individual apikeys');
+        setTimeout(function() {
+            assert(sentLines1[0] === 'Sent a log');
+            assert(sentLines2[0] === 'Sent a log2');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('retain individual urls', function(done) {
+        logger1.info('Sent a log');
+        logger2.info('Sent a log2');
+        assert.notEqual(logger1._url, logger2._url, 'Multiple loggers should use their individual urls');
+        setTimeout(function() {
+            assert(sentLines1[0] === 'Sent a log');
+            assert(sentLines2[0] === 'Sent a log2');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('retain individual source data', function(done) {
+        logger1.info('Sent a log');
+        logger2.info('Sent a log2');
+        assert.notDeepEqual(logger1._req.qs, logger2._req.qs, 'Multiple loggers should use their individual source data');
+        setTimeout(function() {
+            assert(sentLines1[0] === 'Sent a log');
+            assert(sentLines2[0] === 'Sent a log2');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
     });
 });
