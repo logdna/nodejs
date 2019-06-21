@@ -22,6 +22,8 @@
 module.exports = {
     apikey: '< YOUR INGESTION KEY HERE >'
     , apikey2: '< YOUR 2ND INGESTION KEY HERE >'
+    , apikey3: '< YOUR 3ND INGESTION KEY HERE >'
+    , apikey4: '< YOUR 4ND INGESTION KEY HERE >'
     , myHostname: 'AWESOMEHOSTER'
     , macAddress: 'C0:FF:EE:C0:FF:EE'
     , ipAddress: '10.0.1.101'

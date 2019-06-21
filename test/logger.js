@@ -247,6 +247,11 @@ describe('Input validation', function() {
             status: 'ok'
         };
     });
+
+    afterEach(function(done) {
+      Logger.flushAll(() => {console.log("flashed")});
+    });
+
     it('Sanity checks for Ingestion Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
             assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
@@ -285,8 +290,8 @@ describe('Input validation', function() {
 });
 
 describe('Multiple loggers', function() {
-    const logger1 = Logger.createLogger(testHelper.apikey, testHelper.options);
-    const logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
+    const logger1 = Logger.createLogger(testHelper.apikey3, testHelper.options);
+    const logger2 = Logger.createLogger(testHelper.apikey4, testHelper.options2);
     const sentLines1 = [];
     const sentLines2 = [];
 
@@ -338,18 +343,14 @@ describe('Multiple loggers', function() {
                 done();
             });
         });
+        sentLines1.length = 0;
+        sentLines2.length = 0;
         body = '';
     });
     it('retain individual apikeys', function(done) {
         logger1.info('Sent a log');
         logger2.info('Sent a log2');
         assert.notDeepEqual(logger1._req.headers, logger2._req.headers, 'Multiple loggers should use their individual apikeys');
-
-        setTimeout(function() {
-            assert(sentLines1[0] === 'Sent a log');
-            assert(sentLines2[0] === 'Sent a log2');
-            done();
-        }, configs.FLUSH_INTERVAL + 200);
     });
     it('retain individual urls', function(done) {
         logger1.info('Sent a log');
