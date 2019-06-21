@@ -285,10 +285,11 @@ describe('Input validation', function() {
 });
 
 describe('Multiple loggers', function() {
-    var logger1 = Logger.createLogger(testHelper.apikey, testHelper.options);
-    var logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
-    var sentLines1 = [];
-    var sentLines2 = [];
+    const logger1 = Logger.createLogger(testHelper.apikey, testHelper.options);
+    const logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
+    const sentLines1 = [];
+    const sentLines2 = [];
+
     beforeEach(function(done) {
         testServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
@@ -311,6 +312,8 @@ describe('Multiple loggers', function() {
             req.on('end', function() {
                 body = JSON.parse(body);
                 for (var i = 0; i < body.ls.length; i++) {
+                  console.log("*******")
+                    console.log(body.ls[i].line)
                     sentLines2.push(body.ls[i].line);
                 }
                 body = '';
@@ -335,14 +338,13 @@ describe('Multiple loggers', function() {
                 done();
             });
         });
-        sentLines1 = [];
-        sentLines2 = [];
         body = '';
     });
     it('retain individual apikeys', function(done) {
         logger1.info('Sent a log');
         logger2.info('Sent a log2');
         assert.notDeepEqual(logger1._req.headers, logger2._req.headers, 'Multiple loggers should use their individual apikeys');
+
         setTimeout(function() {
             assert(sentLines1[0] === 'Sent a log');
             assert(sentLines2[0] === 'Sent a log2');
