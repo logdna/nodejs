@@ -247,11 +247,9 @@ describe('Input validation', function() {
             status: 'ok'
         };
     });
-
     afterEach(function(done) {
-      Logger.flushAll(() => {console.log("flashed")});
+        Logger.flushAll(done);
     });
-
     it('Sanity checks for Ingestion Key', function(done) {
         for (var i = 0; i < bogusKeys.length; i++) {
             assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
@@ -290,13 +288,13 @@ describe('Input validation', function() {
 });
 
 describe('Multiple loggers', function() {
-    const logger1 = Logger.createLogger(testHelper.apikey3, testHelper.options);
-    const logger2 = Logger.createLogger(testHelper.apikey4, testHelper.options2);
-    const sentLines1 = [];
-    const sentLines2 = [];
-
+    var logger1 = Logger.createLogger(testHelper.apikey3, testHelper.options3);
+    var logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
+    var sentLines1 = [];
+    var sentLines2 = [];
+    let testServer3;
     beforeEach(function(done) {
-        testServer = http.createServer(function(req, res) {
+        testServer3 = http.createServer(function(req, res) {
             req.on('data', function(data) {
                 body += data;
             });
@@ -317,8 +315,6 @@ describe('Multiple loggers', function() {
             req.on('end', function() {
                 body = JSON.parse(body);
                 for (var i = 0; i < body.ls.length; i++) {
-                  console.log("*******")
-                    console.log(body.ls[i].line)
                     sentLines2.push(body.ls[i].line);
                 }
                 body = '';
@@ -326,31 +322,36 @@ describe('Multiple loggers', function() {
             res.end('Hello, world!\n');
         });
 
-        testServer.on('listening', function() {
+        testServer3.on('listening', function() {
             testServer2.on('listening', done);
         });
 
-        testServer.listen(1337);
+        testServer3.listen(1339);
         testServer2.listen(1338);
     });
     afterEach(function(done) {
-        testServer.close();
-        testServer.on('close', function() {
-            testServer = null;
+        testServer3.close();
+        testServer3.on('close', function() {
+            testServer3 = null;
             testServer2.close();
             testServer2.on('close', function() {
                 testServer2 = null;
                 done();
             });
         });
-        sentLines1.length = 0;
-        sentLines2.length = 0;
+        sentLines1 = [];
+        sentLines2 = [];
         body = '';
     });
     it('retain individual apikeys', function(done) {
         logger1.info('Sent a log');
         logger2.info('Sent a log2');
         assert.notDeepEqual(logger1._req.headers, logger2._req.headers, 'Multiple loggers should use their individual apikeys');
+        setTimeout(function() {
+            assert(sentLines1[0] === 'Sent a log');
+            assert(sentLines2[0] === 'Sent a log2');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
     });
     it('retain individual urls', function(done) {
         logger1.info('Sent a log');

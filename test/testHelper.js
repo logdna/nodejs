@@ -22,7 +22,7 @@
 module.exports = {
     apikey: '< YOUR INGESTION KEY HERE >'
     , apikey2: '< YOUR 2ND INGESTION KEY HERE >'
-    , apikey3: '< YOUR 3ND INGESTION KEY HERE >'
+    , apikey3: '< YOUR 3D INGESTION KEY HERE >'
     , apikey4: '< YOUR 4ND INGESTION KEY HERE >'
     , myHostname: 'AWESOMEHOSTER'
     , macAddress: 'C0:FF:EE:C0:FF:EE'
@@ -46,6 +46,24 @@ module.exports = {
         , app: 'testing2.log'
         , test: true
         , logdna_url: 'http://localhost:1338'
+    }
+    , options3: {
+        key: '< YOUR 3ND INGESTION KEY THEREEEEE >'
+        , hostname: 'AWESOMEHOSTER'
+        , ip: '10.0.1.101'
+        , mac: 'C0:FF:EE:C0:FF:EE'
+        , app: 'testing.log'
+        , test: true
+        , logdna_url: 'http://localhost:1339'
+    }
+    , options4: {
+        key: '< YOUR 4ND INGESTION KEY HERE >'
+        , hostname: 'AWESOMEHOSTER'
+        , ip: '10.0.1.101'
+        , mac: 'C0:FF:EE:C0:FF:EE'
+        , app: 'testing.log'
+        , test: true
+        , logdna_url: 'http://localhost:1337'
     }
 };
 
