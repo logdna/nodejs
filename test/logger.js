@@ -288,12 +288,13 @@ describe('Input validation', function() {
 });
 
 describe('Multiple loggers', function() {
-    var logger1 = Logger.createLogger(testHelper.apikey, testHelper.options);
+    var logger1 = Logger.createLogger(testHelper.apikey3, testHelper.options3);
     var logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
     var sentLines1 = [];
     var sentLines2 = [];
+    let testServer3;
     beforeEach(function(done) {
-        testServer = http.createServer(function(req, res) {
+        testServer3 = http.createServer(function(req, res) {
             req.on('data', function(data) {
                 body += data;
             });
@@ -321,17 +322,17 @@ describe('Multiple loggers', function() {
             res.end('Hello, world!\n');
         });
 
-        testServer.on('listening', function() {
+        testServer3.on('listening', function() {
             testServer2.on('listening', done);
         });
 
-        testServer.listen(1337);
+        testServer3.listen(1339);
         testServer2.listen(1338);
     });
     afterEach(function(done) {
-        testServer.close();
-        testServer.on('close', function() {
-            testServer = null;
+        testServer3.close();
+        testServer3.on('close', function() {
+            testServer3 = null;
             testServer2.close();
             testServer2.on('close', function() {
                 testServer2 = null;
