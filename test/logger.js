@@ -374,3 +374,40 @@ describe('Multiple loggers', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
 });
+
+describe('ambient meta', function() {
+  const ambientLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+
+  it('add string ambinet meta to a string log line', function() {
+      ambientLogger.addAmbientMeta('someAmbientMeta');
+      ambientLogger.log('Sent a string log');
+      ambientLogger.log('Sent a second string log');
+
+      assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambientMeta":"someAmbientMeta"}');
+      assert(ambientLogger._buf[1].line === '{"message":"Sent a second string log","ambientMeta":"someAmbientMeta"}');
+  });
+  it('add an object ambinet meta to a string log line', function() {
+      ambientLogger.addAmbientMeta({someAmbientKey: 'value'});
+
+      ambientLogger.log('Sent a string log');
+      ambientLogger.log('Sent a second string log');
+
+      assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambientMeta":{"someAmbientKey":"value"}}');
+      assert(ambientLogger._buf[1].line === '{"message":"Sent a second string log","ambientMeta":{"someAmbientKey":"value"}}');
+  });
+  it('add an object ambinet meta to an object log line', function() {
+      ambientLogger.addAmbientMeta({someAmbientKey: 'value'});
+
+      ambientLogger.log({k:'v'});
+
+      assert(ambientLogger._buf[0].line === '{"message":"{\\n  \\"k\\": \\"v\\",\\n  \\"ambientMeta\\": {\\n    \\"someAmbientKey\\": \\"value\\"\\n  }\\n}","ambientMeta":{"someAmbientKey":"value"}}');
+  });
+  it('remove ambient meta', function() {
+    ambientLogger.addAmbientMeta('someAmbientMeta');
+    ambientLogger.log('Sent a string log');
+    ambientLogger.removeAmbientMeta();
+    ambientLogger.log('Sent a string log');
+    assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambientMeta":"someAmbientMeta"}');
+    assert(ambientLogger._buf[1].line === 'Sent a string log');
+  });
+});
