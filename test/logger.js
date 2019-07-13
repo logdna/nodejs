@@ -378,6 +378,10 @@ describe('Multiple loggers', function() {
 describe('ambient meta', function() {
     const ambientLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
 
+    beforeEach(function() {
+      Logger.flushAll();
+    })
+
     it('add string ambinet meta to a string log line', function() {
         ambientLogger.addAmbientMeta('someAmbientMeta');
         ambientLogger.log('Sent a string log');
@@ -399,7 +403,6 @@ describe('ambient meta', function() {
         ambientLogger.addAmbientMeta({someAmbientKey: 'value'});
 
         ambientLogger.log({k: 'v'});
-
         assert(ambientLogger._buf[0].line === '{"message":"{\\n  \\"k\\": \\"v\\",\\n  \\"ambientMeta\\": {\\n    \\"someAmbientKey\\": \\"value\\"\\n  }\\n}","ambientMeta":{"someAmbientKey":"value"}}');
     });
     it('remove ambient meta', function() {
