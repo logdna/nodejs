@@ -379,8 +379,8 @@ describe('ambient meta', function() {
     const ambientLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
 
     beforeEach(function() {
-      Logger.flushAll();
-    })
+        Logger.flushAll();
+    });
 
     it('add string ambinet meta to a string log line', function() {
         ambientLogger.addAmbientMeta('someAmbientMeta');
