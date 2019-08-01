@@ -381,16 +381,16 @@ describe('HTTP Excpetion handling', function() {
     let edgeCaseFlag = false;
 
     beforeEach(function(done) {
-      httpExcServer = http.createServer(function(req, res) {
-        if (edgeCaseFlag && countHits >= 1) {
-          statusCode = 200;
-        }
-        res.writeHead(statusCode, {"Content-Type": "text/plain"});
-        res.write("Hello World");
-        res.end(() => {++countHits});
-      });
-      httpExcServer.on('listening', done);
-      httpExcServer.listen(1337);
+        httpExcServer = http.createServer(function(req, res) {
+            if (edgeCaseFlag && countHits >= 1) {
+                statusCode = 200;
+            }
+            res.writeHead(statusCode, {'Content-Type': 'text/plain'});
+            res.write('Hello World');
+            res.end(() => {++countHits;});
+        });
+        httpExcServer.on('listening', done);
+        httpExcServer.listen(1337);
     });
 
     afterEach(function(done) {
@@ -405,91 +405,86 @@ describe('HTTP Excpetion handling', function() {
         statusCode = 302;
     });
     it('should try to reconnect if response was unsuccessful and after 3 attemps, save the lines in the array', function(done) {
-        let httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+        const httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
             assert(countHits === 3);
-            console.log(httpExcLogger._failedBuf)
             assert(httpExcLogger._failedBuf.length == 2);
             assert(httpExcLogger._failedBuf[0].line === 'Will try 3 times');
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('when first attempt fails and second succeeds, it should clean failed lines array', function(done) {
-      edgeCaseFlag = true;
-      let httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
-      httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
-      httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
-      setTimeout(function() {
-        assert(countHits === 2);
-        assert(httpExcLogger._failedBuf.length === 0);
-        done();
-      }, configs.FLUSH_INTERVAL + 200);
+        edgeCaseFlag = true;
+        const httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+        httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+        httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+        setTimeout(function() {
+            assert(countHits === 2);
+            assert(httpExcLogger._failedBuf.length === 0);
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
     });
     it('should not save the lines in the failed lines array when succeeds', function(done) {
-      statusCode = 200;
-      let httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
-      httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
-      httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
-      setTimeout(function() {
-        assert(countHits === 1);
-        assert(httpExcLogger._failedBuf.length === 0);
-        done();
-      }, configs.FLUSH_INTERVAL + 200);
+        statusCode = 200;
+        const httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+        httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+        httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+        setTimeout(function() {
+            assert(countHits === 1);
+            assert(httpExcLogger._failedBuf.length === 0);
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
     });
 });
 
-describe('log', function() {
-    let failedBufTestLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+describe('should include to buffer the failed buffer', function() {
+    const failedBufTestLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
     let httpExcServer;
-    let countHits = 0;
-    let statusCode = 302;
-    let edgeCaseFlag = false;
-    let receivedBody = ''
-    let receivedLines = [];
+    let receivedBody = '';
+    const receivedLines = [];
     beforeEach(function(done) {
-      httpExcServer = http.createServer(function(req, res) {
-        req.on('data', function(data) {
-            receivedBody += data;
+        httpExcServer = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                receivedBody += data;
+            });
+            req.on('end', function() {
+                receivedBody = JSON.parse(receivedBody);
+                for (var i = 0; i < receivedBody.ls.length; i++) {
+                    receivedLines.push(receivedBody.ls[i].line);
+                }
+                receivedBody = '';
+            });
+            res.end('Hello, world!\n');
         });
-        req.on('end', function() {
-            receivedBody = JSON.parse(receivedBody);
-            for (var i = 0; i < receivedBody.ls.length; i++) {
-                receivedLines.push(receivedBody.ls[i].line);
-            }
-            receivedBody = '';
-        });
-        res.end('Hello, world!\n');
-      });
 
-      httpExcServer.on('listening', done);
-      httpExcServer.listen(1337);
+        httpExcServer.on('listening', done);
+        httpExcServer.listen(1337);
     });
 
     afterEach(function(done) {
-        countHits = 0;
         httpExcServer.close();
         httpExcServer.on('close', function() {
             httpExcServer = null;
             done();
         });
-        sentMeta = [];
         receivedBody = '';
-        statusCode = 302;
     });
+
     it('should add to buffer the lines from failedBuf array and empty it', function(done) {
-        failedBufTestLogger._failedBuf = [{timestamp: 1564695084239
-                                     ,line: 'falied line1'
-                                     ,level: 'DEBUG'
-                                     ,app: 'testing.log'
-                                     ,meta: '{"extra_info":"extra info"}'
-                                   }
-                                    ,{ timestamp: 1564695084240
-                                      ,line: 'falied line2'
-                                      ,level: 'DEBUG'
-                                      ,app: 'testing.log'
-                                      ,meta: '{"extra_info":"extra info"}' }];
+        failedBufTestLogger._failedBuf = [
+            {timestamp: 1564695084239
+                , line: 'falied line1'
+                , level: 'DEBUG'
+                , app: 'testing.log'
+                , meta: '{"extra_info":"extra info"}'}
+            , { timestamp: 1564695084240
+                , line: 'falied line2'
+                , level: 'DEBUG'
+                , app: 'testing.log'
+                , meta: '{"extra_info":"extra info"}' }
+        ];
 
         failedBufTestLogger.log('First new line', { meta: { extra_info: 'extra info' }});
         failedBufTestLogger.debug('Second new line', { meta: { extra_info: 'extra info' }});
