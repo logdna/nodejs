@@ -149,7 +149,7 @@ describe('Testing for Correctness', function() {
         sentLines = [];
         body = '';
     });
-    it('Exact Matches and Proper Order', function(done) {
+    it.only('Exact Matches and Proper Order', function(done) {
         var p = testHelper.memoryChecker(sendLogs);
         p.then(() => {
             assert(testHelper.arraysEqual(ordered, sentLines));
