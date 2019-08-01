@@ -379,6 +379,8 @@ describe('HTTP Excpetion handling', function() {
     let countHits = 0;
     let statusCode = 302;
     let edgeCaseFlag = false;
+    const port = 1336;
+    const options = testHelper.createOptions({port: port});
 
     beforeEach(function(done) {
         httpExcServer = http.createServer(function(req, res) {
@@ -390,7 +392,7 @@ describe('HTTP Excpetion handling', function() {
             res.end(() => {++countHits;});
         });
         httpExcServer.on('listening', done);
-        httpExcServer.listen(1337);
+        httpExcServer.listen(port);
     });
 
     afterEach(function(done) {
@@ -405,7 +407,7 @@ describe('HTTP Excpetion handling', function() {
         statusCode = 302;
     });
     it('should try to reconnect if response was unsuccessful and after 3 attemps, save the lines in the array', function(done) {
-        const httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+        const httpExcLogger = Logger.createLogger(testHelper.apikey, options);
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
@@ -417,7 +419,7 @@ describe('HTTP Excpetion handling', function() {
     });
     it('when first attempt fails and second succeeds, it should clean failed lines array', function(done) {
         edgeCaseFlag = true;
-        const httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+        const httpExcLogger = Logger.createLogger(testHelper.apikey, options);
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
@@ -428,7 +430,7 @@ describe('HTTP Excpetion handling', function() {
     });
     it('should not save the lines in the failed lines array when succeeds', function(done) {
         statusCode = 200;
-        const httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+        const httpExcLogger = Logger.createLogger(testHelper.apikey, options);
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
