@@ -91,21 +91,21 @@ module.exports.arraysEqual = function(a, b) {
     return true;
 };
 module.exports.createOptions = function({
-  key = '< YOUR INGESTION KEY HERE >'
-  , hostname = 'AWESOMEHOSTER'
-  , ip = '10.0.1.101'
-  , mac = 'C0:FF:EE:C0:FF:EE'
-  , app ='testing.log'
-  , test = true
-  , port = 1337
+    key = '< YOUR INGESTION KEY HERE >'
+    , hostname = 'AWESOMEHOSTER'
+    , ip = '10.0.1.101'
+    , mac = 'C0:FF:EE:C0:FF:EE'
+    , app = 'testing.log'
+    , test = true
+    , port = 1337
 } = {}) {
-  return {
-    key: key
-    , hostname: hostname
-    , ip: ip
-    , mac: mac
-    , app: app
-    , test: test
-    , logdna_url: `http://localhost:${port}`
-  };
+    return {
+        key: key
+        , hostname: hostname
+        , ip: ip
+        , mac: mac
+        , app: app
+        , test: test
+        , logdna_url: `http://localhost:${port}`
+    };
 };
