@@ -374,3 +374,77 @@ describe('Multiple loggers', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
 });
+describe('HTTP Excpetion handling', function() {
+    let httpExcServer;
+    let countHits = 0;
+    let statusCode = 302;
+    let edgeCaseFlag = false;
+    const options = {
+        key: '< YOUR INGESTION KEY HERE >'
+        , hostname: 'AWESOMEHOSTER'
+        , ip: '10.0.1.101'
+        , mac: 'C0:FF:EE:C0:FF:EE'
+        , app: 'testing.log'
+        , test: true
+        , logdna_url: 'http://localhost:1336'
+    };
+
+    beforeEach(function(done) {
+      httpExcServer = http.createServer(function(req, res) {
+        if (edgeCaseFlag && countHits >= 1) {
+          statusCode = 200;
+        }
+        res.writeHead(statusCode, {"Content-Type": "text/plain"});
+        res.write("Hello World");
+        res.end(() => {++countHits});
+      });
+      httpExcServer.on('listening', done);
+      httpExcServer.listen(1337);
+    });
+
+    afterEach(function(done) {
+        countHits = 0;
+        httpExcServer.close();
+        httpExcServer.on('close', function() {
+            httpExcServer = null;
+            done();
+        });
+        httpExcServer = null;
+        sentMeta = [];
+        body = '';
+        statusCode = 302;
+    });
+    it('should try to reconnect if response was unsuccessful and after 3 attemps, save the lines in the array', function(done) {
+        let httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+        httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+        httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+        setTimeout(function() {
+            assert(countHits === 3);
+            assert(httpExcLogger._failedLines.length == 2);
+            assert(httpExcLogger._failedLines.includes('Will try 3 times'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('when first attempt fails and second succeeds, it should clean failed lines array', function(done) {
+      edgeCaseFlag = true;
+      let httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+      httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+      httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+      setTimeout(function() {
+        assert(countHits === 2);
+        assert(httpExcLogger._failedLines.length === 0);
+        done();
+      }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('should not save the lines in the failed lines array when succeeds', function(done) {
+      statusCode = 200;
+      let httpExcLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+      httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+      httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
+      setTimeout(function() {
+        assert(countHits === 1);
+        assert(httpExcLogger._failedLines.length === 0);
+        done();
+      }, configs.FLUSH_INTERVAL + 200);
+    });
+});
