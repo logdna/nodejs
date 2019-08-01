@@ -379,15 +379,6 @@ describe('HTTP Excpetion handling', function() {
     let countHits = 0;
     let statusCode = 302;
     let edgeCaseFlag = false;
-    const options = {
-        key: '< YOUR INGESTION KEY HERE >'
-        , hostname: 'AWESOMEHOSTER'
-        , ip: '10.0.1.101'
-        , mac: 'C0:FF:EE:C0:FF:EE'
-        , app: 'testing.log'
-        , test: true
-        , logdna_url: 'http://localhost:1336'
-    };
 
     beforeEach(function(done) {
       httpExcServer = http.createServer(function(req, res) {
@@ -409,7 +400,6 @@ describe('HTTP Excpetion handling', function() {
             httpExcServer = null;
             done();
         });
-        httpExcServer = null;
         sentMeta = [];
         body = '';
         statusCode = 302;
@@ -420,8 +410,9 @@ describe('HTTP Excpetion handling', function() {
         httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
             assert(countHits === 3);
-            assert(httpExcLogger._failedLines.length == 2);
-            assert(httpExcLogger._failedLines.includes('Will try 3 times'));
+            console.log(httpExcLogger._failedBuf)
+            assert(httpExcLogger._failedBuf.length == 2);
+            assert(httpExcLogger._failedBuf[0].line === 'Will try 3 times');
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
@@ -432,7 +423,7 @@ describe('HTTP Excpetion handling', function() {
       httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
       setTimeout(function() {
         assert(countHits === 2);
-        assert(httpExcLogger._failedLines.length === 0);
+        assert(httpExcLogger._failedBuf.length === 0);
         done();
       }, configs.FLUSH_INTERVAL + 200);
     });
@@ -443,8 +434,71 @@ describe('HTTP Excpetion handling', function() {
       httpExcLogger.debug('Will try 3 times', { meta: { extra_info: 'extra info' }});
       setTimeout(function() {
         assert(countHits === 1);
-        assert(httpExcLogger._failedLines.length === 0);
+        assert(httpExcLogger._failedBuf.length === 0);
         done();
       }, configs.FLUSH_INTERVAL + 200);
+    });
+});
+
+describe('log', function() {
+    let failedBufTestLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+    let httpExcServer;
+    let countHits = 0;
+    let statusCode = 302;
+    let edgeCaseFlag = false;
+    let receivedBody = ''
+    let receivedLines = [];
+    beforeEach(function(done) {
+      httpExcServer = http.createServer(function(req, res) {
+        req.on('data', function(data) {
+            receivedBody += data;
+        });
+        req.on('end', function() {
+            receivedBody = JSON.parse(receivedBody);
+            for (var i = 0; i < receivedBody.ls.length; i++) {
+                receivedLines.push(receivedBody.ls[i].line);
+            }
+            receivedBody = '';
+        });
+        res.end('Hello, world!\n');
+      });
+
+      httpExcServer.on('listening', done);
+      httpExcServer.listen(1337);
+    });
+
+    afterEach(function(done) {
+        countHits = 0;
+        httpExcServer.close();
+        httpExcServer.on('close', function() {
+            httpExcServer = null;
+            done();
+        });
+        sentMeta = [];
+        receivedBody = '';
+        statusCode = 302;
+    });
+    it('should add to buffer the lines from failedBuf array and empty it', function(done) {
+        failedBufTestLogger._failedBuf = [{timestamp: 1564695084239
+                                     ,line: 'falied line1'
+                                     ,level: 'DEBUG'
+                                     ,app: 'testing.log'
+                                     ,meta: '{"extra_info":"extra info"}'
+                                   }
+                                    ,{ timestamp: 1564695084240
+                                      ,line: 'falied line2'
+                                      ,level: 'DEBUG'
+                                      ,app: 'testing.log'
+                                      ,meta: '{"extra_info":"extra info"}' }];
+
+        failedBufTestLogger.log('First new line', { meta: { extra_info: 'extra info' }});
+        failedBufTestLogger.debug('Second new line', { meta: { extra_info: 'extra info' }});
+        const expectedLines = ['falied line1', 'falied line2', 'First new line', 'Second new line'];
+
+        setTimeout(function() {
+            assert(testHelper.arraysEqual(expectedLines.sort(), receivedLines.sort()));
+            assert(failedBufTestLogger._failedBuf.length === 0);
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
     });
 });
