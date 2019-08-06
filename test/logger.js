@@ -383,34 +383,35 @@ describe('ambient meta', function() {
     });
 
     it('add string ambinet meta to a string log line', function() {
-        ambientLogger.addAmbientMeta('someAmbientMeta');
+        ambientLogger.addProperty('someAmbientMeta');
         ambientLogger.log('Sent a string log');
         ambientLogger.log('Sent a second string log');
 
-        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambientMeta":"someAmbientMeta"}');
-        assert(ambientLogger._buf[1].line === '{"message":"Sent a second string log","ambientMeta":"someAmbientMeta"}');
+        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambient_meta":"someAmbientMeta"}');
+        assert(ambientLogger._buf[1].line === '{"message":"Sent a second string log","ambient_meta":"someAmbientMeta"}');
     });
     it('add an object ambinet meta to a string log line', function() {
-        ambientLogger.addAmbientMeta({someAmbientKey: 'value'});
+        ambientLogger.addProperty({someAmbientKey: 'value'});
 
         ambientLogger.log('Sent a string log');
         ambientLogger.log('Sent a second string log');
 
-        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambientMeta":{"someAmbientKey":"value"}}');
-        assert(ambientLogger._buf[1].line === '{"message":"Sent a second string log","ambientMeta":{"someAmbientKey":"value"}}');
+        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambient_meta":{"someAmbientKey":"value"}}');
+        assert(ambientLogger._buf[1].line === '{"message":"Sent a second string log","ambient_meta":{"someAmbientKey":"value"}}');
     });
     it('add an object ambinet meta to an object log line', function() {
-        ambientLogger.addAmbientMeta({someAmbientKey: 'value'});
+        ambientLogger.addProperty({someAmbientKey: 'value'});
 
         ambientLogger.log({k: 'v'});
-        assert(ambientLogger._buf[0].line === '{"message":"{\\n  \\"k\\": \\"v\\",\\n  \\"ambientMeta\\": {\\n    \\"someAmbientKey\\": \\"value\\"\\n  }\\n}","ambientMeta":{"someAmbientKey":"value"}}');
+
+        assert(ambientLogger._buf[0].line === '{"message":"{\\n  \\"k\\": \\"v\\",\\n  \\"ambientMeta\\": {\\n    \\"someAmbientKey\\": \\"value\\"\\n  }\\n}","ambient_meta":{"someAmbientKey":"value"}}');
     });
     it('remove ambient meta', function() {
-        ambientLogger.addAmbientMeta('someAmbientMeta');
+        ambientLogger.addProperty('someAmbientMeta');
         ambientLogger.log('Sent a string log');
-        ambientLogger.removeAmbientMeta();
+        ambientLogger.removeProperty();
         ambientLogger.log('Sent a string log');
-        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambientMeta":"someAmbientMeta"}');
+        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambient_meta":"someAmbientMeta"}');
         assert(ambientLogger._buf[1].line === 'Sent a string log');
     });
 });
