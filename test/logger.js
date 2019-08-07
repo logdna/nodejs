@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* eslint-disable no-console */
 var delay = require('delay');
-
+const sizeof = require('object-sizeof');
 process.env.test = 'test';
 var Logger = require('../lib/logger');
 var testHelper = require('./testHelper');
@@ -12,37 +12,24 @@ var http = require('http');
 var logger = Logger.createLogger(testHelper.apikey, testHelper.options);
 var testLength = testHelper.testLength;
 var testStr = 'ESOTERIC ';
-var ordered = [];
-var sentLines = [];
-var sentLevels = [];
+// var ordered = [];
+// var sentLines = [];
+// var sentLevels = [];
 var sentMeta = [];
 var body = '';
 var testServer;
 var testServer2;
 
-for (var i = 0; i < testLength; i++) {
-    ordered.push(testStr);
-}
-
-
-var sendLogs = function() {
-    var rssProfile = [];
-    var base = process.memoryUsage().rss / 1000000.0;
-    rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
-    var start = process.hrtime();
-    for (var i = 0; i < testLength; i++) {
-        logger.log(testStr);
-    }
-    var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
-    var throughput = testLength / (elapsed / 1000);
-    throughput = Math.round(throughput * 100) / 100;
-    console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput);
-    return delay(configs.FLUSH_INTERVAL + 200);
-};
 
 describe('Test all Levels', function() {
+    let allLevelsPort = 8080;
+    let options = testHelper.createOptions({port: allLevelsPort});
+    let allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
+    let allLevelsServer;
+    let sentLines = [];
+    let sentLevels = [];
     beforeEach(function(done) {
-        testServer = http.createServer(function(req, res) {
+        allLevelsServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
                 body += data;
             });
@@ -56,13 +43,13 @@ describe('Test all Levels', function() {
             });
             res.end('Hello, world!\n');
         });
-        testServer.on('listening', done);
-        testServer.listen(1337);
+        allLevelsServer.on('listening', done);
+        allLevelsServer.listen(allLevelsPort);
     });
     afterEach(function(done) {
-        testServer.close();
-        testServer.on('close', function() {
-            testServer = null;
+        allLevelsServer.close();
+        allLevelsServer.on('close', function() {
+            allLevelsServer = null;
             done();
         });
         sentLines = [];
@@ -70,7 +57,7 @@ describe('Test all Levels', function() {
         body = '';
     });
     it('Debug Function', function(done) {
-        logger.debug('Sent a log');
+        allLevelsLogger.debug('Sent a log');
         setTimeout(function() {
             assert(sentLines[0] === 'Sent a log');
             assert(sentLevels[0] === 'DEBUG');
@@ -78,7 +65,7 @@ describe('Test all Levels', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Trace Function', function(done) {
-        logger.trace('Sent a log1');
+        allLevelsLogger.trace('Sent a log1');
         setTimeout(function() {
             assert(sentLines[0] === 'Sent a log1');
             assert(sentLevels[0] === 'TRACE');
@@ -86,7 +73,7 @@ describe('Test all Levels', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Info Function', function(done) {
-        logger.info('Sent a log2');
+        allLevelsLogger.info('Sent a log2');
         setTimeout(function() {
             assert(sentLines[0] === 'Sent a log2');
             assert(sentLevels[0] === 'INFO');
@@ -94,7 +81,7 @@ describe('Test all Levels', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Warn Function', function(done) {
-        logger.warn('Sent a log3');
+        allLevelsLogger.warn('Sent a log3');
         setTimeout(function() {
             assert(sentLines[0] === 'Sent a log3');
             assert(sentLevels[0] === 'WARN');
@@ -102,7 +89,7 @@ describe('Test all Levels', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Error Function', function(done) {
-        logger.error('Sent a log4');
+        allLevelsLogger.error('Sent a log4');
         setTimeout(function() {
             assert(sentLines[0] === 'Sent a log4');
             assert(sentLevels[0] === 'ERROR');
@@ -110,7 +97,7 @@ describe('Test all Levels', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Fatal Function', function(done) {
-        logger.fatal('Sent a log5');
+        allLevelsLogger.fatal('Sent a log5');
         setTimeout(function() {
             assert(sentLines[0] === 'Sent a log5');
             assert(sentLevels[0] === 'FATAL');
@@ -120,8 +107,35 @@ describe('Test all Levels', function() {
 });
 
 describe('Testing for Correctness', function() {
+    let correctnessServer;
+    const correctnessPort = 1333;
+    const opts = testHelper.createOptions({port: correctnessPort})
+    const correctnesLogger = Logger.createLogger(testHelper.apikey, opts);
+
+    let sentLines = [];
+    let ordered = [];
+
+    for (var i = 0; i < testLength; i++) {
+        ordered.push(testStr);
+    }
+
+    const sendLogs = function() {
+        var rssProfile = [];
+        var base = process.memoryUsage().rss / 1000000.0;
+        rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
+        var start = process.hrtime();
+        for (var i = 0; i < testLength; i++) {
+            correctnesLogger.log(testStr);
+        }
+        var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
+        var throughput = testLength / (elapsed / 1000);
+        throughput = Math.round(throughput * 100) / 100;
+        console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput);
+        return delay(configs.FLUSH_INTERVAL + 200);
+    };
+
     beforeEach(function(done) {
-        testServer = http.createServer(function(req, res) {
+        correctnessServer = http.createServer(function(req, res) {
             body = '';
             req.on('data', function(data) {
                 body += data;
@@ -137,21 +151,23 @@ describe('Testing for Correctness', function() {
                 console.log('Got an error: ' + err);
             });
         });
-        testServer.on('listening', done);
-        testServer.listen(1337);
+        correctnessServer.on('listening', done);
+        correctnessServer.listen(correctnessPort);
     });
     afterEach(function(done) {
-        testServer.close();
-        testServer.on('close', function() {
-            testServer = null;
+        correctnessServer.close();
+        correctnessServer.on('close', function() {
+            correctnessServer = null;
             done();
         });
         sentLines = [];
         body = '';
     });
-    it('Exact Matches and Proper Order', function(done) {
-        var p = testHelper.memoryChecker(sendLogs);
-        p.then(() => {
+    it.only('Exact Matches and Proper Order', function(done) {
+        const promis = testHelper.memoryChecker(sendLogs);
+        promis.then(() => {
+            console.log(ordered.length)
+            console.log(sentLines.length)
             assert(testHelper.arraysEqual(ordered, sentLines));
             done();
         }).catch(done);
@@ -376,7 +392,8 @@ describe('Multiple loggers', function() {
 });
 
 describe('ambient meta', function() {
-    const ambientLogger = Logger.createLogger(testHelper.apikey, testHelper.options);
+    const options = testHelper.createOptions();
+    const ambientLogger = Logger.createLogger(testHelper.apikey, options);
 
     beforeEach(function() {
         Logger.flushAll();
@@ -413,5 +430,91 @@ describe('ambient meta', function() {
         ambientLogger.log('Sent a string log');
         assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambient_meta":"someAmbientMeta"}');
         assert(ambientLogger._buf[1].line === 'Sent a string log');
+    });
+});
+
+describe('HTTP Excpetion handling', function() {
+    let httpExcServer;
+    let countHits = 0;
+    let statusCode = 302;
+    let edgeCaseFlag = false;
+    const port = 1336;
+    const options = testHelper.createOptions({port: port});
+    let whenSuccessConnection = 0;
+     beforeEach(function(done) {
+        httpExcServer = http.createServer(function(req, res) {
+            if (edgeCaseFlag && countHits >= 1) {
+                statusCode = 200;
+                whenSuccessConnection = Date.now();
+            }
+            res.writeHead(statusCode, {'Content-Type': 'text/plain'});
+            res.write('Hello World');
+            res.end(() => {++countHits;});
+        });
+        httpExcServer.on('listening', done);
+        httpExcServer.listen(port);
+    });
+
+     afterEach(function(done) {
+        countHits = 0;
+        httpExcServer.close();
+        httpExcServer.on('close', function() {
+            httpExcServer = null;
+            done();
+        });
+        sentMeta = [];
+        body = '';
+        statusCode = 302;
+        whenSuccessConnection = 0;
+    });
+    const httpExcLogger = Logger.createLogger(testHelper.apikey, options);
+
+    it('when fails to connect, it should put the _isLoggingBackedOff flag on', function(done) {
+        httpExcLogger.debug('The line');
+        setTimeout(function() {
+            assert(httpExcLogger._isLoggingBackedOff === true);
+            assert(httpExcLogger._buf.length === 1);
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('*!!depends on the previouce test!!* Send the log after the previouse one has failed', function(done) {
+        this.timeout(3500);
+        edgeCaseFlag = true;
+        countHits = 1;
+        let thisSendTime = Date.now();
+        httpExcLogger.debug('The second line');
+        setTimeout(function() {
+            assert(whenSuccessConnection - thisSendTime >= configs.BACKOFF_PERIOD)
+            assert(httpExcLogger._buf.length === 0);
+            assert(httpExcLogger._isLoggingBackedOff === false);
+            done();
+        }, configs.BACKOFF_PERIOD + 200);
+    });
+    it('*!!depends on the previouce test!!* Should clear backoff after success', function(done) {
+        this.timeout(3500);
+        edgeCaseFlag = true;
+        countHits = 1;
+        let thisSendTime = Date.now();
+        httpExcLogger.debug('The second line');
+        setTimeout(function() {
+            assert(whenSuccessConnection - thisSendTime < configs.BACKOFF_PERIOD)
+            assert(httpExcLogger._buf.length === 0);
+            assert(httpExcLogger._isLoggingBackedOff === false);
+            done();
+        }, configs.BACKOFF_PERIOD + 200);
+    });
+    it('should not exceed the failed buf retention limit', function(done) {
+        this.timeout(3500);
+        const opts = testHelper.createOptions({port: port, failedBufRetentionLimit: 1000});
+        const tooManyFails = Logger.createLogger(testHelper.apikey, opts);
+
+        for(let i = 0; i < 1000; ++i) {
+          tooManyFails.debug('The second line');
+        }
+        setTimeout(function() {
+            const byteSizeOfBuf = sizeof(tooManyFails._buf[0]) * tooManyFails._buf.length;
+            assert(byteSizeOfBuf <= opts.failedBufRetentionLimit);
+            done();
+        }, configs.BACKOFF_PERIOD + 200);
     });
 });
