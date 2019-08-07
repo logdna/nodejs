@@ -115,7 +115,7 @@ describe('Testing for Correctness', function() {
     let sentLines = [];
     let ordered = [];
 
-    for (var i = 0; i < testLength; i++) {
+    for (var i = 0; i < testLength; ++i) {
         ordered.push(testStr);
     }
 
@@ -124,7 +124,7 @@ describe('Testing for Correctness', function() {
         var base = process.memoryUsage().rss / 1000000.0;
         rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
         var start = process.hrtime();
-        for (var i = 0; i < testLength; i++) {
+        for (let i = 0; i < testLength; ++i) {
             correctnesLogger.log(testStr);
         }
         var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
@@ -163,11 +163,9 @@ describe('Testing for Correctness', function() {
         sentLines = [];
         body = '';
     });
-    it.only('Exact Matches and Proper Order', function(done) {
+    it('Exact Matches and Proper Order', function(done) {
         const promis = testHelper.memoryChecker(sendLogs);
         promis.then(() => {
-            console.log(ordered.length)
-            console.log(sentLines.length)
             assert(testHelper.arraysEqual(ordered, sentLines));
             done();
         }).catch(done);
