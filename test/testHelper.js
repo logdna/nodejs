@@ -19,7 +19,7 @@
  *              - 1.7GHz Intel Core i5
  *              - 4 Gb 1333 MHz DDR3
  */
-const configs = require('../lib/configs');
+
 module.exports = {
     apikey: '< YOUR INGESTION KEY HERE >'
     , apikey2: '< YOUR 2ND INGESTION KEY HERE >'
@@ -93,25 +93,27 @@ module.exports.arraysEqual = function(a, b) {
 };
 
 module.exports.createOptions = function({
-  key = '< YOUR INGESTION KEY HERE >'
-  , hostname = 'AWESOMEHOSTER'
-  , ip = '10.0.1.101'
-  , mac = 'C0:FF:EE:C0:FF:EE'
-  , app = 'testing.log'
-  , test = true
-  , port = 1337
-  , failedBufRetentionLimit = null
-  , backOffPeriod = null
+    key = '< YOUR INGESTION KEY HERE >'
+    , hostname = 'AWESOMEHOSTER'
+    , ip = '10.0.1.101'
+    , mac = 'C0:FF:EE:C0:FF:EE'
+    , app = 'testing.log'
+    , test = true
+    , port = 1337
+    , failedBufRetentionLimit = null
+    , backOffPeriod = null
+    , flushInterval = null
 } = {}) {
-  return {
-      key: key
-      , hostname: hostname
-      , ip: ip
-      , mac: mac
-      , app: app
-      , test: test
-      , logdna_url: `http://localhost:${port}`
-      , failedBufRetentionLimit: failedBufRetentionLimit
-      , backOffPeriod: backOffPeriod
-  };
+    return {
+        key: key
+        , hostname: hostname
+        , ip: ip
+        , mac: mac
+        , app: app
+        , test: test
+        , logdna_url: `http://localhost:${port}`
+        , failedBufRetentionLimit: failedBufRetentionLimit
+        , backOffPeriod: backOffPeriod
+        , flushInterval: flushInterval
+    };
 };

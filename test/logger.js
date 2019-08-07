@@ -12,9 +12,12 @@ var http = require('http');
 var logger = Logger.createLogger(testHelper.apikey, testHelper.options);
 var testLength = testHelper.testLength;
 var testStr = 'ESOTERIC ';
-// var ordered = [];
-// var sentLines = [];
-// var sentLevels = [];
+
+/*
+ * Var ordered = [];
+ * var sentLines = [];
+ * var sentLevels = [];
+ */
 var sentMeta = [];
 var body = '';
 var testServer;
@@ -22,9 +25,9 @@ var testServer2;
 
 
 describe('Test all Levels', function() {
-    let allLevelsPort = 8080;
-    let options = testHelper.createOptions({port: allLevelsPort});
-    let allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
+    const allLevelsPort = 8080;
+    const options = testHelper.createOptions({port: allLevelsPort});
+    const allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
     let allLevelsServer;
     let sentLines = [];
     let sentLevels = [];
@@ -109,11 +112,11 @@ describe('Test all Levels', function() {
 describe('Testing for Correctness', function() {
     let correctnessServer;
     const correctnessPort = 1333;
-    const opts = testHelper.createOptions({port: correctnessPort})
+    const opts = testHelper.createOptions({port: correctnessPort});
     const correctnesLogger = Logger.createLogger(testHelper.apikey, opts);
 
     let sentLines = [];
-    let ordered = [];
+    const ordered = [];
 
     for (var i = 0; i < testLength; ++i) {
         ordered.push(testStr);
@@ -439,7 +442,7 @@ describe('HTTP Excpetion handling', function() {
     const port = 1336;
     const options = testHelper.createOptions({port: port});
     let whenSuccessConnection = 0;
-     beforeEach(function(done) {
+    beforeEach(function(done) {
         httpExcServer = http.createServer(function(req, res) {
             if (edgeCaseFlag && countHits >= 1) {
                 statusCode = 200;
@@ -453,7 +456,7 @@ describe('HTTP Excpetion handling', function() {
         httpExcServer.listen(port);
     });
 
-     afterEach(function(done) {
+    afterEach(function(done) {
         countHits = 0;
         httpExcServer.close();
         httpExcServer.on('close', function() {
@@ -479,10 +482,10 @@ describe('HTTP Excpetion handling', function() {
         this.timeout(3500);
         edgeCaseFlag = true;
         countHits = 1;
-        let thisSendTime = Date.now();
+        const thisSendTime = Date.now();
         httpExcLogger.debug('The second line');
         setTimeout(function() {
-            assert(whenSuccessConnection - thisSendTime >= configs.BACKOFF_PERIOD)
+            assert(whenSuccessConnection - thisSendTime >= configs.BACKOFF_PERIOD);
             assert(httpExcLogger._buf.length === 0);
             assert(httpExcLogger._isLoggingBackedOff === false);
             done();
@@ -492,10 +495,10 @@ describe('HTTP Excpetion handling', function() {
         this.timeout(3500);
         edgeCaseFlag = true;
         countHits = 1;
-        let thisSendTime = Date.now();
+        const thisSendTime = Date.now();
         httpExcLogger.debug('The second line');
         setTimeout(function() {
-            assert(whenSuccessConnection - thisSendTime < configs.BACKOFF_PERIOD)
+            assert(whenSuccessConnection - thisSendTime < configs.BACKOFF_PERIOD);
             assert(httpExcLogger._buf.length === 0);
             assert(httpExcLogger._isLoggingBackedOff === false);
             done();
@@ -506,13 +509,29 @@ describe('HTTP Excpetion handling', function() {
         const opts = testHelper.createOptions({port: port, failedBufRetentionLimit: 1000});
         const tooManyFails = Logger.createLogger(testHelper.apikey, opts);
 
-        for(let i = 0; i < 1000; ++i) {
-          tooManyFails.debug('The second line');
+        for (let i = 0; i < 1000; ++i) {
+            tooManyFails.debug('The second line');
         }
         setTimeout(function() {
             const byteSizeOfBuf = sizeof(tooManyFails._buf[0]) * tooManyFails._buf.length;
             assert(byteSizeOfBuf <= opts.failedBufRetentionLimit);
             done();
         }, configs.BACKOFF_PERIOD + 200);
+    });
+    it('flushAll should recieve err message', function(done) {
+        const opts = testHelper.createOptions({port: port});
+        const flushAllTest = Logger.createLogger(testHelper.apikey, opts);
+        flushAllTest._buf = [{ timestamp: 1565221290289
+                                ,line: 'The line'
+                                ,level: 'DEBUG'
+                                ,app: 'testing.log' } ];
+        let errMes = '';
+
+        flushAllTest._flush((err) => {errMes = err});
+
+        setTimeout(function() {
+            assert(errMes.includes('status code:'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
     });
 });
