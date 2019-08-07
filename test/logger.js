@@ -12,12 +12,6 @@ var http = require('http');
 var logger = Logger.createLogger(testHelper.apikey, testHelper.options);
 var testLength = testHelper.testLength;
 var testStr = 'ESOTERIC ';
-
-/*
- * Var ordered = [];
- * var sentLines = [];
- * var sentLevels = [];
- */
 var sentMeta = [];
 var body = '';
 var testServer;
