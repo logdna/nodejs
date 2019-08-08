@@ -515,13 +515,15 @@ describe('HTTP Excpetion handling', function() {
     it('flushAll should recieve err message', function(done) {
         const opts = testHelper.createOptions({port: port});
         const flushAllTest = Logger.createLogger(testHelper.apikey, opts);
-        flushAllTest._buf = [{ timestamp: 1565221290289
-                                ,line: 'The line'
-                                ,level: 'DEBUG'
-                                ,app: 'testing.log' } ];
+        flushAllTest._buf = [
+            { timestamp: 1565221290289
+                , line: 'The line'
+                , level: 'DEBUG'
+                , app: 'testing.log' }
+        ];
         let errMes = '';
 
-        flushAllTest._flush((err) => {errMes = err});
+        flushAllTest._flush((err) => {errMes = err;});
 
         setTimeout(function() {
             assert(errMes.includes('status code:'));
