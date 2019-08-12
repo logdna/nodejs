@@ -414,8 +414,8 @@ If the logger does not receive a successful response from the server, it retains
 
 ``` javascript
 var options = {
-    failedBufRetentionLimit: 10000000 //bytes
-    retryTimeout: 3000 //milliseconds
+    failedBufRetentionLimit: 10000000 // bytes
+    retryTimeout: 3000 // milliseconds
 };
 
 var logger = Logger.setupDefaultLogger(apikey, options);
