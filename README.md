@@ -89,6 +89,12 @@ var opts = {
 }
 
 logger.log('My Sample Log Line', opts);
+
+// Add an associated object or string to all log lines
+logger.addProperty({loanService: 'something happened here'});
+
+//Remove the associated object or string from all log lines
+logger.addProperty();
 ```
 
 For more options, this module also offers:
