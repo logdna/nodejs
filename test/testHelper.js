@@ -101,7 +101,7 @@ module.exports.createOptions = function({
     , test = true
     , port = 1337
     , failedBufRetentionLimit = null
-    , backOffPeriod = null
+    , retryTimeout = null
     , flushInterval = null
 } = {}) {
     return {
@@ -113,7 +113,7 @@ module.exports.createOptions = function({
         , test: test
         , logdna_url: `http://localhost:${port}`
         , failedBufRetentionLimit: failedBufRetentionLimit
-        , backOffPeriod: backOffPeriod
+        , retryTimeout: retryTimeout
         , flushInterval: flushInterval
     };
 };

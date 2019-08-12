@@ -75,7 +75,7 @@ logger.log('My Sample Log Line', 'MyCustomLevel');
 // Include an App name with this specific log
 logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 
-// Pass any associated objects along with a specific line as metadata...
+// Pass an associated object along with a specific line as metadata...
 var meta = {
     foo: 'bar',
     nested: {
@@ -89,16 +89,6 @@ var opts = {
 }
 
 logger.log('My Sample Log Line', opts);
-
-// or pass any associated  object or a string along all lines of a logger
-// note: it will parse only two levels of the object
-logger.addProperty({'loan':'signing'});
-
-// these lines will be associated with the passed object:
-logger.log('Sending the loan for signing...');
-logger.log('The user has received the request to sign');
-
-logger.removeProperty({'loan':'signing'});
 ```
 
 For more options, this module also offers:
@@ -419,20 +409,16 @@ exports.handler = (event, context, callback) => {
 };
 ```
 
-## HTTP Exception handling
-If the logger did not receive a successful response from the server when tried to send a log,
-it will retain the logs in its buffer and will try to flush it with the next request.
-The flush limit of the line that comes after a failed one will be reset to the backoff period. 
-The failed messages retention byte size is limited. The limit and back off
-period are configurable via options:
+## HTTP Exception Handling
+If the logger does not receive a successful response from the server, it retains the logs in a buffer and will retry with the next request. The size of the retry buffer that saves logs that failed to send and the retry timeout are configurable via:
 
 ``` javascript
-const options = {
-    failedBufRetentionLimit: 10000000
-    backOffPeriod: 3000
+var options = {
+    failedBufRetentionLimit: 10000000 //bytes
+    retryTimeout: 3000 //milliseconds
 };
 
-let logger = Logger.setupDefaultLogger(apikey, options);
+var logger = Logger.setupDefaultLogger(apikey, options);
 ```
 
 ## Troubleshooting
