@@ -422,7 +422,7 @@ exports.handler = (event, context, callback) => {
 ## HTTP Exception handling
 If the logger did not receive a successful response from the server when tried to send a log,
 it will retain the logs in its buffer and will try to flush it with the next request.
-The flush limit of the line that comes after a failed one will be reset to the backoff period.
+The flush limit of the line that comes after a failed one will be reset to the backoff period. 
 The failed messages retention byte size is limited. The limit and back off
 period are configurable via options:
 
