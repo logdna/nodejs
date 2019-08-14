@@ -75,7 +75,7 @@ logger.log('My Sample Log Line', 'MyCustomLevel');
 // Include an App name with this specific log
 logger.log('My Sample Log Line', { level: 'Warn', app: 'myAppName'});
 
-// Pass any associated objects along as metadata
+// Pass an associated object along with a specific line as metadata...
 var meta = {
     foo: 'bar',
     nested: {
@@ -407,6 +407,18 @@ exports.handler = (event, context, callback) => {
 
     callback();
 };
+```
+
+## HTTP Exception Handling
+If the logger does not receive a successful response from the server, it retains the logs in a buffer and will retry with the next request. The size of the retry buffer that saves logs that failed to send and the retry timeout are configurable via:
+
+``` javascript
+var options = {
+    failedBufRetentionLimit: 10000000 // bytes
+    retryTimeout: 3000 // milliseconds
+};
+
+var logger = Logger.setupDefaultLogger(apikey, options);
 ```
 
 ## Troubleshooting
