@@ -318,6 +318,16 @@ A function that flushes all existing loggers that are instantiated by createLogg
 ---
 A function that flushes all existing loggers that are instantiated by createLogger, and then removes references to them. Should only be called when you are finished logging.
 
+## Ambient Meta Support
+
+### addProperty(key, value)
+---
+A function that adds `key`/`value` pair into the `line`.
+
+### removeProperty(key)
+---
+A function that removes the `key` and associated `value` from the `line`.
+
 ## Client Side
 Browserify Support in version ^3.0.1
 ```javascript
