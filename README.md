@@ -324,11 +324,11 @@ The following methods can be used for modifying the meta built-in to the logger 
 
 ### addMetaProperty(key, value)
 ---
-A function that adds `key`/`value` pair into the `meta`.
+A function that adds `key`/`value` pair into the meta.
 
 ### removeMetaProperty(key)
 ---
-A function that removes the `key` and associated `value` from the `meta`.
+A function that removes the `key` and associated `value` from the meta.
 
 ## Client Side
 Browserify Support in version ^3.0.1
