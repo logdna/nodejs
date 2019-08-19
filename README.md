@@ -320,13 +320,15 @@ A function that flushes all existing loggers that are instantiated by createLogg
 
 ## Ambient Meta Support
 
-### addProperty(key, value)
----
-A function that adds `key`/`value` pair into the `line`.
+The following methods can be used for modifying the meta built-in to the logger instance:
 
-### removeProperty(key)
+### addMetaProperty(key, value)
 ---
-A function that removes the `key` and associated `value` from the `line`.
+A function that adds `key`/`value` pair into the `meta`.
+
+### removeMetaProperty(key)
+---
+A function that removes the `key` and associated `value` from the `meta`.
 
 ## Client Side
 Browserify Support in version ^3.0.1

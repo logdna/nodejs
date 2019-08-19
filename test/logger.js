@@ -395,47 +395,61 @@ describe('ambient meta', function() {
     });
 
     it('add string ambient meta to a string log line', function() {
-        ambientLogger.addProperty('ambient', 'someAmbientMeta');
+        ambientLogger.addMetaProperty('ambient', 'someAmbientMeta');
         ambientLogger.log('Sent a string log');
 
         assert(testHelper.stringifiedObjectsEqual(
-            ambientLogger._buf[0].line
-            , '{"message":"Sent a string log","ambient":"someAmbientMeta"}'
+            ambientLogger._buf[0].meta
+            , '{"ambient":"someAmbientMeta"}'
         ));
     });
     it('add an object ambient meta to a string log line', function() {
-        ambientLogger.addProperty('someAmbientKey', 'value');
+        ambientLogger.addMetaProperty('someAmbientKey', 'value');
         ambientLogger.log('Sent a string log');
         ambientLogger.log('Sent a second string log');
 
         assert(testHelper.stringifiedObjectsEqual(
-            ambientLogger._buf[0].line
-            , '{"message":"Sent a string log","someAmbientKey":"value","ambient":"someAmbientMeta"}'
+            ambientLogger._buf[0].meta
+            , '{"someAmbientKey":"value","ambient":"someAmbientMeta"}'
         ));
 
         assert(testHelper.stringifiedObjectsEqual(
-            ambientLogger._buf[1].line
-            , '{"message":"Sent a second string log","someAmbientKey":"value","ambient":"someAmbientMeta"}'
+            ambientLogger._buf[1].meta
+            , '{"someAmbientKey":"value","ambient":"someAmbientMeta"}'
         ));
     });
     it('remove ambient meta', function() {
         ambientLogger.log('Sent a string log');
-        ambientLogger.removeProperty('someAmbientKey');
+        ambientLogger.removeMetaProperty('someAmbientKey');
         ambientLogger.log('Sent a string log');
-        ambientLogger.removeProperty('ambient');
+        ambientLogger.removeMetaProperty('ambient');
         ambientLogger.log('Sent a string log');
 
         assert(testHelper.stringifiedObjectsEqual(
-            ambientLogger._buf[0].line
-            , '{"message":"Sent a string log","ambient":"someAmbientMeta","someAmbientKey":"value"}'
+            ambientLogger._buf[0].meta
+            , '{"ambient":"someAmbientMeta","someAmbientKey":"value"}'
         ));
 
         assert(testHelper.stringifiedObjectsEqual(
-            ambientLogger._buf[1].line
-            , '{"message":"Sent a string log","ambient":"someAmbientMeta"}'
+            ambientLogger._buf[1].meta
+            , '{"ambient":"someAmbientMeta"}'
         ));
 
-        assert(ambientLogger._buf[2].line === 'Sent a string log');
+        assert(ambientLogger._buf[2].meta === undefined);
+    });
+    it('mix ambient and optional meta', function() {
+        ambientLogger.log('Sent a string log', { meta: { 'key': 'value' }, index_meta: true });
+        ambientLogger.removeMetaProperty('someAmbientKey');
+        ambientLogger.log('Sent a string log');
+        ambientLogger.removeMetaProperty('ambient');
+        ambientLogger.log('Sent a string log', { meta: { 'key': 'value' } });
+
+        assert(ambientLogger._buf[0].meta && ambientLogger._buf[0].meta.key === 'value');
+        assert(ambientLogger._buf[1].meta === undefined);
+        assert(testHelper.stringifiedObjectsEqual(
+            ambientLogger._buf[2].meta
+            , '{"key":"value"}'
+        ));
     });
 });
 
