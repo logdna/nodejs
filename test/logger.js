@@ -1,14 +1,21 @@
 /* eslint-env mocha */
 /* eslint-disable no-console */
-var delay = require('delay');
-const sizeof = require('object-sizeof');
-process.env.test = 'test';
-var Logger = require('../lib/logger');
-var testHelper = require('./testHelper');
-var configs = require('../lib/configs');
-var assert = require('assert');
-var http = require('http');
 
+// External Modules
+const assert = require('assert');
+const delay = require('delay');
+const http = require('http');
+const sizeof = require('object-sizeof');
+
+// Environment
+process.env.test = 'test';
+
+// Internal Modules
+const Logger = require('../lib/logger');
+const testHelper = require('./testHelper');
+const configs = require('../lib/configs');
+
+// Variables
 var logger = Logger.createLogger(testHelper.apikey, testHelper.options);
 var testLength = testHelper.testLength;
 var testStr = 'ESOTERIC ';
@@ -16,7 +23,6 @@ var sentMeta = [];
 var body = '';
 var testServer;
 var testServer2;
-
 
 describe('Test all Levels', function() {
     const allLevelsPort = 8080;
@@ -394,47 +400,111 @@ describe('ambient meta', function() {
         Logger.flushAll();
     });
 
-    it('add string ambinet meta to a string log line', function() {
-        ambientLogger.addProperty('someAmbientMeta');
+    it('add string ambient meta to a string log line', function() {
+        ambientLogger.addMetaProperty('ambient', 'someAmbientMeta');
+        ambientLogger.log('Sent a string log');
+
+        assert.deepEqual(
+            JSON.parse(ambientLogger._buf[0].meta)
+            , {
+                ambient: 'someAmbientMeta'
+            }
+        );
+    });
+    it('add an object ambient meta to a string log line', function() {
+        ambientLogger.addMetaProperty('someAmbientKey', 'value');
         ambientLogger.log('Sent a string log');
         ambientLogger.log('Sent a second string log');
 
-        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambient_meta":"someAmbientMeta"}');
-        assert(ambientLogger._buf[1].line === '{"message":"Sent a second string log","ambient_meta":"someAmbientMeta"}');
-    });
-    it('add an object ambinet meta to a string log line', function() {
-        ambientLogger.addProperty({someAmbientKey: 'value'});
+        assert.deepEqual(
+            JSON.parse(ambientLogger._buf[0].meta)
+            , {
+                someAmbientKey: 'value'
+                , ambient: 'someAmbientMeta'
+            }
+        );
 
-        ambientLogger.log('Sent a string log');
-        ambientLogger.log('Sent a second string log');
-
-        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambient_meta":{"someAmbientKey":"value"}}');
-        assert(ambientLogger._buf[1].line === '{"message":"Sent a second string log","ambient_meta":{"someAmbientKey":"value"}}');
-    });
-    it('add an object ambinet meta to an object log line', function() {
-        ambientLogger.addProperty({someAmbientKey: 'value'});
-
-        ambientLogger.log({k: 'v'});
-
-        assert(ambientLogger._buf[0].line === '{"message":"{\\n  \\"k\\": \\"v\\",\\n  \\"ambientMeta\\": {\\n    \\"someAmbientKey\\": \\"value\\"\\n  }\\n}","ambient_meta":{"someAmbientKey":"value"}}');
+        assert.deepEqual(
+            JSON.parse(ambientLogger._buf[1].meta)
+            , {
+                someAmbientKey: 'value'
+                , ambient: 'someAmbientMeta'
+            }
+        );
     });
     it('remove ambient meta', function() {
-        ambientLogger.addProperty('someAmbientMeta');
         ambientLogger.log('Sent a string log');
-        ambientLogger.removeProperty();
+        ambientLogger.removeMetaProperty('someAmbientKey');
         ambientLogger.log('Sent a string log');
-        assert(ambientLogger._buf[0].line === '{"message":"Sent a string log","ambient_meta":"someAmbientMeta"}');
-        assert(ambientLogger._buf[1].line === 'Sent a string log');
+        ambientLogger.removeMetaProperty('ambient');
+        ambientLogger.log('Sent a string log');
+
+        assert.deepEqual(
+            JSON.parse(ambientLogger._buf[0].meta)
+            , {
+                ambient: 'someAmbientMeta'
+                , someAmbientKey: 'value'
+            }
+        );
+
+        assert.deepEqual(
+            JSON.parse(ambientLogger._buf[1].meta)
+            , {
+                ambient: 'someAmbientMeta'
+            }
+        );
+
+        assert.deepEqual(
+            JSON.parse(ambientLogger._buf[2].meta)
+            , {}
+        );
+    });
+    it('mix ambient and optional meta', function() {
+        ambientLogger.addMetaProperty('someAmbientKey', 'value');
+        ambientLogger.log('Sent a string log', {
+            meta: {
+                key: 'value'
+            }, index_meta: true
+        });
+        ambientLogger.removeMetaProperty('someAmbientKey');
+        ambientLogger.addMetaProperty('ambient', 'someAmbientMeta');
+        ambientLogger.log('Sent a string log');
+        ambientLogger.removeMetaProperty('ambient');
+        ambientLogger.log('Sent a string log', {
+            meta: {
+                key: 'value'
+            }
+        });
+
+        assert(ambientLogger._buf[0].meta && ambientLogger._buf[0].meta.key === 'value');
+        assert.deepEqual(
+            JSON.parse(ambientLogger._buf[1].meta)
+            , {
+                key: 'value'
+                , ambient: 'someAmbientMeta'
+            }
+        );
+
+        assert.deepEqual(
+            JSON.parse(ambientLogger._buf[2].meta)
+            , {
+                key: 'value'
+            }
+        );
     });
 });
 
-describe('HTTP Excpetion handling', function() {
+describe('HTTP Excpetion Handling', function() {
     let httpExcServer;
     let countHits = 0;
     let statusCode = 302;
     let edgeCaseFlag = false;
+
     const port = 1336;
-    const options = testHelper.createOptions({port: port});
+    const options = testHelper.createOptions({
+        port: port
+    });
+
     let whenSuccessConnection = 0;
     beforeEach(function(done) {
         httpExcServer = http.createServer(function(req, res) {
