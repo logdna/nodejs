@@ -1,14 +1,21 @@
 /* eslint-env mocha */
 /* eslint-disable no-console */
-var delay = require('delay');
-const sizeof = require('object-sizeof');
-process.env.test = 'test';
-var Logger = require('../lib/logger');
-var testHelper = require('./testHelper');
-var configs = require('../lib/configs');
-var assert = require('assert');
-var http = require('http');
 
+// External Modules
+const assert = require('assert');
+const delay = require('delay');
+const http = require('http');
+const sizeof = require('object-sizeof');
+
+// Environment
+process.env.test = 'test';
+
+// Internal Modules
+const Logger = require('../lib/logger');
+const testHelper = require('./testHelper');
+const configs = require('../lib/configs');
+
+// Variables
 var logger = Logger.createLogger(testHelper.apikey, testHelper.options);
 var testLength = testHelper.testLength;
 var testStr = 'ESOTERIC ';
@@ -16,7 +23,6 @@ var sentMeta = [];
 var body = '';
 var testServer;
 var testServer2;
-
 
 describe('Test all Levels', function() {
     const allLevelsPort = 8080;
@@ -455,12 +461,20 @@ describe('ambient meta', function() {
     });
     it('mix ambient and optional meta', function() {
         ambientLogger.addMetaProperty('someAmbientKey', 'value');
-        ambientLogger.log('Sent a string log', { meta: { 'key': 'value' }, index_meta: true });
+        ambientLogger.log('Sent a string log', {
+            meta: {
+                key: 'value'
+            }, index_meta: true
+        });
         ambientLogger.removeMetaProperty('someAmbientKey');
         ambientLogger.addMetaProperty('ambient', 'someAmbientMeta');
         ambientLogger.log('Sent a string log');
         ambientLogger.removeMetaProperty('ambient');
-        ambientLogger.log('Sent a string log', { meta: { 'key': 'value' } });
+        ambientLogger.log('Sent a string log', {
+            meta: {
+                key: 'value'
+            }
+        });
 
         assert(ambientLogger._buf[0].meta && ambientLogger._buf[0].meta.key === 'value');
         assert.deepEqual(
@@ -480,13 +494,17 @@ describe('ambient meta', function() {
     });
 });
 
-describe('HTTP Excpetion handling', function() {
+describe('HTTP Excpetion Handling', function() {
     let httpExcServer;
     let countHits = 0;
     let statusCode = 302;
     let edgeCaseFlag = false;
+
     const port = 1336;
-    const options = testHelper.createOptions({port: port});
+    const options = testHelper.createOptions({
+        port: port
+    });
+
     let whenSuccessConnection = 0;
     beforeEach(function(done) {
         httpExcServer = http.createServer(function(req, res) {

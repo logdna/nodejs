@@ -117,22 +117,3 @@ module.exports.createOptions = function({
         , flushInterval: flushInterval
     };
 };
-
-module.exports.stringifiedObjectsEqual = function(a, b) {
-    const jsona = JSON.parse(a);
-    const jsonb = JSON.parse(b);
-
-    if (Object.keys(jsona).length !== Object.keys(jsonb).length) {
-        return false;
-    }
-
-    for (var key in jsona) {
-        if (jsona.hasOwnProperty(key) && (
-            !jsonb.hasOwnProperty(key) ||
-            jsonb[key] !== jsona[key]
-        )) {
-            return false;
-        }
-    }
-    return true;
-};
