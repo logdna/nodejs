@@ -435,17 +435,23 @@ describe('ambient meta', function() {
             , '{"ambient":"someAmbientMeta"}'
         ));
 
-        assert(ambientLogger._buf[2].meta === undefined);
+        assert(Object.keys(ambientLogger._buf[2].meta).length === 0);
     });
     it('mix ambient and optional meta', function() {
+        ambientLogger.addMetaProperty('someAmbientKey', 'value');
         ambientLogger.log('Sent a string log', { meta: { 'key': 'value' }, index_meta: true });
         ambientLogger.removeMetaProperty('someAmbientKey');
+        ambientLogger.addMetaProperty('ambient', 'someAmbientMeta');
         ambientLogger.log('Sent a string log');
         ambientLogger.removeMetaProperty('ambient');
         ambientLogger.log('Sent a string log', { meta: { 'key': 'value' } });
 
         assert(ambientLogger._buf[0].meta && ambientLogger._buf[0].meta.key === 'value');
-        assert(ambientLogger._buf[1].meta === undefined);
+        assert(testHelper.stringifiedObjectsEqual(
+            ambientLogger._buf[1].meta
+            , '{"key":"value","ambient":"someAmbientMeta"}'
+        ));
+
         assert(testHelper.stringifiedObjectsEqual(
             ambientLogger._buf[2].meta
             , '{"key":"value"}'
