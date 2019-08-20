@@ -44,9 +44,6 @@ options.tags = ['logging', 'nodejs', 'logdna'];
 // or:
 options.tags = 'logging,nodejs,logdna';
 
-// Define a singleton instance
-var logger = Logger.setupDefaultLogger(apikey, options);
-
 // Create multiple loggers with different options
 var logger = Logger.createLogger(apikey, options);
 
@@ -81,12 +78,12 @@ var meta = {
     nested: {
       nest1: 'nested text'
     }
-}
+};
 
 var opts = {
   level: 'warn',
   meta: meta
-}
+};
 
 logger.log('My Sample Log Line', opts);
 ```
@@ -111,7 +108,7 @@ var opts = {
       nest1: 'nested text'
     }
   }
-}
+};
 
 // Functions above also pass any associated objects along as metadata
 logger.trace('My Sample Log Line', opts);
@@ -124,7 +121,8 @@ var opts = {
   meta: {
     fizz: 'not-buzz'
   }
-}
+};
+
 logger.log('My Sample Log Line', opts);
 
 ```
