@@ -480,8 +480,7 @@ describe('ambient meta', function() {
         assert.deepEqual(
             JSON.parse(ambientLogger._buf[1].meta)
             , {
-                key: 'value'
-                , ambient: 'someAmbientMeta'
+                ambient: 'someAmbientMeta'
             }
         );
 
@@ -494,7 +493,7 @@ describe('ambient meta', function() {
     });
 });
 
-describe('HTTP Excpetion Handling', function() {
+describe('HTTP Exception Handling', function() {
     let httpExcServer;
     let countHits = 0;
     let statusCode = 302;
