@@ -33,7 +33,7 @@ describe('Test all Levels', function() {
     let sentLevels = [];
 
     let callbackResult;
-    const testCallback = (er, res) => { callbackResult = res};
+    const testCallback = (er, res) => { callbackResult = res;};
     beforeEach(function(done) {
         allLevelsServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
@@ -661,7 +661,7 @@ describe('HTTP Exception Handling', function() {
         const opts = testHelper.createOptions({port: port});
         const flushAllTest = Logger.createLogger(testHelper.apikey, opts);
         let callbackError;
-        flushAllTest.log("Test line", (e) => {callbackError = e});
+        flushAllTest.log('Test line', (e) => {callbackError = e;});
 
         setTimeout(function() {
             assert(callbackError === 'An error occured while making the request. Response status code: 302 Found');
