@@ -1,5 +1,13 @@
 version: 2
 jobs:
+  test:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run lint
+      - run: npm run test
   publish:
     docker:
       - image: circleci/node:10
@@ -25,9 +33,25 @@ workflows:
   version: 2
   update_package:
     jobs:
-      - publish:
+      - test:
           filters:
             tags:
               only: /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?/
             branches:
+              ignore: /.*/
+      - publish:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?/
+            branches:
+              ignore: /.*/
+  test:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only: /.*/
+            tags:
               ignore: /.*/
