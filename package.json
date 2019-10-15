@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint index.js lib/ test/",
+    "lint": "./node_modules/.bin/eslint -c .eslintrc *.js lib/*.js test/*.js",
     "test": "nyc --reporter=html --reporter=text mocha"
   },
   "repository": {
