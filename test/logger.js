@@ -244,6 +244,69 @@ describe('Index meta', function() {
     });
 });
 
+describe('Log options', function() {
+    let sentLogs = []
+    beforeEach(function(done) {
+        testServer = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                body += data;
+            });
+            req.on('end', function() {
+                body = JSON.parse(body);
+                for (var i = 0; i < body.ls.length; i++) {
+                    sentLogs.push(body.ls[i]);
+                }
+                body = '';
+            });
+            res.end('Hello, world!\n');
+        });
+        testServer.on('listening', done);
+        testServer.listen(1337);
+    });
+    afterEach(function(done) {
+        testServer.close();
+        testServer.on('close', function() {
+            testServer = null;
+            done();
+        });
+        sentLogs = [];
+        body = '';
+    });
+    it('Sets saveServiceCopy on the message if provided add valid', function(done) {
+        logger.log('Sent a log', { saveServiceCopy: true });
+        logger.log('Sent a log', { saveServiceCopy: false });
+        setTimeout(function() {
+            assert(sentLogs[0].saveServiceCopy === true)
+            assert(sentLogs[1].saveServiceCopy === false)
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Does not log the message if saveServiceCopy is provided but invald', function(done) {
+        logger.log('Sent a log', { saveServiceCopy: 'invalidTestValue'});
+        logger.log('Sent a log', { saveServiceCopy: { invalidTestValue: 'invalidTestValue'}});
+        logger.log('Sent a log', { saveServiceCopy: undefined});
+        logger.log('Sent a log', { saveServiceCopy: null});
+        setTimeout(function() {
+            assert(sentLogs.length === 0)
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Sets logSourceCRN on the message if provided', function(done) {
+        logger.log('Sent a log', { logSourceCRN: 'testLogSourceCRN'});
+        setTimeout(function() {
+            assert(sentLogs[0].logSourceCRN === 'testLogSourceCRN')
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('Sets appOverride on the message if provided', function(done) {
+        logger.log('Sent a log', { appOverride: 'testAppOverride'});
+        setTimeout(function() {
+            assert(sentLogs[0].appOverride === 'testAppOverride')
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+});
+
 describe('Input validation', function() {
     var bogusKeys;
     var options;
