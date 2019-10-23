@@ -600,3 +600,84 @@ describe('HTTP Exception Handling', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
 });
+
+describe('Test shimProperties which support customized properties in log', function() {
+    const logServerPort = 8081;
+    let logServer;
+    let sentMessages = [];
+
+    beforeEach(function(done) {
+        logServer = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                body += data;
+            });
+            req.on('end', function() {
+                body = JSON.parse(body);
+                for (var i = 0; i < body.ls.length; i++) {
+                    sentMessages.push(body.ls[i]);
+                }
+                body = '';
+            });
+            res.end('Hello, world!\n');
+        });
+        logServer.on('listening', done);
+        logServer.listen(logServerPort);
+    });
+
+    afterEach(function(done) {
+        logServer.close();
+        sentMessages = [];
+        body = '';
+        logServer.on('close', function() {
+            logServer = null;
+            done();
+        });
+    });
+
+    it('log with shimProperties', function(done) {
+        const options = testHelper.createOptions({
+            port: logServerPort
+            , shimProperties: ['prop1', 'prop2', 'prop3']
+        });
+        const allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
+
+        allLevelsLogger.debug('Sent a log', { prop1: false, prop2: 'good', prop4: true });
+        setTimeout(function() {
+            assert(sentMessages[0].prop1 === false);
+            assert(sentMessages[0].prop2 === 'good');
+            assert(!sentMessages[0].hasOwnProperty('prop3'));
+            assert(!sentMessages[0].hasOwnProperty('prop4'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+
+    it('should not log customized properties if shimProperties is not set', function(done) {
+        const options = testHelper.createOptions({
+            port: logServerPort
+        });
+        const allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
+
+        allLevelsLogger.debug('Sent a log', { prop1: false, prop2: 'good', prop3: true });
+        setTimeout(function() {
+            assert(!sentMessages[0].hasOwnProperty('prop1'));
+            assert(!sentMessages[0].hasOwnProperty('prop2'));
+            assert(!sentMessages[0].hasOwnProperty('prop3'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+
+    it('should not log customized properties if shimProperties is not an Array', function(done) {
+        const options = testHelper.createOptions({
+            port: logServerPort
+            , shimProperties: { prop1: true, prop2: true }
+        });
+        const allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
+
+        allLevelsLogger.debug('Sent a log', { prop1: true, prop2: 'good' });
+        setTimeout(function() {
+            assert(!sentMessages[0].hasOwnProperty('prop1'));
+            assert(!sentMessages[0].hasOwnProperty('prop2'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+});

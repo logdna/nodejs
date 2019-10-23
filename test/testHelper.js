@@ -103,6 +103,7 @@ module.exports.createOptions = function({
     , failedBufRetentionLimit = null
     , retryTimeout = null
     , flushInterval = null
+    , shimProperties
 } = {}) {
     return {
         key: key
@@ -115,5 +116,6 @@ module.exports.createOptions = function({
         , failedBufRetentionLimit: failedBufRetentionLimit
         , retryTimeout: retryTimeout
         , flushInterval: flushInterval
+        , shimProperties
     };
 };
