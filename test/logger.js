@@ -71,7 +71,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Debug Function with callback', function(done) {
+    it('Debug Functio, when called with callback, should call the cb', function(done) {
         allLevelsLogger.debug('Sent a log', testCallback);
         setTimeout(function() {
             assert(callbackResult.httpStatus === 200);
@@ -88,7 +88,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Trace Function with callback', function(done) {
+    it('Trace Function, when called with callback, should call the cb', function(done) {
         allLevelsLogger.trace('Sent a log1', testCallback);
         setTimeout(function() {
             assert(callbackResult.httpStatus === 200);
@@ -105,7 +105,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Info Function with callback', function(done) {
+    it('Info Function, when called with callback, should call the cb', function(done) {
         allLevelsLogger.info('Sent a log2', testCallback);
         setTimeout(function() {
             assert(callbackResult.httpStatus === 200);
@@ -122,7 +122,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Warn Function with callback', function(done) {
+    it('Warn Function, when called with callback, should call the cb', function(done) {
         allLevelsLogger.warn('Sent a log3', testCallback);
         setTimeout(function() {
             assert(callbackResult.httpStatus === 200);
@@ -139,7 +139,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Error Function with callback', function(done) {
+    it('Error Function, when called with callback, should call the cb', function(done) {
         allLevelsLogger.error('Sent a log4', testCallback);
         setTimeout(function() {
             assert(callbackResult.httpStatus === 200);
@@ -156,7 +156,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Fatal Function with callback', function(done) {
+    it('Fatal Function, when called with callback, should call the cb', function(done) {
         allLevelsLogger.fatal('Sent a log5', testCallback);
         setTimeout(function() {
             assert(callbackResult.httpStatus === 200);
