@@ -31,6 +31,9 @@ describe('Test all Levels', function() {
     let allLevelsServer;
     let sentLines = [];
     let sentLevels = [];
+
+    let callbackResult;
+    const testCallback = (er, res) => { callbackResult = res; };
     beforeEach(function(done) {
         allLevelsServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
@@ -58,6 +61,45 @@ describe('Test all Levels', function() {
         sentLines = [];
         sentLevels = [];
         body = '';
+        callbackResult = '';
+    });
+    describe('passing callback', function() {
+        it('Executes callback when provided - debug', function(done) {
+            allLevelsLogger.debug('Sent a log', testCallback);
+            setTimeout(function() {
+                assert(callbackResult.httpStatus === 200);
+                assert(sentLines[0] === 'Sent a log');
+                assert(sentLevels[0] === 'DEBUG');
+                done();
+            }, configs.FLUSH_INTERVAL + 200);
+        });
+        it('Executes callback when provided - trace', function(done) {
+            allLevelsLogger.trace('Sent a log1', testCallback);
+            setTimeout(function() {
+                assert(callbackResult.httpStatus === 200);
+                assert(sentLines[0] === 'Sent a log1');
+                assert(sentLevels[0] === 'TRACE');
+                done();
+            }, configs.FLUSH_INTERVAL + 200);
+        });
+        it('Executes callback when provided - info', function(done) {
+            allLevelsLogger.info('Sent a log2', testCallback);
+            setTimeout(function() {
+                assert(callbackResult.httpStatus === 200);
+                assert(sentLines[0] === 'Sent a log2');
+                assert(sentLevels[0] === 'INFO');
+                done();
+            }, configs.FLUSH_INTERVAL + 200);
+        });
+        it('Executes callback when provided - warn', function(done) {
+            allLevelsLogger.warn('Sent a log3', testCallback);
+            setTimeout(function() {
+                assert(callbackResult.httpStatus === 200);
+                assert(sentLines[0] === 'Sent a log3');
+                assert(sentLevels[0] === 'WARN');
+                done();
+            }, configs.FLUSH_INTERVAL + 200);
+        });
     });
     it('Debug Function', function(done) {
         allLevelsLogger.debug('Sent a log');
@@ -107,6 +149,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
+
 });
 
 describe('Testing for Correctness', function() {
@@ -596,6 +639,17 @@ describe('HTTP Exception Handling', function() {
 
         setTimeout(function() {
             assert(errMes.includes('status code:'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('if log has a callback, it should be called with an error', function(done) {
+        const opts = testHelper.createOptions({port: port});
+        const flushAllTest = Logger.createLogger(testHelper.apikey, opts);
+        let callbackError;
+        flushAllTest.log('Test line', (e) => {callbackError = e;});
+
+        setTimeout(function() {
+            assert(callbackError === 'An error occured while making the request. Response status code: 302 Found');
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
