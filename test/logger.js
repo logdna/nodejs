@@ -63,18 +63,47 @@ describe('Test all Levels', function() {
         body = '';
         callbackResult = '';
     });
+    describe('passing callback', function() {
+      it('Executes callback when provided - debug', function(done) {
+          allLevelsLogger.debug('Sent a log', testCallback);
+          setTimeout(function() {
+              assert(callbackResult.httpStatus === 200);
+              assert(sentLines[0] === 'Sent a log');
+              assert(sentLevels[0] === 'DEBUG');
+              done();
+          }, configs.FLUSH_INTERVAL + 200);
+      });
+      it('Executes callback when provided - trace', function(done) {
+          allLevelsLogger.trace('Sent a log1', testCallback);
+          setTimeout(function() {
+              assert(callbackResult.httpStatus === 200);
+              assert(sentLines[0] === 'Sent a log1');
+              assert(sentLevels[0] === 'TRACE');
+              done();
+          }, configs.FLUSH_INTERVAL + 200);
+      });
+      it('Executes callback when provided - info', function(done) {
+          allLevelsLogger.info('Sent a log2', testCallback);
+          setTimeout(function() {
+              assert(callbackResult.httpStatus === 200);
+              assert(sentLines[0] === 'Sent a log2');
+              assert(sentLevels[0] === 'INFO');
+              done();
+          }, configs.FLUSH_INTERVAL + 200);
+      });
+      it('Executes callback when provided - warn', function(done) {
+          allLevelsLogger.warn('Sent a log3', testCallback);
+          setTimeout(function() {
+              assert(callbackResult.httpStatus === 200);
+              assert(sentLines[0] === 'Sent a log3');
+              assert(sentLevels[0] === 'WARN');
+              done();
+          }, configs.FLUSH_INTERVAL + 200);
+      });
+     });
     it('Debug Function', function(done) {
         allLevelsLogger.debug('Sent a log');
         setTimeout(function() {
-            assert(sentLines[0] === 'Sent a log');
-            assert(sentLevels[0] === 'DEBUG');
-            done();
-        }, configs.FLUSH_INTERVAL + 200);
-    });
-    it('Debug Functio, when called with callback, should call the cb', function(done) {
-        allLevelsLogger.debug('Sent a log', testCallback);
-        setTimeout(function() {
-            assert(callbackResult.httpStatus === 200);
             assert(sentLines[0] === 'Sent a log');
             assert(sentLevels[0] === 'DEBUG');
             done();
@@ -88,27 +117,9 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Trace Function, when called with callback, should call the cb', function(done) {
-        allLevelsLogger.trace('Sent a log1', testCallback);
-        setTimeout(function() {
-            assert(callbackResult.httpStatus === 200);
-            assert(sentLines[0] === 'Sent a log1');
-            assert(sentLevels[0] === 'TRACE');
-            done();
-        }, configs.FLUSH_INTERVAL + 200);
-    });
     it('Info Function', function(done) {
         allLevelsLogger.info('Sent a log2');
         setTimeout(function() {
-            assert(sentLines[0] === 'Sent a log2');
-            assert(sentLevels[0] === 'INFO');
-            done();
-        }, configs.FLUSH_INTERVAL + 200);
-    });
-    it('Info Function, when called with callback, should call the cb', function(done) {
-        allLevelsLogger.info('Sent a log2', testCallback);
-        setTimeout(function() {
-            assert(callbackResult.httpStatus === 200);
             assert(sentLines[0] === 'Sent a log2');
             assert(sentLevels[0] === 'INFO');
             done();
@@ -122,27 +133,9 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Warn Function, when called with callback, should call the cb', function(done) {
-        allLevelsLogger.warn('Sent a log3', testCallback);
-        setTimeout(function() {
-            assert(callbackResult.httpStatus === 200);
-            assert(sentLines[0] === 'Sent a log3');
-            assert(sentLevels[0] === 'WARN');
-            done();
-        }, configs.FLUSH_INTERVAL + 200);
-    });
     it('Error Function', function(done) {
         allLevelsLogger.error('Sent a log4');
         setTimeout(function() {
-            assert(sentLines[0] === 'Sent a log4');
-            assert(sentLevels[0] === 'ERROR');
-            done();
-        }, configs.FLUSH_INTERVAL + 200);
-    });
-    it('Error Function, when called with callback, should call the cb', function(done) {
-        allLevelsLogger.error('Sent a log4', testCallback);
-        setTimeout(function() {
-            assert(callbackResult.httpStatus === 200);
             assert(sentLines[0] === 'Sent a log4');
             assert(sentLevels[0] === 'ERROR');
             done();
@@ -156,15 +149,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('Fatal Function, when called with callback, should call the cb', function(done) {
-        allLevelsLogger.fatal('Sent a log5', testCallback);
-        setTimeout(function() {
-            assert(callbackResult.httpStatus === 200);
-            assert(sentLines[0] === 'Sent a log5');
-            assert(sentLevels[0] === 'FATAL');
-            done();
-        }, configs.FLUSH_INTERVAL + 200);
-    });
+
 });
 
 describe('Testing for Correctness', function() {
