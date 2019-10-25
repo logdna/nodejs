@@ -69,12 +69,12 @@ module.exports = {
 };
 
 module.exports.memoryChecker = function(func) {
-    var m1 = process.memoryUsage();
+    const m1 = process.memoryUsage();
 
     console.time('    sendLogz');
-    var p = func();
+    const p = func();
     console.timeEnd('    sendLogz');
-    var m2 = process.memoryUsage();
+    const m2 = process.memoryUsage();
     console.log('    Diff (MB) = rss: %j, heapTotal: %j, heapUsed: %j \n', (m2.rss - m1.rss) / 1000000, (m2.heapTotal - m1.heapTotal) / 1000000, (m2.heapUsed - m1.heapUsed) / 1000000);
     return p;
 };
@@ -83,7 +83,7 @@ module.exports.arraysEqual = function(a, b) {
     if (a === b) return true;
     if (a == null || b == null) return false;
     if (a.length !== b.length) return false;
-    for (var i = 0; i < a.length; ++i) {
+    for (let i = 0; i < a.length; ++i) {
         if (a[i] !== b[i]) {
             console.log('FAIL a: %j, b: %j', a[i], b[i]);
             return false;
