@@ -1,8 +1,8 @@
-var logger = require('./lib/logger');
+const logger = require('./lib/logger');
 
-var __singleton;
+let __singleton;
 
-var setupDefaultLogger = function(key, opts) {
+const setupDefaultLogger = function(key, opts) {
     if (!(__singleton instanceof logger.Logger)) {
         __singleton = logger.createLogger(key, opts);
     }

@@ -16,13 +16,13 @@ const testHelper = require('./testHelper');
 const configs = require('../lib/configs');
 
 // Variables
-var logger = Logger.createLogger(testHelper.apikey, testHelper.options);
-var testLength = testHelper.testLength;
-var testStr = 'ESOTERIC ';
-var sentMeta = [];
-var body = '';
-var testServer;
-var testServer2;
+const logger = Logger.createLogger(testHelper.apikey, testHelper.options);
+const testLength = testHelper.testLength;
+const testStr = 'ESOTERIC ';
+let sentMeta = [];
+let body = '';
+let testServer;
+let testServer2;
 
 describe('Test all Levels', function() {
     const allLevelsPort = 8080;
@@ -41,7 +41,7 @@ describe('Test all Levels', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentLines.push(body.ls[i].line);
                     sentLevels.push(body.ls[i].level);
                 }
@@ -161,20 +161,20 @@ describe('Testing for Correctness', function() {
     let sentLines = [];
     const ordered = [];
 
-    for (var i = 0; i < testLength; ++i) {
+    for (let i = 0; i < testLength; ++i) {
         ordered.push(testStr);
     }
 
     const sendLogs = function() {
-        var rssProfile = [];
-        var base = process.memoryUsage().rss / 1000000.0;
+        const rssProfile = [];
+        const base = process.memoryUsage().rss / 1000000.0;
         rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
-        var start = process.hrtime();
+        const start = process.hrtime();
         for (let i = 0; i < testLength; ++i) {
             correctnesLogger.log(testStr);
         }
-        var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
-        var throughput = testLength / (elapsed / 1000);
+        const elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
+        let throughput = testLength / (elapsed / 1000);
         throughput = Math.round(throughput * 100) / 100;
         console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput);
         return delay(configs.FLUSH_INTERVAL + 200);
@@ -188,7 +188,7 @@ describe('Testing for Correctness', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentLines.push(body.ls[i].line);
                 }
                 res.end('Hello, world!\n');
@@ -226,7 +226,7 @@ describe('Index meta', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentMeta.push(body.ls[i].meta);
                 }
                 body = '';
@@ -253,8 +253,8 @@ describe('Index meta', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Index meta if specified in logger options', function(done) {
-        var opts = { index_meta: true, ...testHelper.options};
-        var indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
+        const opts = { index_meta: true, ...testHelper.options};
+        const indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
 
         indexMetaLogger.debug('Sent a log', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
@@ -273,8 +273,8 @@ describe('Index meta', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Doesn\'t index meta if specified in message even if logger option is true', function(done) {
-        var opts = { index_meta: true, ...testHelper.options};
-        var indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
+        const opts = { index_meta: true, ...testHelper.options};
+        const indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
 
         indexMetaLogger.debug('Sent a log', {
             index_meta: false
@@ -288,30 +288,23 @@ describe('Index meta', function() {
 });
 
 describe('Input validation', function() {
-    var bogusKeys;
-    var options;
-    var noOptions;
-    beforeEach(function() {
-        bogusKeys = [
+    afterEach(function(done) {
+        Logger.flushAll(done);
+    });
+    it('Sanity checks for Ingestion Key', function(done) {
+        const bogusKeys = [
             'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG'
             , 1234
             , { key: 'fail fail' }
             , 12.123
         ];
-        options = {
+
+        const options = {
             hostname: 'Valid Hostname'
             , mac: 'C0:FF:EE:C0:FF:EE'
             , ip: '10.0.1.101'
         };
-        noOptions = {
-            status: 'ok'
-        };
-    });
-    afterEach(function(done) {
-        Logger.flushAll(done);
-    });
-    it('Sanity checks for Ingestion Key', function(done) {
-        for (var i = 0; i < bogusKeys.length; i++) {
+        for (let i = 0; i < bogusKeys.length; i++) {
             assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
         }
         done();
@@ -337,6 +330,9 @@ describe('Input validation', function() {
         done();
     });
     it('Sanity checks for no options', function(done) {
+        const noOptions = {
+            status: 'ok'
+        };
         assert(Logger.createLogger(testHelper.apikey, noOptions));
         done();
     });
@@ -348,11 +344,12 @@ describe('Input validation', function() {
 });
 
 describe('Multiple loggers', function() {
-    var logger1 = Logger.createLogger(testHelper.apikey3, testHelper.options3);
-    var logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
-    var sentLines1 = [];
-    var sentLines2 = [];
+    const logger1 = Logger.createLogger(testHelper.apikey3, testHelper.options3);
+    const logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
+    let sentLines1 = [];
+    let sentLines2 = [];
     let testServer3;
+
     beforeEach(function(done) {
         testServer3 = http.createServer(function(req, res) {
             req.on('data', function(data) {
@@ -360,7 +357,7 @@ describe('Multiple loggers', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentLines1.push(body.ls[i].line);
                 }
                 body = '';
@@ -374,7 +371,7 @@ describe('Multiple loggers', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentLines2.push(body.ls[i].line);
                 }
                 body = '';
@@ -667,7 +664,7 @@ describe('Test shimProperties which support customized properties in log', funct
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentMessages.push(body.ls[i]);
                 }
                 body = '';
