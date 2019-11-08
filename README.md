@@ -348,7 +348,7 @@ A timestamp in ms, must be within one day otherwise it will be dropped and Date.
 ---
 A function that flushes all existing loggers that are instantiated by createLogger.
 
-Returns the callback with an error if one of the loggers failed to flush.
+Returns the callback with an error as a first argument if one of the loggers failed to flush.
 
 ### cleanUpAll()
 ---
