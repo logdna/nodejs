@@ -288,9 +288,6 @@ describe('Index meta', function() {
 });
 
 describe('Input validation', function() {
-    afterEach(function(done) {
-        Logger.flushAll(done);
-    });
     it('Sanity checks for Ingestion Key', function(done) {
         const bogusKeys = [
             'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG'
@@ -435,10 +432,6 @@ describe('Multiple loggers', function() {
 describe('ambient meta', function() {
     const options = testHelper.createOptions();
     const ambientLogger = Logger.createLogger(testHelper.apikey, options);
-
-    beforeEach(function() {
-        Logger.flushAll();
-    });
 
     it('add string ambient meta to a string log line', function() {
         ambientLogger.addMetaProperty('ambient', 'someAmbientMeta');
