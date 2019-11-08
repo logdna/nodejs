@@ -433,6 +433,10 @@ describe('ambient meta', function() {
     const options = testHelper.createOptions();
     const ambientLogger = Logger.createLogger(testHelper.apikey, options);
 
+    beforeEach(function() {
+        Logger.flushAll();
+    });
+
     it('add string ambient meta to a string log line', function() {
         ambientLogger.addMetaProperty('ambient', 'someAmbientMeta');
         ambientLogger.log('Sent a string log');
