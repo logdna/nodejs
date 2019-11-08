@@ -344,9 +344,11 @@ If this option is turned to true then meta objects will be parsed and will be se
 
 A timestamp in ms, must be within one day otherwise it will be dropped and Date.now() will be used in its place.
 
-### flushAll()
+### flushAll(callback)
 ---
 A function that flushes all existing loggers that are instantiated by createLogger.
+
+Returns the callback with an error if one of the loggers failed to flush.
 
 ### cleanUpAll()
 ---
