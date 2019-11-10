@@ -44,6 +44,9 @@ options.tags = ['logging', 'nodejs', 'logdna'];
 // or:
 options.tags = 'logging,nodejs,logdna';
 
+// Customized options that will be applied to message during `.log` call
+options.shimProperties = ['prop1', 'prop2', 'prop3'];
+
 // Create multiple loggers with different options
 var logger = Logger.createLogger(apikey, options);
 
@@ -127,6 +130,27 @@ logger.log('My Sample Log Line', opts);
 
 ```
 You will see the outputs in your LogDNA dashboard.
+
+If customized options is needed in the message, `shimProperties` can be used:
+```javascript
+const Logger = require('logdna');
+const options = {
+    hostname: myHostname,
+    ip: ipAddress,
+    mac: macAddress,
+    app: appName,
+    env: envName,
+    shimProperties: ['prop1', 'prop2', 'prop3']
+};
+const logger = Logger.createLogger(apikey, options);
+
+logger.log('My Sample Log Line', {
+    prop1: true,
+    prop2: 'good',
+    prop4: false
+});
+```
+You will see `prop1` and `prop2` be logged, but neither of `prop3` and `prop4` are logged.
 
 ## API
 
@@ -320,9 +344,11 @@ If this option is turned to true then meta objects will be parsed and will be se
 
 A timestamp in ms, must be within one day otherwise it will be dropped and Date.now() will be used in its place.
 
-### flushAll()
+### flushAll(callback)
 ---
 A function that flushes all existing loggers that are instantiated by createLogger.
+
+Returns the callback with an error as a first argument if one of the loggers failed to flush.
 
 ### cleanUpAll()
 ---

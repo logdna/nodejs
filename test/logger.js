@@ -16,13 +16,13 @@ const testHelper = require('./testHelper');
 const configs = require('../lib/configs');
 
 // Variables
-var logger = Logger.createLogger(testHelper.apikey, testHelper.options);
-var testLength = testHelper.testLength;
-var testStr = 'ESOTERIC ';
-var sentMeta = [];
-var body = '';
-var testServer;
-var testServer2;
+const logger = Logger.createLogger(testHelper.apikey, testHelper.options);
+const testLength = testHelper.testLength;
+const testStr = 'ESOTERIC ';
+let sentMeta = [];
+let body = '';
+let testServer;
+let testServer2;
 
 describe('Test all Levels', function() {
     const allLevelsPort = 8080;
@@ -31,6 +31,9 @@ describe('Test all Levels', function() {
     let allLevelsServer;
     let sentLines = [];
     let sentLevels = [];
+
+    let callbackResult;
+    const testCallback = (er, res) => { callbackResult = res; };
     beforeEach(function(done) {
         allLevelsServer = http.createServer(function(req, res) {
             req.on('data', function(data) {
@@ -38,7 +41,7 @@ describe('Test all Levels', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentLines.push(body.ls[i].line);
                     sentLevels.push(body.ls[i].level);
                 }
@@ -58,6 +61,45 @@ describe('Test all Levels', function() {
         sentLines = [];
         sentLevels = [];
         body = '';
+        callbackResult = '';
+    });
+    describe('passing callback', function() {
+        it('Executes callback when provided - debug', function(done) {
+            allLevelsLogger.debug('Sent a log', testCallback);
+            setTimeout(function() {
+                assert(callbackResult.httpStatus === 200);
+                assert(sentLines[0] === 'Sent a log');
+                assert(sentLevels[0] === 'DEBUG');
+                done();
+            }, configs.FLUSH_INTERVAL + 200);
+        });
+        it('Executes callback when provided - trace', function(done) {
+            allLevelsLogger.trace('Sent a log1', testCallback);
+            setTimeout(function() {
+                assert(callbackResult.httpStatus === 200);
+                assert(sentLines[0] === 'Sent a log1');
+                assert(sentLevels[0] === 'TRACE');
+                done();
+            }, configs.FLUSH_INTERVAL + 200);
+        });
+        it('Executes callback when provided - info', function(done) {
+            allLevelsLogger.info('Sent a log2', testCallback);
+            setTimeout(function() {
+                assert(callbackResult.httpStatus === 200);
+                assert(sentLines[0] === 'Sent a log2');
+                assert(sentLevels[0] === 'INFO');
+                done();
+            }, configs.FLUSH_INTERVAL + 200);
+        });
+        it('Executes callback when provided - warn', function(done) {
+            allLevelsLogger.warn('Sent a log3', testCallback);
+            setTimeout(function() {
+                assert(callbackResult.httpStatus === 200);
+                assert(sentLines[0] === 'Sent a log3');
+                assert(sentLevels[0] === 'WARN');
+                done();
+            }, configs.FLUSH_INTERVAL + 200);
+        });
     });
     it('Debug Function', function(done) {
         allLevelsLogger.debug('Sent a log');
@@ -107,6 +149,7 @@ describe('Test all Levels', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
+
 });
 
 describe('Testing for Correctness', function() {
@@ -118,20 +161,20 @@ describe('Testing for Correctness', function() {
     let sentLines = [];
     const ordered = [];
 
-    for (var i = 0; i < testLength; ++i) {
+    for (let i = 0; i < testLength; ++i) {
         ordered.push(testStr);
     }
 
     const sendLogs = function() {
-        var rssProfile = [];
-        var base = process.memoryUsage().rss / 1000000.0;
+        const rssProfile = [];
+        const base = process.memoryUsage().rss / 1000000.0;
         rssProfile.push(process.memoryUsage().rss / (1000000.0) - base);
-        var start = process.hrtime();
+        const start = process.hrtime();
         for (let i = 0; i < testLength; ++i) {
             correctnesLogger.log(testStr);
         }
-        var elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
-        var throughput = testLength / (elapsed / 1000);
+        const elapsed = (process.hrtime(start)[0] * 1000) + process.hrtime(start)[1] / 1000000;
+        let throughput = testLength / (elapsed / 1000);
         throughput = Math.round(throughput * 100) / 100;
         console.log('  ********************\n    Here\'s the throughput: %j lines/sec', throughput);
         return delay(configs.FLUSH_INTERVAL + 200);
@@ -145,7 +188,7 @@ describe('Testing for Correctness', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentLines.push(body.ls[i].line);
                 }
                 res.end('Hello, world!\n');
@@ -183,7 +226,7 @@ describe('Index meta', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentMeta.push(body.ls[i].meta);
                 }
                 body = '';
@@ -210,8 +253,8 @@ describe('Index meta', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Index meta if specified in logger options', function(done) {
-        var opts = { index_meta: true, ...testHelper.options};
-        var indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
+        const opts = { index_meta: true, ...testHelper.options};
+        const indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
 
         indexMetaLogger.debug('Sent a log', { meta: { extra_info: 'extra info' }});
         setTimeout(function() {
@@ -230,8 +273,8 @@ describe('Index meta', function() {
         }, configs.FLUSH_INTERVAL + 200);
     });
     it('Doesn\'t index meta if specified in message even if logger option is true', function(done) {
-        var opts = { index_meta: true, ...testHelper.options};
-        var indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
+        const opts = { index_meta: true, ...testHelper.options};
+        const indexMetaLogger = Logger.createLogger(testHelper.apikey, opts);
 
         indexMetaLogger.debug('Sent a log', {
             index_meta: false
@@ -245,30 +288,20 @@ describe('Index meta', function() {
 });
 
 describe('Input validation', function() {
-    var bogusKeys;
-    var options;
-    var noOptions;
-    beforeEach(function() {
-        bogusKeys = [
+    it('Sanity checks for Ingestion Key', function(done) {
+        const bogusKeys = [
             'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG'
             , 1234
             , { key: 'fail fail' }
             , 12.123
         ];
-        options = {
+
+        const options = {
             hostname: 'Valid Hostname'
             , mac: 'C0:FF:EE:C0:FF:EE'
             , ip: '10.0.1.101'
         };
-        noOptions = {
-            status: 'ok'
-        };
-    });
-    afterEach(function(done) {
-        Logger.flushAll(done);
-    });
-    it('Sanity checks for Ingestion Key', function(done) {
-        for (var i = 0; i < bogusKeys.length; i++) {
+        for (let i = 0; i < bogusKeys.length; i++) {
             assert.throws(function() { Logger.createLogger(bogusKeys[i], options); }, Error, 'Invalid Keys');
         }
         done();
@@ -294,6 +327,9 @@ describe('Input validation', function() {
         done();
     });
     it('Sanity checks for no options', function(done) {
+        const noOptions = {
+            status: 'ok'
+        };
         assert(Logger.createLogger(testHelper.apikey, noOptions));
         done();
     });
@@ -305,11 +341,12 @@ describe('Input validation', function() {
 });
 
 describe('Multiple loggers', function() {
-    var logger1 = Logger.createLogger(testHelper.apikey3, testHelper.options3);
-    var logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
-    var sentLines1 = [];
-    var sentLines2 = [];
+    const logger1 = Logger.createLogger(testHelper.apikey3, testHelper.options3);
+    const logger2 = Logger.createLogger(testHelper.apikey2, testHelper.options2);
+    let sentLines1 = [];
+    let sentLines2 = [];
     let testServer3;
+
     beforeEach(function(done) {
         testServer3 = http.createServer(function(req, res) {
             req.on('data', function(data) {
@@ -317,7 +354,7 @@ describe('Multiple loggers', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentLines1.push(body.ls[i].line);
                 }
                 body = '';
@@ -331,7 +368,7 @@ describe('Multiple loggers', function() {
             });
             req.on('end', function() {
                 body = JSON.parse(body);
-                for (var i = 0; i < body.ls.length; i++) {
+                for (let i = 0; i < body.ls.length; i++) {
                     sentLines2.push(body.ls[i].line);
                 }
                 body = '';
@@ -596,6 +633,98 @@ describe('HTTP Exception Handling', function() {
 
         setTimeout(function() {
             assert(errMes.includes('status code:'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+    it('if log has a callback, it should be called with an error', function(done) {
+        const opts = testHelper.createOptions({port: port});
+        const flushAllTest = Logger.createLogger(testHelper.apikey, opts);
+        let callbackError;
+        flushAllTest.log('Test line', (e) => {callbackError = e;});
+
+        setTimeout(function() {
+            assert(callbackError === 'An error occured while making the request. Response status code: 302 Found');
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+});
+
+describe('Test shimProperties which support customized properties in log', function() {
+    const logServerPort = 8081;
+    let logServer;
+    let sentMessages = [];
+
+    beforeEach(function(done) {
+        logServer = http.createServer(function(req, res) {
+            req.on('data', function(data) {
+                body += data;
+            });
+            req.on('end', function() {
+                body = JSON.parse(body);
+                for (let i = 0; i < body.ls.length; i++) {
+                    sentMessages.push(body.ls[i]);
+                }
+                body = '';
+            });
+            res.end('Hello, world!\n');
+        });
+        logServer.on('listening', done);
+        logServer.listen(logServerPort);
+    });
+
+    afterEach(function(done) {
+        logServer.close();
+        sentMessages = [];
+        body = '';
+        logServer.on('close', function() {
+            logServer = null;
+            done();
+        });
+    });
+
+    it('log with shimProperties', function(done) {
+        const options = testHelper.createOptions({
+            port: logServerPort
+            , shimProperties: ['prop1', 'prop2', 'prop3']
+        });
+        const allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
+
+        allLevelsLogger.debug('Sent a log', { prop1: false, prop2: 'good', prop4: true });
+        setTimeout(function() {
+            assert(sentMessages[0].prop1 === false);
+            assert(sentMessages[0].prop2 === 'good');
+            assert(!sentMessages[0].hasOwnProperty('prop3'));
+            assert(!sentMessages[0].hasOwnProperty('prop4'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+
+    it('should not log customized properties if shimProperties is not set', function(done) {
+        const options = testHelper.createOptions({
+            port: logServerPort
+        });
+        const allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
+
+        allLevelsLogger.debug('Sent a log', { prop1: false, prop2: 'good', prop3: true });
+        setTimeout(function() {
+            assert(!sentMessages[0].hasOwnProperty('prop1'));
+            assert(!sentMessages[0].hasOwnProperty('prop2'));
+            assert(!sentMessages[0].hasOwnProperty('prop3'));
+            done();
+        }, configs.FLUSH_INTERVAL + 200);
+    });
+
+    it('should not log customized properties if shimProperties is not an Array', function(done) {
+        const options = testHelper.createOptions({
+            port: logServerPort
+            , shimProperties: { prop1: true, prop2: true }
+        });
+        const allLevelsLogger = Logger.createLogger(testHelper.apikey, options);
+
+        allLevelsLogger.debug('Sent a log', { prop1: true, prop2: 'good' });
+        setTimeout(function() {
+            assert(!sentMessages[0].hasOwnProperty('prop1'));
+            assert(!sentMessages[0].hasOwnProperty('prop2'));
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
