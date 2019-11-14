@@ -2,9 +2,6 @@
 
 This file documents all notable changes in `LogDNA Node.js Code Library`. The release numbering uses [semantic versioning](http://semver.org).
 
-## Next Release [MAJOR]
-- Breaking Change: Add support for custom properties by adding `shimProperties` option when creating an logger. In order to continue to see fields `appOverride`, `logSourceCRN`, and `saveServiceCopy` in the message, need to add those properties in `shimProperties`.
-
 ## v3.3.3 - September 20, 2019
 - Add User Agent to the Request Header
 
