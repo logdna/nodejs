@@ -288,9 +288,6 @@ describe('Index meta', function() {
 });
 
 describe('Input validation', function() {
-    afterEach(function(done) {
-        Logger.flushAll(done);
-    });
     it('Sanity checks for Ingestion Key', function(done) {
         const bogusKeys = [
             'THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG THIS KEY IS TOO LONG'
