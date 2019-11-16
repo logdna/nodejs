@@ -2,6 +2,13 @@
 
 This file documents all notable changes in `LogDNA Node.js Code Library`. The release numbering uses [semantic versioning](http://semver.org).
 
+## v3.4.0 - November 15, 2019
+- Add `shimProperties` option to support custom fields in messages
+- Add callback parameter to the methods
+- Apply `no-var` linting rule
+- Update the docs
+- Fix the tests regarding the recent updates
+
 ## v3.3.3 - September 20, 2019
 - Add User Agent to the Request Header
 
