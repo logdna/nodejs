@@ -38,7 +38,6 @@
   "dependencies": {
     "agentkeepalive": "^2.2.0",
     "axios": "^0.19.0",
-    "detect-browser": "^4.8.0",
     "es6-promise": "^4.2.6",
     "json-stringify-safe": "^5.0.1",
     "lodash.bind": "^4.2.1",
