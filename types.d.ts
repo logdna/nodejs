@@ -1,6 +1,4 @@
 declare module "logdna" {
-  type Level = "Debug" | "Trace" | "Info" | "Warn" | "Error" | "Fatal";
-
   interface ConstructorOptions {
     /** The default app passed along with every log sent through this instance. */
     app?: string;
@@ -20,8 +18,12 @@ declare module "logdna" {
     index_meta?: boolean;
     /** The default IP Address passed along with every log sent through this instance. */
     ip?: string;
-    /** The default level passed along with every log sent through this instance. */
-    level?: Level;
+    /**
+     * The default level passed along with every log sent through this instance.
+     * Expected value is "Debug", "Trace", "Info", "Warn", "Error", "Fatal" or any custom
+     * level of your choice.
+     */
+    level?: string;
     /** The default MAC Address passed along with every log sent through this instance. */
     mac?: string;
     /**
@@ -38,8 +40,12 @@ declare module "logdna" {
     with_credentials?: boolean;
   }
   interface LogOptions {
-    /** The level passed along with this log line. */
-    level?: Level;
+    /**
+     * The level passed along with this log line.
+     * Expected value is "Debug", "Trace", "Info", "Warn", "Error", "Fatal" or any custom
+     * level of your choice.
+     */
+    level?: string;
     /** The app passed along with this log line. */
     app?: string;
     /** The environment passed along with this log line. */
