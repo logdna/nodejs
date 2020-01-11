@@ -71,7 +71,7 @@ declare module "logdna" {
     tags?: string | string[];
   }
 
-  export interface LogDna {
+  export interface Logger {
     info(line: string, options?: Omit<LogOptions, 'level'>): void;
     warn(line: string, options?: Omit<LogOptions, 'level'>): void;
     debug(line: string, options?: Omit<LogOptions, 'level'>): void;
@@ -92,7 +92,7 @@ declare module "logdna" {
   export function createLogger(
     key: string,
     options?: ConstructorOptions
-  ): LogDna;
+  ): Logger;
   
   /**
    * Flushes all existing loggers that are instantiated by createLogger.
