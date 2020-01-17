@@ -1,4 +1,14 @@
-version: 2
+version: 2.1
+tagged_build_filters: &tagged_build_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /v[0-9]+\.[0-9]+\.[0-9]+/
+test_build_filters: &test_build_filters
+  branches:
+    only: /.*/
+  tags:
+    ignore: /v[0-9]+\.[0-9]+\.[0-9]+/
 jobs:
   test:
     docker:
@@ -16,42 +26,26 @@ jobs:
       - run:
           name: Check Tagged Push
           command: |
-            TAG_VERSION=$(git tag --sort=-creatordate | head -n 1)
-            PKG_VERSION=$(cat package.json | grep version | cut -d':' -f2 | cut -d '"' -f2)
-            if [[ "${TAG_VERSION}" != "${PKG_VERSION}" ]]; then
+            PKG_VERSION=$(grep VERSION lib/version.rb | cut -d'"' -f2)
+            if [[ "${CIRCLE_TAG}" != "v${PKG_VERSION}" ]]; then
               echo "There is mismatch:"
-              echo "  TAG_VERSION: ${TAG_VERSION}"
-              echo "  PKG_VERSION: ${PKG_VERSION}"
+              echo "  TAG_VERSION: ${CIRCLE_TAG}"
+              echo "  PKG_VERSION: v${PKG_VERSION}"
               exit 1
             fi
-      - run:
-          name: Publish
-          command: |
-            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-            npm publish
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+      - run: npm publish
 workflows:
   version: 2
   update_package:
     jobs:
       - test:
-          filters:
-            tags:
-              only: /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?/
-            branches:
-              ignore: /.*/
+          filters: *tagged_build_filters
       - publish:
           requires:
             - test
-          filters:
-            tags:
-              only: /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?/
-            branches:
-              ignore: /.*/
+          filters: *tagged_build_filters
   test:
     jobs:
       - test:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              ignore: /.*/
+          filters: *test_build_filters
