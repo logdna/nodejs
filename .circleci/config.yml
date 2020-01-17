@@ -18,7 +18,7 @@ jobs:
       - run: npm install
       - run: npm run lint
       - run: npm run test
-  publish:
+  build:
     docker:
       - image: circleci/node:10
     steps:
@@ -33,6 +33,42 @@ jobs:
               echo "  PKG_VERSION: v${PKG_VERSION}"
               exit 1
             fi
+      - run: npm install --production
+      - run: zip logdna.zip -r node_modules/ index.js package.json lib/*.js
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./logdna.zip
+  release:
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - attach_workspace:
+          at: .
+      - run: go get -u github.com/tcnksm/ghr
+      - run:
+          name: Create a Release
+          command: |
+            ghr \
+              -n "LogDNA Node.js Logger ${CIRCLE_TAG}" \
+              -t ${GITHUB_TOKEN} \
+              -u ${CIRCLE_PROJECT_USERNAME} \
+              -r ${CIRCLE_PROJECT_REPONAME} \
+              -draft ${CIRCLE_TAG} ${CIRCLE_WORKING_DIRECTORY}
+  approve:
+    machine: true
+    steps:
+      - attach_workspace:
+          at: .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./logdna.zip
+  publish:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
       - run: npm publish
 workflows:
@@ -41,9 +77,22 @@ workflows:
     jobs:
       - test:
           filters: *tagged_build_filters
-      - publish:
+      - build:
           requires:
             - test
+          filters: *tagged_build_filters
+      - release:
+          requires:
+            - build
+          filters: *tagged_build_filters
+      - approve:
+          type: approval
+          requires:
+            - release
+          filters: *tagged_build_filters
+      - publish:
+          requires:
+            - approve
           filters: *tagged_build_filters
   test:
     jobs:
