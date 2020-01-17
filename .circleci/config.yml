@@ -26,7 +26,7 @@ jobs:
       - run:
           name: Check Tagged Push
           command: |
-            PKG_VERSION=$(grep VERSION lib/version.rb | cut -d'"' -f2)
+            PKG_VERSION=$(grep version package.json | cut -d'"' -f4)
             if [[ "${CIRCLE_TAG}" != "v${PKG_VERSION}" ]]; then
               echo "There is mismatch:"
               echo "  TAG_VERSION: ${CIRCLE_TAG}"
