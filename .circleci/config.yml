@@ -1,4 +1,14 @@
-version: 2
+version: 2.1
+tagged_build_filters: &tagged_build_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /v[0-9]+\.[0-9]+\.[0-9]+/
+test_build_filters: &test_build_filters
+  branches:
+    only: /.*/
+  tags:
+    ignore: /v[0-9]+\.[0-9]+\.[0-9]+/
 jobs:
   test:
     docker:
@@ -8,7 +18,7 @@ jobs:
       - run: npm install
       - run: npm run lint
       - run: npm run test
-  publish:
+  build:
     docker:
       - image: circleci/node:10
     steps:
@@ -16,42 +26,74 @@ jobs:
       - run:
           name: Check Tagged Push
           command: |
-            TAG_VERSION=$(git tag --sort=-creatordate | head -n 1)
-            PKG_VERSION=$(cat package.json | grep version | cut -d':' -f2 | cut -d '"' -f2)
-            if [[ "${TAG_VERSION}" != "${PKG_VERSION}" ]]; then
+            PKG_VERSION=$(grep version package.json | cut -d'"' -f4)
+            if [[ "${CIRCLE_TAG}" != "v${PKG_VERSION}" ]]; then
               echo "There is mismatch:"
-              echo "  TAG_VERSION: ${TAG_VERSION}"
-              echo "  PKG_VERSION: ${PKG_VERSION}"
+              echo "  TAG_VERSION: ${CIRCLE_TAG}"
+              echo "  PKG_VERSION: v${PKG_VERSION}"
               exit 1
             fi
+      - run: npm install --production
+      - run: zip logdna.zip -r node_modules/ index.js package.json lib/*.js
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./logdna.zip
+  release:
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - attach_workspace:
+          at: .
+      - run: go get -u github.com/tcnksm/ghr
       - run:
-          name: Publish
+          name: Create a Release
           command: |
-            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-            npm publish
+            ghr \
+              -n "LogDNA Node.js Logger ${CIRCLE_TAG}" \
+              -t ${GITHUB_TOKEN} \
+              -u ${CIRCLE_PROJECT_USERNAME} \
+              -r ${CIRCLE_PROJECT_REPONAME} \
+              -draft ${CIRCLE_TAG} ${CIRCLE_WORKING_DIRECTORY}
+  approve:
+    machine: true
+    steps:
+      - attach_workspace:
+          at: .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./logdna.zip
+  publish:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+      - run: npm publish
 workflows:
-  version: 2
-  update_package:
+  update:
     jobs:
       - test:
-          filters:
-            tags:
-              only: /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?/
-            branches:
-              ignore: /.*/
-      - publish:
+          filters: *tagged_build_filters
+      - build:
           requires:
             - test
-          filters:
-            tags:
-              only: /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?/
-            branches:
-              ignore: /.*/
+          filters: *tagged_build_filters
+      - release:
+          requires:
+            - build
+          filters: *tagged_build_filters
+      - approve:
+          type: approval
+          requires:
+            - release
+          filters: *tagged_build_filters
+      - publish:
+          requires:
+            - approve
+          filters: *tagged_build_filters
   test:
     jobs:
       - test:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              ignore: /.*/
+          filters: *test_build_filters
