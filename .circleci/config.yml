@@ -54,7 +54,7 @@ jobs:
               -t ${GITHUB_TOKEN} \
               -u ${CIRCLE_PROJECT_USERNAME} \
               -r ${CIRCLE_PROJECT_REPONAME} \
-              -draft ${CIRCLE_TAG} ${CIRCLE_WORKING_DIRECTORY}
+              -draft ${CIRCLE_TAG} ./logdna.zip
   approve:
     machine: true
     steps:
