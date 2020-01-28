@@ -532,9 +532,9 @@ describe('ambient meta', function() {
 
 describe('HTTP Exception Handling', function() {
     let httpExcServer;
-    let countHits = 0;
     let statusCode = 302;
-    let edgeCaseFlag = false;
+    let serverReturns200 = false;
+    let firstMessageSendTime;
 
     const port = 1336;
     const options = testHelper.createOptions({
@@ -544,20 +544,22 @@ describe('HTTP Exception Handling', function() {
     let whenSuccessConnection = 0;
     beforeEach(function(done) {
         httpExcServer = http.createServer(function(req, res) {
-            if (edgeCaseFlag && countHits >= 1) {
+            if (serverReturns200) {
                 statusCode = 200;
                 whenSuccessConnection = Date.now();
+            } else {
+                statusCode = 302;
             }
             res.writeHead(statusCode, {'Content-Type': 'text/plain'});
             res.write('Hello World');
-            res.end(() => {++countHits;});
+            res.end();
         });
         httpExcServer.on('listening', done);
         httpExcServer.listen(port);
     });
 
     afterEach(function(done) {
-        countHits = 0;
+        serverReturns200 = false;
         httpExcServer.close();
         httpExcServer.on('close', function() {
             httpExcServer = null;
@@ -571,6 +573,7 @@ describe('HTTP Exception Handling', function() {
     const httpExcLogger = Logger.createLogger(testHelper.apikey, options);
 
     it('when fails to connect, it should put the _isLoggingBackedOff flag on', function(done) {
+        firstMessageSendTime = Date.now();
         httpExcLogger.debug('The line');
         setTimeout(function() {
             assert(httpExcLogger._isLoggingBackedOff === true);
@@ -578,32 +581,67 @@ describe('HTTP Exception Handling', function() {
             done();
         }, configs.FLUSH_INTERVAL + 200);
     });
-    it('*!!depends on the previouce test!!* Send the log after the previouse one has failed', function(done) {
+    it('*!!depends on the previous test!!* Send the log after the previous one has failed', function(done) {
         this.timeout(3500);
-        edgeCaseFlag = true;
-        countHits = 1;
-        const thisSendTime = Date.now();
+        serverReturns200 = true;
         httpExcLogger.debug('The second line');
         setTimeout(function() {
-            assert(whenSuccessConnection - thisSendTime >= configs.BACKOFF_PERIOD);
+            assert(firstMessageSendTime + configs.FLUSH_INTERVAL + configs.BACKOFF_PERIOD <= whenSuccessConnection);
             assert(httpExcLogger._buf.length === 0);
             assert(httpExcLogger._isLoggingBackedOff === false);
             done();
         }, configs.BACKOFF_PERIOD + 200);
     });
-    it('*!!depends on the previouce test!!* Should clear backoff after success', function(done) {
+    it('*!!depends on the previous test!!* Should not backoff immediately after a successful flush', function(done) {
         this.timeout(3500);
-        edgeCaseFlag = true;
-        countHits = 1;
+        serverReturns200 = true;
         const thisSendTime = Date.now();
-        httpExcLogger.debug('The second line');
+        httpExcLogger.debug('The third line');
         setTimeout(function() {
+            assert(whenSuccessConnection - thisSendTime > configs.FLUSH_INTERVAL);
             assert(whenSuccessConnection - thisSendTime < configs.BACKOFF_PERIOD);
             assert(httpExcLogger._buf.length === 0);
             assert(httpExcLogger._isLoggingBackedOff === false);
             done();
-        }, configs.BACKOFF_PERIOD + 200);
+        }, configs.FLUSH_INTERVAL + 200);
     });
+    it('when fails to connect, it will automatically retry after backoff', function(done) {
+        this.timeout(3500);
+        firstMessageSendTime = Date.now();
+        httpExcLogger.debug('The line');
+        setTimeout(function() {
+            assert(httpExcLogger._isLoggingBackedOff === true);
+            assert(httpExcLogger._buf.length === 1);
+            serverReturns200 = true;
+        }, configs.FLUSH_INTERVAL + 200);
+        setTimeout(function() {
+            assert(firstMessageSendTime + configs.FLUSH_INTERVAL + configs.BACKOFF_PERIOD <= whenSuccessConnection);
+            assert(httpExcLogger._buf.length === 0);
+            assert(httpExcLogger._isLoggingBackedOff === false);
+            done();
+        }, configs.FLUSH_INTERVAL + configs.BACKOFF_PERIOD + 200);
+    });
+    it('when fails to connect, it will automatically retry after backoff multiple times', function(done) {
+        this.timeout(7000);
+        firstMessageSendTime = Date.now();
+        httpExcLogger.debug('The line');
+        setTimeout(function() {
+            assert(httpExcLogger._isLoggingBackedOff === true);
+            assert(httpExcLogger._buf.length === 1);
+        }, configs.FLUSH_INTERVAL + 200);
+        setTimeout(function() {
+            assert(httpExcLogger._isLoggingBackedOff === true);
+            assert(httpExcLogger._buf.length === 1);
+            serverReturns200 = true;
+        }, configs.FLUSH_INTERVAL + configs.BACKOFF_PERIOD + 200);
+        setTimeout(function() {
+            assert(firstMessageSendTime + configs.FLUSH_INTERVAL + configs.BACKOFF_PERIOD + configs.BACKOFF_PERIOD <= whenSuccessConnection);
+            assert(httpExcLogger._buf.length === 0);
+            assert(httpExcLogger._isLoggingBackedOff === false);
+            done();
+        }, configs.FLUSH_INTERVAL + configs.BACKOFF_PERIOD + configs.BACKOFF_PERIOD + 200);
+    });
+
     it('should not exceed the failed buf retention limit', function(done) {
         this.timeout(3500);
         const opts = testHelper.createOptions({port: port, failedBufRetentionLimit: 1000});

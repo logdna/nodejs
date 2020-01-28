@@ -436,7 +436,10 @@ exports.handler = (event, context, callback) => {
 ```
 
 ## HTTP Exception Handling
-If the logger does not receive a successful response from the server, it retains the logs in a buffer and will retry with the next request. The size of the retry buffer that saves logs that failed to send and the retry timeout are configurable via:
+If the logger does not receive a successful response from the server, it retains the logs in a buffer and will retry
+after the Backoff Period. If the buffer is full it will immediately try and flush, and will not accept further logs
+until the flush succeeds. The size of the retry buffer that saves logs that failed to send and the retry timeout are
+configurable via:
 
 ``` javascript
 var options = {
