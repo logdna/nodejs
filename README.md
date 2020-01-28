@@ -373,6 +373,7 @@ The bundle.js file can be included like any other script.
 ```
 <script src="bundle.js"></script>
 ```
+When using NodeJS inside a browser, the domain needs to be whitelisted in your LogDNA organization settings
 
 ## Bunyan Stream
 
