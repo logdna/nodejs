@@ -538,9 +538,11 @@ describe('HTTP Exception Handling', function() {
 
     const port = 1336;
     const retryTimeout = 500;
+    const retryTimes = 2
     const options = testHelper.createOptions({
         port: port
-        , retryTimeout: retryTimeout
+        , retryTimeout
+        , retryTimes
 
     });
 
@@ -585,18 +587,18 @@ describe('HTTP Exception Handling', function() {
             done();
         }, retryTimeout * 3 + 200);
     });
-    it('when fails to connect, it should retry only three times and save the log until the next one comes in', function(done) {
-        this.timeout(retryTimeout * 3 + 400);
+    it('when fails to connect, it should retry only options.retryTimes and save the log until the next one comes in', function(done) {
+        this.timeout(retryTimeout * 4 + 400);
         let logSentTime = Date.now();
         httpExcLogger.debug('The line');
 
         setTimeout(function() {
-            assert(countServertHits === 3);
+            assert(countServertHits === retryTimes + 1);
             assert(httpExcLogger._buf.length === 1);
             done();
-        }, retryTimeout * 3 + 200);
+        }, retryTimeout * 4);
     });
-    it('*!!depends on the previous test!!* Include the log from the previously faliled flush', function(done) {
+    it('*!!depends on the previous test!!* Include the log from the previously failed flush', function(done) {
         this.timeout(retryTimeout + 300);
         willEventuallySucceed = true;
         countServertHits = 1;

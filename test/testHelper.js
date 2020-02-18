@@ -103,6 +103,7 @@ module.exports.createOptions = function({
     , failedBufRetentionLimit = null
     , retryTimeout = null
     , flushInterval = null
+    , retryTimes = 3
     , shimProperties
 } = {}) {
     return {
@@ -116,6 +117,7 @@ module.exports.createOptions = function({
         , failedBufRetentionLimit: failedBufRetentionLimit
         , retryTimeout: retryTimeout
         , flushInterval: flushInterval
+        , retryTimes
         , shimProperties
     };
 };
