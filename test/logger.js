@@ -617,7 +617,7 @@ describe('HTTP Exception Handling', function() {
         httpExcLogger.debug('The second line');
         setTimeout(function() {
             assert(whenSuccessConnection - thisSendTime < retryTimeout);
-            assert(httpExcLogger._attempts === 0)
+            assert(httpExcLogger._attempts === 0);
             done();
         }, retryTimeout + 200);
     });
