@@ -609,7 +609,7 @@ describe('HTTP Exception Handling', function() {
             done();
         }, retryTimeout + 200);
     });
-    it('*!!depends on the previous test!!* Should clear backoff after success', function(done) {
+    it('*!!depends on the previous test!!* Should clear backoff after success and nullify attempts', function(done) {
         this.timeout(3500);
         willEventuallySucceed = true;
         countServertHits = 1;
@@ -617,6 +617,7 @@ describe('HTTP Exception Handling', function() {
         httpExcLogger.debug('The second line');
         setTimeout(function() {
             assert(whenSuccessConnection - thisSendTime < retryTimeout);
+            assert(httpExcLogger._attempts === 0)
             done();
         }, retryTimeout + 200);
     });
