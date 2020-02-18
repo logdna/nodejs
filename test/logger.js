@@ -538,7 +538,7 @@ describe('HTTP Exception Handling', function() {
 
     const port = 1336;
     const retryTimeout = 500;
-    const retryTimes = 2
+    const retryTimes = 2;
     const options = testHelper.createOptions({
         port: port
         , retryTimeout
@@ -579,7 +579,7 @@ describe('HTTP Exception Handling', function() {
     it('when fails to connect, it should retry within retryTimeout period', function(done) {
         this.timeout(retryTimeout * 3 + 400);
         willEventuallySucceed = true;
-        let logSentTime = Date.now();
+        const logSentTime = Date.now();
         httpExcLogger.debug('The line');
         setTimeout(function() {
             assert(whenSuccessConnection - logSentTime >= retryTimeout);
@@ -589,7 +589,6 @@ describe('HTTP Exception Handling', function() {
     });
     it('when fails to connect, it should retry only options.retryTimes and save the log until the next one comes in', function(done) {
         this.timeout(retryTimeout * 4 + 400);
-        let logSentTime = Date.now();
         httpExcLogger.debug('The line');
 
         setTimeout(function() {
