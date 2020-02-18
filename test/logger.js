@@ -587,7 +587,6 @@ describe('HTTP Exception Handling', function() {
     });
     it('when fails to connect, it should retry only three times and save the log until the next one comes in', function(done) {
         this.timeout(retryTimeout * 3 + 400);
-        //const failedLogger = Logger.createLogger(testHelper.apikey, options);
         let logSentTime = Date.now();
         httpExcLogger.debug('The line');
 
