@@ -38,6 +38,10 @@ declare module "logdna" {
      * requests this value is set to false by default.
      */
     with_credentials?: boolean;
+    /**
+     * Alternate ingest URL
+     */
+    logdna_url?: string;
   }
   interface LogOptions {
     /**
