@@ -42,6 +42,8 @@ declare module "logdna" {
      * Alternate ingest URL
      */
     logdna_url?: string;
+      
+    tags?: string | string[];
   }
   interface LogOptions {
     /**
