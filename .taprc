@@ -1,0 +1,21 @@
+esm: false
+ts: false
+jsx: false
+check-coverage: true
+reporter: tap
+jobs: 2
+nyc-arg:
+- --all=true
+- --exclude=test/
+coverage-report:
+- text
+- text-summary
+- json
+- html
+files:
+- test/**/*.js
+branches: 98
+lines: 100
+functions: 100
+statements: 100
+

@@ -9,7 +9,8 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "nyc --reporter=html --reporter=text mocha"
+    "pretest": "npm run lint",
+    "test": "tap"
   },
   "repository": {
     "type": "git",
@@ -68,6 +69,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-sensible": "^2.2.0",
     "mocha": "^5.2.0",
-    "nyc": "^14.1.1"
+    "nock": "^13.0.2",
+    "nyc": "^14.1.1",
+    "tap": "^14.10.7"
   }
 }
