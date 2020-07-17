@@ -8,8 +8,9 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint -c .eslintrc *.js lib/*.js test/*.js",
-    "test": "nyc --reporter=html --reporter=text mocha"
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "tap"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,19 @@
     "url": "https://github.com/logdna/nodejs/issues"
   },
   "homepage": "https://github.com/logdna/nodejs#readme",
+  "peerDependencies": {
+    "eslint": ">= 6"
+  },
+  "eslintConfig": {
+    "root": true,
+    "ignorePatterns": [
+      "node_modules/",
+      "coverage/"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2019
+    }
+  },
   "dependencies": {
     "agentkeepalive": "^2.2.0",
     "axios": "^0.19.0",
@@ -51,9 +65,12 @@
   "devDependencies": {
     "assert": "^1.4.1",
     "delay": "^4.1.0",
-    "eslint": "^5.9.0",
-    "eslint-plugin-mocha": "^6.0.0",
+    "eslint": "^7.4.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-sensible": "^2.2.0",
     "mocha": "^5.2.0",
-    "nyc": "^14.1.1"
+    "nock": "^13.0.2",
+    "nyc": "^14.1.1",
+    "tap": "^14.10.7"
   }
 }
