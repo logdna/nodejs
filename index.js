@@ -1,20 +1,20 @@
 'use strict'
 
-const logger = require('./lib/logger')
+const Logger = require('./lib/logger.js')
 
-let __singleton
+let singleton
 
 const setupDefaultLogger = function(key, opts) {
-  if (!(__singleton instanceof logger.Logger)) {
-    __singleton = logger.createLogger(key, opts)
-  }
-  return __singleton
+  if (singleton) return singleton
+  singleton = new Logger(key, opts)
+  return singleton
+}
+
+function createLogger(key, options) {
+  return new Logger(key, options)
 }
 
 module.exports = {
-  cleanUpAll: logger.cleanUpAll
-, createLogger: logger.createLogger
-, flushAll: logger.flushAll
-, Logger: logger.Logger
+  createLogger
 , setupDefaultLogger
 }

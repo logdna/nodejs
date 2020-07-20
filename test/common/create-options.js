@@ -8,18 +8,19 @@ module.exports = function createOptions({
 , app = 'testing.log'
 , test = true
 , port = 1337
-, failedBufRetentionLimit = null
-, retryTimes = null
-, retryTimeout = null
-, flushInterval = 1 // Immediate flushing should be the default
+, flushIntervalMs = 1 // Immediate flushing should be the default
 , flushLimit = null
-, max_length = null
-, index_meta = null
-, level = null
+, indexMeta = null
+, level = undefined
 , tags = null
-, protocol = null
 , timeout = null
 , shimProperties
+, env = undefined
+, withCredentials = null
+, url = `http://localhost:${port}`
+, baseBackoffMs = undefined
+, maxBackoffMs = undefined
+, meta = undefined
 } = {}) {
   return {
     key
@@ -28,18 +29,18 @@ module.exports = function createOptions({
   , mac
   , app
   , test
-  , logdna_url: `http://localhost:${port}`
-  , failedBufRetentionLimit
-  , retryTimeout
-  , flushInterval
+  , url
+  , flushIntervalMs
   , flushLimit
-  , max_length
-  , index_meta
+  , indexMeta
   , level
-  , retryTimes
   , tags
-  , protocol
   , timeout
   , shimProperties
+  , env
+  , withCredentials
+  , baseBackoffMs
+  , maxBackoffMs
+  , meta
   }
 }

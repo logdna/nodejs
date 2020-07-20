@@ -2,266 +2,384 @@
 
 const {test} = require('tap')
 const nock = require('nock')
-const {Logger} = require('../lib/logger.js')
-const configs = require('../lib/configs.js')
+const Logger = require('../lib/logger.js')
+const constants = require('../lib/constants.js')
 const {apiKey, createOptions} = require('./common/index.js')
 
 nock.disableNetConnect()
 
-test('timestamp validity checks', async (t) => {
+test('Shorthand logging calls require options to be an object', (t) => {
+  t.plan(constants.LOG_LEVELS.length)
+  const logger = new Logger(apiKey)
+
+  for (const level of constants.LOG_LEVELS) {
+    const levelLowerCase = level.toLowerCase()
+    const expected = `If passed, log.${levelLowerCase} requires 'options' `
+      + 'to be an object'
+    t.throws(() => {
+      logger[levelLowerCase]('Log line', 'NOPE')
+    }, {
+      message: expected
+    , meta: {got: 'string'}
+    , name: 'TypeError'
+    }, `log.${levelLowerCase} throws as expected`)
+  }
+})
+
+test('timestamp validity checks', (t) => {
+  t.plan(4)
   const startTime = Date.now()
-  const logger = new Logger(apiKey, createOptions())
+  const logger = new Logger(apiKey, createOptions({
+    flushIntervalMs: 10
+  }))
+
+  logger.on('warn', t.fail)
+  logger.on('error', t.fail)
 
   t.on('end', async () => {
     nock.cleanAll()
   })
 
-  nock(logger._url)
-    .post('/', () => { return true })
+  nock(logger.url)
+    .post('/', (body) => {
+      const payload = body.ls
+      t.equal(payload.length, 2, 'Number of lines is correct')
+      const [{timestamp: stamp1}, {timestamp: stamp2}] = payload
+      t.ok(stamp1 > startTime, 'bad time format was replaced with a good one')
+      t.ok(stamp2 > startTime, 'out of range time was replaced with a good one')
+      return true
+    })
     .query(() => { return true })
     .reply(200, 'Ingester response')
     .persist()
 
-  t.test('timestamp format is not correct', (tt) => {
-    logger.info('my log line', {
-      timestamp: {}
-    }, (err, res) => {
-      tt.error(err, 'Error was not returned')
-      tt.deepEqual(res.lines, ['my log line'], 'Log entry was accepted')
-      const data = JSON.parse(res.body.config.data)
-      const payload = data.ls[0]
-      tt.ok(payload.timestamp > startTime, 'Bad time was replaced with a good time')
-      tt.end()
-    })
+  logger.on('send', (obj) => {
+    t.deepEqual(obj, {
+      httpStatus: 200
+    , firstLine: 'my log line'
+    , lastLine: 'my log line'
+    , totalLinesSent: 2
+    , totalLinesReady: 0
+    , bufferCount: 0
+    }, 'Got send event')
   })
 
-  t.test('timestamp is out of range', (tt) => {
-    logger.info('my log line', {
-      timestamp: startTime + configs.MS_IN_A_DAY
-    }, (err, res) => {
-      tt.error(err, 'Error was not returned')
-      tt.deepEqual(res.lines, ['my log line'], 'Log entry was accepted')
-      const data = JSON.parse(res.body.config.data)
-      const payload = data.ls[0]
-      tt.ok(payload.timestamp > startTime, 'Bad time was replaced with a good time')
-      tt.end()
-    })
+  logger.info('my log line', {
+    timestamp: {}
+  })
+  logger.info('my log line', {
+    timestamp: startTime + constants.MS_IN_A_DAY
   })
 })
 
-test('.log() truncates long opts strings', (t) => {
+test('.log() throws if options is a string and not a valid log entry', (t) => {
+  t.plan(2)
   const logger = new Logger(apiKey, createOptions())
 
   t.on('end', async () => {
     nock.cleanAll()
   })
 
-  nock(logger._url)
+  nock(logger.url)
     .post('/', () => { return true })
     .query(() => { return true })
     .reply(200, 'Ingester response')
 
-  logger.log('log line', 'x'.repeat(configs.MAX_INPUT_LENGTH + 1), (err, res) => {
-    // This test should actually throw due to an invalid level string.  Fix later.
-    t.error(err, 'No error')
-    t.end()
+  logger.on('error', (err) => {
+    t.type(err, TypeError, 'Expected to be a TypeError')
+    t.match(err, {
+      name: 'TypeError'
+    , message: 'If \'options\' is a string, then it must be a valid log level'
+    , meta: {
+        got: 'NOPE'
+      , expected: constants.LOG_LEVELS
+      }
+    }, 'Expected Error is correct')
   })
+  logger.log('log line', 'NOPE')
 })
 
 test('.log() rejects invalid `opts` data type', (t) => {
+  t.plan(2)
   const logger = new Logger(apiKey, createOptions())
 
   t.on('end', async () => {
     nock.cleanAll()
   })
 
-  nock(logger._url)
+  nock(logger.url)
     .post('/', () => { return true })
     .query(() => { return true })
     .reply(200, 'Ingester response')
 
-  logger.log('log line', 12345, (err, res) => {
-    t.type(err, Error, 'Error was returned')
-    t.equal(
-      err.message
-    , 'options parameter must be a level (string), or object'
-    , 'Error message is correct'
-    )
-    t.deepEqual(err.meta, {opts: 12345}, 'Meta is set on the error')
-    t.end()
+  logger.on('error', (err) => {
+    t.type(err, TypeError, 'Expected to be a TypeError')
+    t.match(err, {
+      name: 'TypeError'
+    , message: 'options parameter must be a level (string), or object'
+    , meta: {
+        got: 'number'
+      }
+    }, 'Expected Error is correct')
   })
+  logger.log('log line', 12345)
 })
 
-test('_bufferLog() error handling', async (t) => {
-  t.test('Ignores null message', (tt) => {
-    const logger = new Logger(apiKey, createOptions())
-    logger._bufferLog(null, (err, body) => {
-      tt.error(err, 'No error')
-      tt.deepEqual(body, undefined, 'No error, but nothing was done either')
-      tt.end()
-    })
-  })
-
-  t.test('Ignores empty object', (tt) => {
-    const logger = new Logger(apiKey, createOptions())
-    logger._bufferLog({}, (err, body) => {
-      tt.error(err, 'No error')
-      tt.deepEqual(body, undefined, 'No error, but nothing was done either')
-      tt.end()
-    })
-  })
-
-  t.test('Truncates messages that are too long', (tt) => {
-    tt.on('end', async () => {
-      nock.cleanAll()
-    })
-    const logger = new Logger(apiKey, createOptions())
-
-    nock(logger._url)
-      .post('/', () => { return true })
-      .query(() => { return true })
-      .reply(200, 'Ingester response')
-
-    const longData = 'x'.repeat(configs.MAX_LINE_LENGTH)
-    logger._bufferLog({line: longData + 'EXTRA'}, (err, res) => {
-      tt.error(err, 'No error')
-      const expected = [longData + ' (cut off, too long...)']
-      tt.deepEqual(res.lines, expected, 'Long line was truncated')
-      tt.end()
-    })
-  })
-
-  t.test('Ignores messages whose byte length exceeds the buffer size', (tt) => {
-    tt.on('end', async () => {
-      nock.cleanAll()
-    })
-    const logger = new Logger(apiKey, createOptions({
-      failedBufRetentionLimit: 10
-    }))
-
-    nock(logger._url)
-      .post('/', () => { return true })
-      .query(() => { return true })
-      .reply(200, 'Ingester response')
-
-    const longData = 'x'.repeat(50)
-    logger._bufferLog({line: longData}, (err, res) => {
-      tt.error(err, 'No error')
-      tt.notOk(res, 'Line was ignored, no response sent back')
-      tt.end()
-    })
-  })
-
-  t.test('Immediately sends if byte size > flush byte limit', (tt) => {
-    tt.on('end', async () => {
-      nock.cleanAll()
-    })
-    const logger = new Logger(apiKey, createOptions({
-      flushLimit: 10
-    , flushInterval: 5000 // It should ignore this and flush immediately
-    }))
-
-    nock(logger._url)
-      .post('/', () => { return true })
-      .query(() => { return true })
-      .reply(200, 'Ingester response')
-
-    const line = 'Hi, this is my line longer than 10 bytes'
-    logger._bufferLog({line}, (err, res) => {
-      tt.error(err, 'No error')
-      const expected = [line]
-      tt.deepEqual(res.lines, expected, 'Lines were flushed')
-      tt.end()
-    })
-  })
-
-  t.test('_isLoggingBackedOff schedules flush with a retry delay', (tt) => {
-    tt.on('end', async () => {
-      nock.cleanAll()
-    })
-    const retryTimeout = 1000
-    const logger = new Logger(apiKey, createOptions({
-      retryTimeout
-    }))
-    logger._isLoggingBackedOff = true // Normally NOT set this way
-
-    nock(logger._url)
-      .post('/', () => { return true })
-      .query(() => { return true })
-      .reply(200, 'Ingester response')
-
-    const line = 'Some log line'
-    const startTime = Date.now()
-    logger._bufferLog({line}, (err, res) => {
-      tt.error(err, 'No error')
-      const expected = [line]
-      tt.deepEqual(res.lines, expected, 'Lines were flushed')
-      tt.equal(logger._isLoggingBackedOff, false, 'Backoff Boolean was reset')
-      const diff = Date.now() - startTime
-      tt.ok(diff > retryTimeout, 'Retry timeout kicked in before flushing')
-      tt.end()
-    })
-  })
-})
-
-test('removeMetaProperty throws if property is not found', async (t) => {
-  const logger = new Logger(apiKey)
-  t.throws(() => {
-    logger.removeMetaProperty('NOPE')
-  }, {
-    message: 'There is no meta property called NOPE'
-  }, 'Expected error was thrown')
-})
-
-test('_flush expects a callback', async (t) => {
-  const logger = new Logger(apiKey)
-  t.throws(() => {
-    logger._flush('NOPE')
-  }, {
-    message: 'flush function expects a callback'
-  }, 'Expected error was thrown')
-})
-
-test('Handles HTTP errors from POST request', (t) => {
+test('.log() passed an invalid log level uses the default instead', (t) => {
   t.plan(3)
-  t.on('end', async () => {
-    nock.cleanAll()
-  })
   const logger = new Logger(apiKey, createOptions({
-    retryTimes: 2
-  , retryTimeout: 100
+    level: 'info'
   }))
 
-  nock(logger._url)
-    .post('/', () => { return true })
-    .query(() => { return true })
-    .reply(500, 'NOPE')
-    .persist()
-
-  const expectedErr = 'An error occured while making the request. '
-    + 'Response status code: 500 null'
-  let count = 0
-
-  logger.log('This will not work', (err) => {
-    t.equal(err, expectedErr, `Error ${++count} received as expected`)
-  })
-})
-
-test('Non-200 status codes return an error', (t) => {
   t.on('end', async () => {
     nock.cleanAll()
   })
-  const logger = new Logger(apiKey, createOptions())
 
-  nock(logger._url)
+  nock(logger.url)
+    .post('/', (body) => {
+      const obj = body.ls[0]
+      t.equal(obj.level, 'INFO', 'Default level was used instead')
+      return true
+    })
+    .query(() => { return true })
+    .reply(200, 'Ingester response')
+
+  logger.on('error', (err) => {
+    t.type(err, Error, 'Expected to be an Error')
+    t.match(err, {
+      name: 'Error'
+    , message: 'Invalid log level.  Using the default instead.'
+    , meta: {
+        got: 'NEIGH'
+      , expected: constants.LOG_LEVELS
+      , used: logger.level
+      }
+    }, 'Expected Error is correct')
+  })
+  logger.log('log line', {level: 'NEIGH'})
+})
+
+test('.log() ignores empty or null messages', (t) => {
+  t.plan(6)
+
+  const logger = new Logger(apiKey, createOptions())
+  const expected = [null, undefined, '']
+
+  logger.on('warn', (obj) => {
+    t.match(obj, {
+      message: 'Log statement was empty.  Ignored'
+    }, `Got warning for ${obj.statement}`)
+    t.ok(expected.includes(obj.statement), 'statement property is correct')
+  })
+
+  logger.log(null)
+  logger.log(undefined)
+  logger.log('')
+})
+
+test('removeMetaProperty emits \'warn\' if property is not found', (t) => {
+  t.plan(1)
+  const logger = new Logger(apiKey)
+
+  logger.on('removeMetaProperty', t.fail)
+  logger.on('warn', (obj) => {
+    t.deepEqual(obj, {
+      message: 'Property is not an existing meta property.  Cannot remove.'
+    , key: 'NOPE'
+    }, 'Got expected warning')
+  })
+  logger.removeMetaProperty('NOPE')
+})
+
+test('HTTP timeout will emit Error and continue to retry', (t) => {
+  const delay = 1000 // Set this low since nock will ultimately wait to timeout
+  const logger = new Logger(apiKey, createOptions({
+    baseBackoffMs: 100
+  , maxBackoffMs: 500
+  , timeout: delay
+  }))
+  let attempts = 0
+
+  t.on('end', async () => {
+    nock.cleanAll()
+  })
+
+  // Fail 3 times, then succeed. FYI, the axios agent treats a timeout on connection
+  // the same as a timeout on response body (connection accepted; no reply)
+  nock(logger.url)
+    .post('/', () => {
+      t.equal(
+        logger[Symbol.for('isLoggingBackedOff')]
+      , false
+      , 'Logger is not backed off prior to the first failure'
+      )
+      return true
+    })
+    .query(() => { return true })
+    .delayConnection(delay + 1)
+    .reply(200, 'Will Not Happen')
+    .post('/', () => {
+      t.equal(
+        logger[Symbol.for('isLoggingBackedOff')]
+      , true
+      , 'Logger is backed off'
+      )
+      return true
+    })
+    .query(() => { return true })
+    .delayConnection(delay + 1)
+    .reply(200, 'Will Not Happen')
     .post('/', () => { return true })
     .query(() => { return true })
-    .reply(204, 'STRANGE')
+    .delayConnection(delay + 1)
+    .reply(200, 'Will Not Happen')
+    .post('/', () => { return true })
+    .query(() => { return true })
+    .reply(200, 'Success')
 
-  const expectedErr = 'Unsuccessful request. Status text: null'
+  logger.on('error', (err) => {
+    t.type(err, Error, 'Error type is emitted')
+    t.match(err, {
+      message: 'An error occured while sending logs to the cloud.'
+    , meta: {
+        actual: `timeout of ${delay}ms exceeded`
+      , code: 'ECONNABORTED'
+      , firstLine: 'This will cause an HTTP timeout'
+      , lastLine: null
+      , retrying: true
+      , attempts: ++attempts
+      }
+    }, `Error properties are correct for attempt ${attempts}`)
+  })
 
-  logger.log('Hey! This will produce non-200 error', (err) => {
-    t.equal(err, expectedErr, 'Error message is as expected')
+  logger.on('cleared', ({message}) => {
+    t.equal(message, 'All accumulated log entries have been sent', 'cleared msg')
+    t.equal(
+      logger[Symbol.for('isLoggingBackedOff')]
+    , false
+    , 'Logger is not backed off after having a successful connection'
+    )
     t.end()
   })
+
+  logger.log('This will cause an HTTP timeout')
+})
+
+test('A 500-error will continue to retry', (t) => {
+  const logger = new Logger(apiKey, createOptions({
+    baseBackoffMs: 100
+  , maxBackoffMs: 500
+  }))
+  let attempts = 0
+
+  t.on('end', async () => {
+    nock.cleanAll()
+  })
+
+  // Fail 3 times, then succeed
+  nock(logger.url)
+    .post('/', () => {
+      t.equal(
+        logger[Symbol.for('isLoggingBackedOff')]
+      , false
+      , 'Logger is not backed off prior to the first failure'
+      )
+      return true
+    })
+    .query(() => { return true })
+    .reply(500, 'SERVER KABOOM')
+    .post('/', () => {
+      t.equal(
+        logger[Symbol.for('isLoggingBackedOff')]
+      , true
+      , 'Logger is backed off'
+      )
+      return true
+    })
+    .query(() => { return true })
+    .reply(500, 'SERVER KABOOM')
+    .post('/', () => { return true })
+    .query(() => { return true })
+    .reply(500, 'SERVER KABOOM')
+    .post('/', () => { return true })
+    .query(() => { return true })
+    .reply(200, 'Success')
+
+  logger.on('error', (err) => {
+    t.type(err, Error, 'Error type is emitted')
+    t.match(err, {
+      message: 'An error occured while sending logs to the cloud.'
+    , meta: {
+        actual: 'Request failed with status code 500'
+      , code: 500
+      , firstLine: 'This will cause an HTTP timeout'
+      , lastLine: null
+      , retrying: true
+      , attempts: ++attempts
+      }
+    }, `Error properties are correct for attempt ${attempts}`)
+  })
+
+  logger.on('cleared', ({message}) => {
+    t.equal(message, 'All accumulated log entries have been sent', 'cleared msg')
+    t.equal(
+      logger[Symbol.for('isLoggingBackedOff')]
+    , false
+    , 'Logger is not backed off after having a successful connection'
+    )
+    t.end()
+  })
+
+  logger.log('This will cause an HTTP timeout')
+})
+
+test('User-level errors are discarded after emitting an error', (t) => {
+  const logger = new Logger(apiKey, createOptions({
+    flushLimit: 10 // one message per buffer
+  }))
+
+  t.on('end', async () => {
+    nock.cleanAll()
+  })
+
+  nock(logger.url)
+    .post('/', () => {
+      t.equal(
+        logger[Symbol.for('isLoggingBackedOff')]
+      , false
+      , 'User errors did not cause logger to back off'
+      )
+      return true
+    })
+    .query(() => { return true })
+    .reply(400, {
+      error: 'Nope, your line was invlalid somehow'
+    })
+    .persist()
+
+  logger.on('error', (err) => {
+    t.type(err, Error, 'Error type is emitted')
+    t.match(err, {
+      message: 'An error occured while sending logs to the cloud.'
+    , meta: {
+        actual: 'Request failed with status code 400'
+      , code: 400
+      , firstLine: /^Something/
+      , lastLine: null
+      , retrying: false
+      , attempts: 1
+      }
+    }, 'Error properties are correct for a user error')
+  })
+
+  logger.on('cleared', ({message}) => {
+    t.equal(message, 'All accumulated log entries have been sent', 'cleared msg')
+    t.equal(logger[Symbol.for('isSending')], false, 'no longer sending')
+    t.equal(logger[Symbol.for('totalLinesReady')], 0, 'no more lines ready')
+    t.deepEqual(logger[Symbol.for('readyToSend')], [], 'send buffer is empty')
+    t.end()
+  })
+
+  logger.log('Something is invalid about this line')
+  logger.log('Something else is wrong with this line too')
 })
