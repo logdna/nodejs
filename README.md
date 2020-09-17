@@ -8,6 +8,14 @@
 [![Build Status](https://travis-ci.org/logdna/nodejs.svg?branch=master)](https://travis-ci.org/logdna/nodejs)  [![Known Vulnerabilities](https://snyk.io/test/npm/logdna/badge.svg)](https://snyk.io/test/npm/logdna)
 
 ---
+
+# Deprecation Notice
+
+This package has been deprecated in favor of the [@logdna/logger](https://www.npmjs.com/package/@logdna/logger) package.
+Please use `@logdna/logger` instead of the `logdna` package.
+
+---
+
 * **[Install](#install)**
 * **[Setup](#setup)**
 * **[Usage](#usage)**
