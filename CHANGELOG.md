@@ -2,6 +2,12 @@
 
 This file documents all notable changes in `LogDNA Node.js Code Library`. The release numbering uses [semantic versioning](http://semver.org).
 
+## v3.5.2 - January 13, 2021
+It should be noted that this project is still deprecated! This security update is being
+done strictly for the safety of legacy users who may still be using it.
+
+- Upgrade to axios@0.21.1 which fixes an SSRF vulnerability
+
 ## v3.5.1 - July 17, 2020
 - Missing key logdna_url in ConstructorOptions [#96](https://github.com/logdna/nodejs/pull/96)
 - Convert to `tap` for testing [#99](https://github.com/logdna/nodejs/pull/99)
@@ -31,6 +37,7 @@ This file documents all notable changes in `LogDNA Node.js Code Library`. The re
 - HTTP Exception Handling [#62](https://github.com/logdna/nodejs/pull/62)
 - Default Metadata Support [#60](https://github.com/logdna/nodejs/pull/60)
 
+[3.5.2]: https://github.com/logdna/nodejs/compare/v3.5.1...v3.5.2
 [3.5.1]: https://github.com/logdna/nodejs/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/logdna/nodejs/compare/3.4.0...v3.5.0
 [3.4.0]: https://github.com/logdna/nodejs/compare/3.3.3...3.4.0
