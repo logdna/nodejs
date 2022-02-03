@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "agentkeepalive": "^2.2.0",
-    "axios": "^0.21.1",
+    "axios": "^0.24.0",
     "es6-promise": "^4.2.6",
     "json-stringify-safe": "^5.0.1",
     "lodash.bind": "^4.2.1",
