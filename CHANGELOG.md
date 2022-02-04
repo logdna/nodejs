@@ -1,3 +1,17 @@
+## Changelog
+
+## [3.5.3](https://github.com/logdna/nodejs/compare/v3.5.2...v3.5.3) (2022-02-04)
+
+
+### Bug Fixes
+
+* **ci**: Switch to Jenkins and semantic-release [90ac36e](https://github.com/logdna/nodejs/commit/90ac36e77dbeae1cfd9b8a83d3f7d7565a5dc917) - Darin Spivey, closes: [#110](https://github.com/logdna/nodejs/issues/110)
+
+
+### Chores
+
+* **deps**: axios@0.25.0 [40c3283](https://github.com/logdna/nodejs/commit/40c3283949bd7d9745f715309c65c2f6031b34f4) - Darin Spivey, closes: [#111](https://github.com/logdna/nodejs/issues/111)
+
 # CHANGELOG
 
 This file documents all notable changes in `LogDNA Node.js Code Library`. The release numbering uses [semantic versioning](http://semver.org).
