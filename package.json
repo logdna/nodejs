@@ -10,8 +10,20 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "tap"
+    "test": "tap",
+    "pretest:ci": "npm run lint",
+    "test:ci": "tools/test-ci.sh",
+    "release": "semantic-release",
+    "release:dry": "semantic-release --dry-run --no-ci --branches=${BRANCH_NAME:-master}"
   },
+  "files": [
+    "lib/",
+    "index.js",
+    "types.d.ts",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/logdna/nodejs.git"
@@ -28,6 +40,12 @@
     "logger",
     "javascript"
   ],
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "extends": "semantic-release-config-logdna"
+  },
   "author": {
     "name": "LogDNA Inc.",
     "email": "help@logdna.com"
@@ -71,6 +89,10 @@
     "mocha": "^5.2.0",
     "nock": "^13.0.2",
     "nyc": "^14.1.1",
-    "tap": "^14.10.7"
+    "semantic-release": "^17.4.7",
+    "semantic-release-config-logdna": "^1.3.0",
+    "tap": "^14.10.7",
+    "tap-parser": "^10.1.0",
+    "tap-xunit": "^2.4.1"
   }
 }

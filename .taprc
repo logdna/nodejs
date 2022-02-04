@@ -3,6 +3,7 @@ ts: false
 jsx: false
 check-coverage: true
 reporter: tap
+output-file: .tap-output
 jobs: 2
 nyc-arg:
 - --all=true
